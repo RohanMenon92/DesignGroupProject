@@ -15,9 +15,4 @@ public class NoteGeneratorScript : MonoBehaviour
     {
         
     }
-
-    public void CreateNote()
-    {
-
-    }
 }

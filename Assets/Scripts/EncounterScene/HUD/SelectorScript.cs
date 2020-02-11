@@ -41,7 +41,7 @@ public class SelectorScript : MonoBehaviour
         isPressed = true;
 
         // Do Animation and unpress button
-        playButtonAnim = selectorImage.DOColor(Color.white, 0.25f).OnComplete(SelectorUnPressed);
+        playButtonAnim = selectorImage.DOColor(Color.white, EncounterSceneConstants.SelectorDelay).OnComplete(SelectorUnPressed);
     }
 
     public void SelectorUnPressed()

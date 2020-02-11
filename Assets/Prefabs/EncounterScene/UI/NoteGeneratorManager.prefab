@@ -167,6 +167,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ea584f237b635d4b860c0a73eb1f64c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  knobSprite: {fileID: 0}
+  labelSprites:
+  - {fileID: 6163668843942200015}
+  - {fileID: 6737426824202607677}
+  - {fileID: 6805426560743969036}
+  - {fileID: 3430540027937699722}
 --- !u!1 &6163668843645597902
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,18 +339,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turnScore: 0
   unusedNotePool: {fileID: 7701760558823146934}
-  noteG1: {fileID: 3356983904602063180}
-  noteG2: {fileID: 3669048056507870186}
-  noteG3: {fileID: 3669048057045125879}
-  noteG4: {fileID: 3669048056417022861}
-  selector1: {fileID: 4358584858748562544}
-  selector2: {fileID: 4885736252333338159}
-  selector3: {fileID: 4885736252348194276}
-  selector4: {fileID: 4885736252588769654}
+  noteGenerators:
+  - {fileID: 3356983904602063180}
+  - {fileID: 3669048056507870186}
+  - {fileID: 3669048057045125879}
+  - {fileID: 3669048056417022861}
+  selectors:
+  - {fileID: 4358584858748562544}
+  - {fileID: 4885736252333338159}
+  - {fileID: 4885736252348194276}
+  - {fileID: 4885736252588769654}
   notePrefab: {fileID: 6407234857506926810, guid: 4bba2f4a4b9026f43bbd71e2bba10422,
     type: 3}
   reputationPointerTransform: {fileID: 0}
   correctNoteScore: 0
+  knobControl: {fileID: 6163668843582054127}
 --- !u!1 &6163668843991551769
 GameObject:
   m_ObjectHideFlags: 0

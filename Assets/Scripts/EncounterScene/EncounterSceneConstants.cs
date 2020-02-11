@@ -4,10 +4,22 @@ using UnityEngine;
 
 public static class EncounterSceneConstants
 {
-    public static Color Fret1Color = Color.yellow;
-    public static Color Fret2Color = Color.red;
-    public static Color Fret3Color = Color.green;
-    public static Color Fret4Color = Color.blue;
+    public static Color[] FretColors =
+    {
+        Color.yellow,
+        Color.red,
+        Color.green,
+        Color.blue
+    };
+
+    public static Color[] KnobColors =
+    {
+        Color.grey,
+        Color.magenta,
+        Color.green,
+        Color.blue
+    };
 
     public static int NotePoolSize = 30;
+    public static float SelectorDelay = 1f;
 }
