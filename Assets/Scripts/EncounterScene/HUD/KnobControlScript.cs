@@ -34,7 +34,7 @@ public class KnobControlScript : MonoBehaviour
         deselectSequence.Insert(0f, labelSprites[knobPosition].DOScale(1.2f, 0.5f).SetEase(Ease.OutBack));
         deselectSequence.Insert(0f,
             labelSprites[knobPosition].GetComponent<Image>().
-            DOColor(EncounterSceneConstants.KnobColors[knobPosition], 0.5f).SetEase(Ease.InOutBack));
+            DOColor(EncounterConstants.KnobColors[knobPosition], 0.5f).SetEase(Ease.InOutBack));
         deselectSequence.Insert(0f,
             labelSprites[knobPosition].GetComponentInChildren<TextMeshProUGUI>().
             DOColor(Color.white, 0.5f).SetEase(Ease.InOutBack));
@@ -58,7 +58,7 @@ public class KnobControlScript : MonoBehaviour
             DOColor(Color.white, 0.5f).SetEase(Ease.InOutBack));
         selectSequence.Insert(0f,
             labelSprites[knobPosition].GetComponentInChildren<TextMeshProUGUI>().
-            DOColor(EncounterSceneConstants.KnobColors[knobPosition], 0.5f).SetEase(Ease.InOutBack));
+            DOColor(EncounterConstants.KnobColors[knobPosition], 0.5f).SetEase(Ease.InOutBack));
         selectSequence.Play();
     }
 

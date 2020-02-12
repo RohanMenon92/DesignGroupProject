@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class EncounterSceneConstants
+public static class EncounterConstants
 {
     public static Color[] FretColors =
     {
@@ -19,6 +19,14 @@ public static class EncounterSceneConstants
         Color.green,
         Color.blue
     };
+
+    public enum GameplayState {
+        StartGameUI,
+        TurnIntro,
+        TurnPlay,
+        TurnPlayOut,
+        EndGameUI
+    }
 
     public static int NotePoolSize = 30;
     public static float SelectorDelay = 1f;

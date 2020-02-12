@@ -30,7 +30,7 @@ public class NoteGeneratorManager : MonoBehaviour
     {
         selfPlayableDirector = GetComponent<PlayableDirector>();
 
-        for (int i = 0; i <= EncounterSceneConstants.NotePoolSize; i++)
+        for (int i = 0; i <= EncounterConstants.NotePoolSize; i++)
         {
             GameObject newNote = Instantiate(notePrefab, unusedNotePool);
             newNote.SetActive(false);
@@ -42,19 +42,19 @@ public class NoteGeneratorManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Alpha1))
         {
-            selectors[0].SelectorPressed(EncounterSceneConstants.FretColors[0]);
+            selectors[0].SelectorPressed(EncounterConstants.FretColors[0]);
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Alpha2))
         {
-            selectors[1].SelectorPressed(EncounterSceneConstants.FretColors[1]);
+            selectors[1].SelectorPressed(EncounterConstants.FretColors[1]);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.Alpha3))
         {
-            selectors[2].SelectorPressed(EncounterSceneConstants.FretColors[2]);
+            selectors[2].SelectorPressed(EncounterConstants.FretColors[2]);
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.Alpha4))
         {
-            selectors[3].SelectorPressed(EncounterSceneConstants.FretColors[3]);
+            selectors[3].SelectorPressed(EncounterConstants.FretColors[3]);
         }
 
         if(Input.GetKeyDown(KeyCode.M))
@@ -84,7 +84,7 @@ public class NoteGeneratorManager : MonoBehaviour
         // select note generators
         newNote.transform.SetParent(noteGenerators[noteGeneratorID].transform.parent);
         newNote.GetComponent<RectTransform>().localPosition = noteGenerators[noteGeneratorID].GetComponent<RectTransform>().localPosition;
-        noteImage.color = EncounterSceneConstants.FretColors[noteGeneratorID];
+        noteImage.color = EncounterConstants.FretColors[noteGeneratorID];
 
         // Reset for animation
         newNote.isCollected = false;
