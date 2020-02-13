@@ -21,13 +21,21 @@ public static class EncounterConstants
     };
 
     public enum GameplayState {
+        StartGame,
         StartGameUI,
         TurnIntro,
         TurnPlay,
         TurnPlayOut,
-        EndGameUI
+        EndGameUI,
+        EndGame
     }
 
     public static int NotePoolSize = 30;
     public static float SelectorDelay = 1f;
+
+    public static Vector3 cameraTurnPos = new Vector3(-7f, 6f, -15f);
+    public static Vector3 cameraTurnRot = new Vector3(30f, -60f, 0f);
+
+    public static Vector3 cameraOverviewPos = new Vector3(0f, 25f, -30f);
+    public static Vector3 cameraOverviewRot = new Vector3(45f, 0f, 0f);
 }

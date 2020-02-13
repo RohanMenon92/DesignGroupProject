@@ -26,6 +26,8 @@ public class NoteGeneratorManager : MonoBehaviour
 
     PlayableDirector selfPlayableDirector;
     // Start is called before the first frame update
+
+    bool isTurnVisible;
     void Start()
     {
         selfPlayableDirector = GetComponent<PlayableDirector>();
@@ -40,34 +42,38 @@ public class NoteGeneratorManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Alpha1))
+        if(isTurnVisible)
         {
-            selectors[0].SelectorPressed(EncounterConstants.FretColors[0]);
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            selectors[1].SelectorPressed(EncounterConstants.FretColors[1]);
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            selectors[2].SelectorPressed(EncounterConstants.FretColors[2]);
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            selectors[3].SelectorPressed(EncounterConstants.FretColors[3]);
-        }
+            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                selectors[0].SelectorPressed(EncounterConstants.FretColors[0]);
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                selectors[1].SelectorPressed(EncounterConstants.FretColors[1]);
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                selectors[2].SelectorPressed(EncounterConstants.FretColors[2]);
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                selectors[3].SelectorPressed(EncounterConstants.FretColors[3]);
+            }
 
-        if(Input.GetKeyDown(KeyCode.M))
-        {
-            knobControl.NextSelection();
-        } else if(Input.GetKeyDown(KeyCode.N))
-        {
-            knobControl.LastSelection();
-        }
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                knobControl.NextSelection();
+            }
+            else if (Input.GetKeyDown(KeyCode.N))
+            {
+                knobControl.LastSelection();
+            }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            selfPlayableDirector.Play();
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                selfPlayableDirector.Play();
+            }
         }
     }
 
@@ -138,5 +144,55 @@ public class NoteGeneratorManager : MonoBehaviour
         noteToStore.transform.SetParent(unusedNotePool);
         noteToStore.gameObject.SetActive(false);
         noteToStore.transform.localScale = Vector3.one;
+    }
+
+    public void FadeInSelectorUI()
+    {
+        Sequence selectorFadeInSequence = DOTween.Sequence();
+
+        knobControl.transform.localScale = Vector3.zero;
+        selectorFadeInSequence.Insert(0f, knobControl.transform.DOScale(1.6f, 0.5f).SetEase(Ease.InOutBack));
+        selectorFadeInSequence.Insert(0f, knobControl.GetComponent<CanvasGroup>().DOFade(1f, 0.5f));
+
+        float delay = 0.0f;
+        foreach (NoteGeneratorScript noteGen in noteGenerators)
+        {
+            // Fade In NoteGenerators
+            noteGen.transform.localScale = Vector3.one * 0.75f;
+            selectorFadeInSequence.Insert(delay, noteGen.GetComponent<Image>().DOColor(new Color(1f, 1f, 1f, 1f), 0.5f));
+            selectorFadeInSequence.Insert(delay + 0.1f, noteGen.transform.DOScale(1, 0.25f).SetEase(Ease.InOutBack));
+            delay+= 0.1f;
+        }
+        foreach (SelectorScript selector in selectors)
+        {
+            // Fade In NoteGenerators
+            selector.transform.localScale = Vector3.one * 1.2f;
+            selectorFadeInSequence.Insert(delay, selector.GetComponent<Image>().DOColor(new Color(1f, 1f, 1f, 1f), 0.5f));
+            selectorFadeInSequence.Insert(delay + 0.1f, selector.transform.DOScale(1, 0.25f).SetEase(Ease.InOutBack));
+            delay += 0.2f;
+        }
+
+        // set is turn visible to true on complete
+        selectorFadeInSequence.OnComplete(() =>
+        {
+            isTurnVisible = true;
+        });
+    }
+
+    public void FadeOutSelectorUI()
+    {
+        isTurnVisible = false;
+
+        foreach (NoteGeneratorScript noteGen in noteGenerators)
+        {
+            noteGen.transform.DOScale(0.1f, 0.35f);
+            noteGen.GetComponent<Image>().DOColor(new Color(1f, 1f, 1f, 0f), 0.5f);
+        }
+        foreach (SelectorScript selector in selectors)
+        {
+            selector.transform.DOScale(0.1f, 0.35f);
+            selector.GetComponent<Image>().DOColor(new Color(1f, 1f, 1f, 0f), 0.5f);
+        }
+        knobControl.GetComponent<CanvasGroup>().DOFade(0f, 0.5f);
     }
 }

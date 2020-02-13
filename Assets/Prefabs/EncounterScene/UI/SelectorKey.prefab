@@ -88,7 +88,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PressedIcon: {fileID: 0}
-  UnPressedIcon: {fileID: 0}
+  unpressedIcon: {fileID: 0}
   isPressed: 0
 --- !u!58 &2069838180344698419
 CircleCollider2D:
