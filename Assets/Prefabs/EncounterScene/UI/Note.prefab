@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3240255084230324784
 CanvasRenderer:
@@ -90,7 +90,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 50
+  m_Radius: 30
 --- !u!114 &6324620836594734114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,3 +105,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noteSpeed: 5
   isCollected: 0
+  noteTypeID: 0

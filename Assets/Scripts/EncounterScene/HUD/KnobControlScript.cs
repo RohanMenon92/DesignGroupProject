@@ -41,7 +41,7 @@ public class KnobControlScript : MonoBehaviour
 
         Vector3 diff = labelSprites[knobPosition].transform.position - knobSprite.transform.position;
         diff.Normalize();
-        Vector3 rotateTo = new Vector3(0f, 0f, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg));
+        Vector3 rotateTo = new Vector3(0f, 0f, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 180);
         knobSprite.transform.DORotate(rotateTo, 0.35f).SetEase(Ease.InOutBack);
 
 

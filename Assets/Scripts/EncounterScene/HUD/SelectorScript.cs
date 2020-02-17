@@ -70,7 +70,7 @@ public class SelectorScript : MonoBehaviour
             return;
         }
 
-        noteGenManager.RegisterNoteHit(collNoteScript);
+        noteGenManager.CollectNote(collNoteScript);
         SelectorUnPressed();
     }
 }

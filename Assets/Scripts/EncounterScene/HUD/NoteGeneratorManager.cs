@@ -7,9 +7,6 @@ using UnityEngine.UI;
 
 public class NoteGeneratorManager : MonoBehaviour
 {
-    [HideInInspector]
-    public int turnScore;
-
     public Transform unusedNotePool;
 
     public List<NoteGeneratorScript> noteGenerators;
@@ -20,18 +17,22 @@ public class NoteGeneratorManager : MonoBehaviour
 
     public Transform reputationPointerTransform;
 
-    public int correctNoteScore;
-
     public KnobControlScript knobControl;
 
     PlayableDirector selfPlayableDirector;
     // Start is called before the first frame update
+    EncounterGameManager gameManager;
 
     bool isTurnVisible;
+
+    public Sprite notePerfect;
+    public Sprite noteGood;
+    public Sprite noteOK;
+
     void Start()
     {
         selfPlayableDirector = GetComponent<PlayableDirector>();
-
+        gameManager = FindObjectOfType<EncounterGameManager>();
         for (int i = 0; i <= EncounterConstants.NotePoolSize; i++)
         {
             GameObject newNote = Instantiate(notePrefab, unusedNotePool);
@@ -44,33 +45,33 @@ public class NoteGeneratorManager : MonoBehaviour
     {
         if(isTurnVisible)
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Alpha1))
+            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown("joystick button 0"))
             {
                 selectors[0].SelectorPressed(EncounterConstants.FretColors[0]);
             }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Alpha2))
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown("joystick button 1"))
             {
                 selectors[1].SelectorPressed(EncounterConstants.FretColors[1]);
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.Alpha3))
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown("joystick button 2"))
             {
                 selectors[2].SelectorPressed(EncounterConstants.FretColors[2]);
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.Alpha4))
+            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown("joystick button 3"))
             {
                 selectors[3].SelectorPressed(EncounterConstants.FretColors[3]);
             }
 
-            if (Input.GetKeyDown(KeyCode.M))
+            if (Input.GetKeyDown(KeyCode.M) || Input.GetKeyDown("joystick button 5"))
             {
                 knobControl.NextSelection();
             }
-            else if (Input.GetKeyDown(KeyCode.N))
+            else if (Input.GetKeyDown(KeyCode.N) || Input.GetKeyDown("joystick button 4"))
             {
                 knobControl.LastSelection();
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick button 9") || Input.GetKeyDown("joystick button 11"))
             {
                 selfPlayableDirector.Play();
             }
@@ -87,7 +88,8 @@ public class NoteGeneratorManager : MonoBehaviour
         NoteScript newNote = GetUnusedNote(noteGeneratorID);
         Image noteImage = newNote.GetComponent<Image>();
 
-        // select note generators
+        // select note generator as parent
+        newNote.noteTypeID = noteGeneratorID;
         newNote.transform.SetParent(noteGenerators[noteGeneratorID].transform.parent);
         newNote.GetComponent<RectTransform>().localPosition = noteGenerators[noteGeneratorID].GetComponent<RectTransform>().localPosition;
         noteImage.color = EncounterConstants.FretColors[noteGeneratorID];
@@ -109,9 +111,43 @@ public class NoteGeneratorManager : MonoBehaviour
         createSequence.Play();
     }
 
-    public void RegisterNoteHit(NoteScript noteToStore)
+    public void CollectNote(NoteScript noteToStore)
     {
-        turnScore += correctNoteScore;
+        // Calculate Score
+        float accuracyRating = Mathf.Abs(noteToStore.transform.position.x - selectors[noteToStore.noteTypeID].transform.position.x);
+        EncounterConstants.AccuracyRating currRating = EncounterConstants.AccuracyRating.OK;
+        if(accuracyRating < EncounterConstants.accuracyPerfect)
+        {
+            currRating = EncounterConstants.AccuracyRating.Perfect;
+        } else if (accuracyRating < EncounterConstants.accuracyGood)
+        {
+            currRating = EncounterConstants.AccuracyRating.Good;
+        }
+
+        Color gradeColor = Color.red;
+        Image noteImage = noteToStore.GetComponent<Image>();
+        int scoreIncrement = 0;
+
+        switch(currRating)
+        {
+            case EncounterConstants.AccuracyRating.Perfect:
+                gradeColor = Color.white;
+                noteImage.sprite = notePerfect;
+                scoreIncrement = EncounterConstants.scorePerfect;
+                break;
+            case EncounterConstants.AccuracyRating.Good:
+                gradeColor = Color.cyan;
+                noteImage.sprite = noteGood;
+                scoreIncrement = EncounterConstants.scoreGood;
+                break;
+            case EncounterConstants.AccuracyRating.OK:
+                gradeColor = Color.blue;
+                noteImage.sprite = noteOK;
+                scoreIncrement = EncounterConstants.scorePerfect;
+                break;
+        }
+
+        gameManager.TurnScoreIncrement(scoreIncrement);
 
         noteToStore.isCollected = true;
         noteToStore.PlaySuccessAnimation();
@@ -119,11 +155,14 @@ public class NoteGeneratorManager : MonoBehaviour
         noteToStore.transform.SetParent(reputationPointerTransform.parent);
 
         // Create animation to collect note
-        noteToStore.GetComponent<Image>().color = Color.cyan;
+        noteImage.color = gradeColor;
         Sequence completeSequence = DOTween.Sequence();
+
         completeSequence.Insert(0f, noteToStore.GetComponent<RectTransform>()
-            .DOMove(reputationPointerTransform.position, 0.75f).SetEase(Ease.InBack));
-        completeSequence.Insert(0.5f, noteToStore.GetComponent<Image>().DOFade(0f, 0.2f));
+            .DOScale(1.5f, 0.25f).SetEase(Ease.InBack));
+        completeSequence.Insert(0.25f, noteToStore.GetComponent<RectTransform>()
+            .DOMove(reputationPointerTransform.position, 0.75f).SetEase(Ease.InSine));
+        completeSequence.Insert(0.5f, noteImage.DOFade(0f, 0.5f));
 
         completeSequence.OnComplete(() =>
         {

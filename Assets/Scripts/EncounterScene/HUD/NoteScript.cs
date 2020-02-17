@@ -8,6 +8,7 @@ public class NoteScript : MonoBehaviour
 {
     public float noteSpeed = 5f;
     public bool isCollected = false;
+    public int noteTypeID = 0;
 
     private NoteGeneratorManager noteGenManager;
 
@@ -20,7 +21,7 @@ public class NoteScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(this.isActiveAndEnabled)
+        if(this.isActiveAndEnabled && !isCollected)
         {
             MoveNote();
         }
