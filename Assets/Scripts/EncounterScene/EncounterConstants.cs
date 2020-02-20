@@ -4,12 +4,25 @@ using UnityEngine;
 
 public static class EncounterConstants
 {
-    public static Color[] FretColors =
+    public static Color[] PlayerColors =
     {
-        Color.green,
         Color.red,
         Color.blue,
+        Color.magenta,
         Color.yellow
+    };
+
+    public static float startLightIntensity = 18f;
+    //public static float focusLightIntensity = 0f;
+    public static float endLightIntensity = 0f;
+
+
+    public static Color[] FretColors =
+    {
+        Color.yellow,
+        Color.blue,
+        Color.red,
+        Color.green
     };
 
     public static Color[] KnobColors =
@@ -20,6 +33,17 @@ public static class EncounterConstants
         Color.blue
     };
 
+    // NoteManagerStates
+    public enum NotesGameStates
+    {
+        Start,
+        Intro,
+        Playing,
+        End,
+        Idle
+    }
+
+    // GamePlayManagerStates
     public enum GameplayState {
         StartGame,
         StartGameUI,
@@ -33,13 +57,13 @@ public static class EncounterConstants
     }
 
     public static int NotePoolSize = 30;
-    public static float SelectorDelay = 1f;
+    public static float SelectorDelay = 0.15f;
 
-    public static Vector3 cameraTurnPos = new Vector3(-7f, 6f, -15f);
-    public static Vector3 cameraTurnRot = new Vector3(30f, -60f, 0f);
+    public static Vector3 cameraTurnPos = new Vector3(-6f, 5f, 0f);
+    public static Vector3 cameraTurnRot = new Vector3(30f, -90f, 0f);
 
-    public static Vector3 cameraEnemyPos = new Vector3(7f, 6f, -15f);
-    public static Vector3 cameraEnemyRot = new Vector3(30f, 60f, 0f);
+    public static Vector3 cameraEnemyPos = new Vector3(6f, 5f, 0f);
+    public static Vector3 cameraEnemyRot = new Vector3(30f, 90f, 0f);
 
     public static Vector3 cameraOverviewPos = new Vector3(0f, 25f, -30f);
     public static Vector3 cameraOverviewRot = new Vector3(45f, 0f, 0f);

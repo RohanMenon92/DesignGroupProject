@@ -46,10 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05e29322d15332443834a950b596f5a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnUI: {fileID: 0}
+  noteManager: {fileID: 0}
+  gamePanelManager: {fileID: 0}
   mainCamera: {fileID: 0}
   crowdEntities: {fileID: 2144341777011369306}
-  playerEntities: {fileID: 1667436978896038385}
   enemyEntities: {fileID: 4777297748878130187}
 --- !u!1001 &975436044689778501
 PrefabInstance:
@@ -220,6 +220,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6945377576150128832, guid: eca89874aedf19a4cb25b3cdd63c3de4,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.5
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 982331924439948140, guid: eca89874aedf19a4cb25b3cdd63c3de4, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: eca89874aedf19a4cb25b3cdd63c3de4, type: 3}
@@ -331,15 +336,3 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2878817833092256641}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1667436978896038385 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3517435038510938736, guid: e0f6cbf4e61aac64f80d705ff9845189,
-    type: 3}
-  m_PrefabInstance: {fileID: 2878817833092256641}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8fdd85decf2d874c93db76f4eaf6f77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

@@ -5,12 +5,11 @@ using UnityEngine;
 
 public class EncounterGameManager : MonoBehaviour
 {
-    public CanvasGroup turnUI;
-    public CanvasGroup gameplayUI;
+    public NoteGeneratorManager noteManager;
+    public GameplayPanelManager gamePanelManager;
     public Camera mainCamera;
 
     public CrowdEntitiesScript crowdEntities;
-    public PlayerEntitiesScript playerEntities;
     public EnemyEntitiesScrpt enemyEntities;
 
     int currentScore;
@@ -20,10 +19,10 @@ public class EncounterGameManager : MonoBehaviour
     private EncounterConstants.GameplayState currentState = EncounterConstants.GameplayState.StartGame;
     private EncounterConstants.GameplayState lastState = EncounterConstants.GameplayState.StartGame;
 
+    public delegate void AnimationCallback();
     // Start is called before the first frame update
     void Start()
     {
-        FadeOutTurnUI();
         FadeOutOverlayUI();
     }
 
@@ -41,12 +40,12 @@ public class EncounterGameManager : MonoBehaviour
                 case EncounterConstants.GameplayState.StartGameUI:
                     SwitchState(EncounterConstants.GameplayState.TurnIntro);
                     break;
-                case EncounterConstants.GameplayState.TurnIntro:
-                    SwitchState(EncounterConstants.GameplayState.TurnPlay);
-                    break;
-                case EncounterConstants.GameplayState.TurnPlay:
-                    SwitchState(EncounterConstants.GameplayState.EnemyIntro);
-                    break;
+                //case EncounterConstants.GameplayState.TurnIntro:
+                //    SwitchState(EncounterConstants.GameplayState.TurnPlay);
+                //    break;
+                //case EncounterConstants.GameplayState.TurnPlay:
+                //    SwitchState(EncounterConstants.GameplayState.EnemyIntro);
+                //    break;
                 case EncounterConstants.GameplayState.EnemyIntro:
                     SwitchState(EncounterConstants.GameplayState.EnemyPlay);
                     break;
@@ -148,7 +147,7 @@ public class EncounterGameManager : MonoBehaviour
 
             case EncounterConstants.GameplayState.StartGame:
                 {
-                    FadeOutTurnUI();
+                    //noteManager.FadeOutUI();
                 }
                 break;
             case EncounterConstants.GameplayState.StartGameUI:
@@ -161,25 +160,26 @@ public class EncounterGameManager : MonoBehaviour
             case EncounterConstants.GameplayState.TurnIntro:
                 {
                     turnScore = 0;
-                    StartTurnUI();
+                    StartNoteGame();
                 }
                 break;
             case EncounterConstants.GameplayState.TurnPlay:
                 {
-                    SpawnSelectorUI();
+                    gamePanelManager.ShowTurnUI();
                 }
                 break;
             case EncounterConstants.GameplayState.EnemyIntro:
                 {
                     currentScore += turnScore;
                     enemyScore = 0;
-                    gameplayUI.GetComponent<GameplayPanelManager>().OnTurnEnd(currentScore);
+
+                    gamePanelManager.OnTurnEnd(currentScore);
                     EndTurnUI();
                 }
                 break;
             case EncounterConstants.GameplayState.EnemyPlay:
                 {
-                    gameplayUI.GetComponent<GameplayPanelManager>().ShowEnemyUI();
+                    gamePanelManager.ShowEnemyUI();
                     // TODO: This should be removed and done through gameplay
                     EnemyScoreDecrement(100);
                 }
@@ -188,7 +188,7 @@ public class EncounterGameManager : MonoBehaviour
                 {
                     // TODO Delete this. Enemy score reduction
                     currentScore -= enemyScore;
-                    gameplayUI.GetComponent<GameplayPanelManager>().OnEnemyEnd(currentScore);
+                    gamePanelManager.OnEnemyEnd(currentScore);
                     EndEnemyUI();
                 }
                 break;
@@ -299,33 +299,17 @@ public class EncounterGameManager : MonoBehaviour
         }
     }
 
-    // Fade in and fade out UI
-    void FadeOutTurnUI()
-    {
-        turnUI.GetComponent<NoteGeneratorManager>().FadeOutSelectorUI();
-        turnUI.DOFade(0f, 1f);
-        turnUI.transform.DOScale(0.75f, 0.25f);
-    }
-
-    void FadeInTurnUI()
-    {
-        gameplayUI.GetComponent<GameplayPanelManager>().ShowTurnUI();
-        turnUI.transform.localScale = Vector3.one * 0.8f;
-        turnUI.DOFade(1f, 1f);
-        turnUI.transform.DOScale(1f, 0.25f);
-    }
-
     void FadeInOverlayUI()
     {
-        gameplayUI.transform.localScale = Vector3.one * 0.8f;
-        gameplayUI.DOFade(1f, 1f);
-        gameplayUI.transform.DOScale(1f, 0.25f);
+        gamePanelManager.transform.localScale = Vector3.one * 0.8f;
+        gamePanelManager.GetComponent<CanvasGroup>().DOFade(1f, 1f);
+        gamePanelManager.transform.DOScale(1f, 0.25f);
     }
 
     void FadeOutOverlayUI()
     {
-        gameplayUI.DOFade(0f, 1f);
-        gameplayUI.transform.DOScale(0.75f, 0.25f);
+        gamePanelManager.GetComponent<CanvasGroup>().DOFade(0f, 1f);
+        gamePanelManager.transform.DOScale(0.75f, 0.25f);
     }
 
     void MoveCameraToTurnFocus()
@@ -346,21 +330,15 @@ public class EncounterGameManager : MonoBehaviour
         mainCamera.transform.DORotate(EncounterConstants.cameraEnemyRot, 1f).SetEase(Ease.OutSine);
     }
 
-    void SpawnSelectorUI()
-    {
-        turnUI.GetComponent<NoteGeneratorManager>().FadeInSelectorUI();
-    }
-
-    void StartTurnUI()
+    void StartNoteGame()
     {
         MoveCameraToTurnFocus();
-        FadeInTurnUI();
+        noteManager.StartGame();
     }
 
     void EndTurnUI()
     {
         MoveCameraToEnemy();
-        FadeOutTurnUI();
     }
 
     void EndEnemyUI()
@@ -371,12 +349,22 @@ public class EncounterGameManager : MonoBehaviour
     public void TurnScoreIncrement(int scoreAmount)
     {
         turnScore += scoreAmount;
-        gameplayUI.GetComponent<GameplayPanelManager>().UpdateTurnScore(currentScore + turnScore);
+        gamePanelManager.UpdateTurnScore(currentScore + turnScore);
     }
 
     public void EnemyScoreDecrement(int scoreAmount)
     {
         enemyScore += scoreAmount;
-        gameplayUI.GetComponent<GameplayPanelManager>().UpdateEnemyScore(currentScore - enemyScore);
+        gamePanelManager.UpdateEnemyScore(currentScore - enemyScore);
+    }
+
+    public void OnNotesStartComplete()
+    {
+        SwitchState(EncounterConstants.GameplayState.TurnPlay);
+    }
+
+    public void OnNotesEndComplete()
+    {
+        SwitchState(EncounterConstants.GameplayState.EnemyIntro);
     }
 }

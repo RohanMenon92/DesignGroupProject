@@ -32,6 +32,7 @@ Transform:
   - {fileID: 5623304145243955108}
   - {fileID: 7617871137992898572}
   - {fileID: 8074926880066858892}
+  - {fileID: 2076479211017436332}
   m_Father: {fileID: 6584111978641469095}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -47,6 +48,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8fdd85decf2d874c93db76f4eaf6f77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stageLight: {fileID: 1254461947075649350}
+  stageEntities:
+  - {fileID: 7319535694871056428}
+  - {fileID: 5623304145243955108}
+  - {fileID: 7617871137992898572}
+  - {fileID: 8074926880066858892}
 --- !u!1 &2359627903222567819
 GameObject:
   m_ObjectHideFlags: 0
@@ -79,6 +86,97 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3604002829881297212
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2076479211017436332}
+  - component: {fileID: 1254461947075649350}
+  m_Layer: 0
+  m_Name: Spot Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2076479211017436332
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3604002829881297212}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1167151957382394306}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!108 &1254461947075649350
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3604002829881297212}
+  m_Enabled: 1
+  serializedVersion: 9
+  m_Type: 0
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
 --- !u!1 &3725732964081725476
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,7 +205,7 @@ Transform:
   m_GameObject: {fileID: 3725732964081725476}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 1, z: 8}
+  m_LocalScale: {x: 8, y: 1, z: 10}
   m_Children: []
   m_Father: {fileID: 1723513613507004083}
   m_RootOrder: 0
@@ -212,7 +310,7 @@ PrefabInstance:
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.69999886
+      value: 1.09
       objectReference: {fileID: 0}
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
@@ -222,7 +320,7 @@ PrefabInstance:
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -3.26
       objectReference: {fileID: 0}
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
@@ -267,8 +365,13 @@ PrefabInstance:
     - target: {fileID: 5541840424059905140, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_Name
-      value: StagePerson (5)
+      value: RythmGuitarist
       objectReference: {fileID: 0}
+    - target: {fileID: 7918369165242915647, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fdc2b8cb127838f4cac69d4155cb9dd4, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98b25642b5d8c3149b06f0cf56b5aaa0, type: 3}
 --- !u!4 &5623304145243955108 stripped
@@ -287,7 +390,7 @@ PrefabInstance:
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.69999886
+      value: -1.09
       objectReference: {fileID: 0}
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
@@ -297,7 +400,7 @@ PrefabInstance:
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.93
+      value: -0.02
       objectReference: {fileID: 0}
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
@@ -342,8 +445,13 @@ PrefabInstance:
     - target: {fileID: 5541840424059905140, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_Name
-      value: StagePerson (7)
+      value: Drummer
       objectReference: {fileID: 0}
+    - target: {fileID: 7918369165242915647, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d9006477e0c4b094bb7b0d0c88a18593, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98b25642b5d8c3149b06f0cf56b5aaa0, type: 3}
 --- !u!4 &8074926880066858892 stripped
@@ -362,7 +470,7 @@ PrefabInstance:
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.69999886
+      value: 0.98
       objectReference: {fileID: 0}
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
@@ -372,7 +480,7 @@ PrefabInstance:
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.54
+      value: 3.1
       objectReference: {fileID: 0}
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
@@ -417,8 +525,13 @@ PrefabInstance:
     - target: {fileID: 5541840424059905140, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_Name
-      value: StagePerson (6)
+      value: KeyTarist
       objectReference: {fileID: 0}
+    - target: {fileID: 7918369165242915647, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d55afd3a8a637a24a94512337e095135, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98b25642b5d8c3149b06f0cf56b5aaa0, type: 3}
 --- !u!4 &7617871137992898572 stripped
@@ -437,7 +550,7 @@ PrefabInstance:
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.70000076
+      value: 2.57
       objectReference: {fileID: 0}
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
@@ -447,7 +560,7 @@ PrefabInstance:
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.46
+      value: -0.44
       objectReference: {fileID: 0}
     - target: {fileID: 2185627141564590313, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
@@ -492,8 +605,13 @@ PrefabInstance:
     - target: {fileID: 5541840424059905140, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
         type: 3}
       propertyPath: m_Name
-      value: StagePerson (4)
+      value: LeadGuitarist
       objectReference: {fileID: 0}
+    - target: {fileID: 7918369165242915647, guid: 98b25642b5d8c3149b06f0cf56b5aaa0,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ff83a7424dcefb948a0d1e01d354ce4f, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98b25642b5d8c3149b06f0cf56b5aaa0, type: 3}
 --- !u!4 &7319535694871056428 stripped

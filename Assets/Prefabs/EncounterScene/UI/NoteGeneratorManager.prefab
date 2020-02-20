@@ -438,7 +438,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cbb6d42354524448a4a3d5f97b0abda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnScore: 0
+  playerEntities: {fileID: 0}
+  playableSongs:
+  - {fileID: 11400000, guid: a8de2920ce280514ba56647159bfb3f6, type: 2}
+  - {fileID: 11400000, guid: 3c0dc2d7dd7abe44ab81058b17ded5ff, type: 2}
+  - {fileID: 11400000, guid: 2af2a4689d10e5b4695559fe84d89b6a, type: 2}
+  - {fileID: 11400000, guid: a8de2920ce280514ba56647159bfb3f6, type: 2}
+  buttonImages:
+  - {fileID: 21300000, guid: f325a8ebc1d3e9a4d9593a288e26ccec, type: 3}
+  - {fileID: 21300000, guid: 800b197b852cf5e46a8af0f51bea2b37, type: 3}
+  - {fileID: 21300000, guid: 211eb86910af60a41a40f70cc575bc2c, type: 3}
+  - {fileID: 21300000, guid: 8ec441052813ada4ca887a545b7598d7, type: 3}
   unusedNotePool: {fileID: 7701760558823146934}
   noteGenerators:
   - {fileID: 3356983904602063180}
@@ -453,11 +463,11 @@ MonoBehaviour:
   notePrefab: {fileID: 6407234857506926810, guid: 4bba2f4a4b9026f43bbd71e2bba10422,
     type: 3}
   reputationPointerTransform: {fileID: 0}
-  correctNoteScore: 0
   knobControl: {fileID: 6163668843582054127}
   notePerfect: {fileID: 21300000, guid: 71fc0f9e220088c48970e124ea4afec1, type: 3}
   noteGood: {fileID: 21300000, guid: 15bec13aa385dc748bda02567705f9d4, type: 3}
   noteOK: {fileID: 21300000, guid: e466b8b25b594c24d8a874894b52c3e2, type: 3}
+  songCount: 0
 --- !u!225 &348493590
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1028,13 +1038,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 8ec441052813ada4ca887a545b7598d7,
+      objectReference: {fileID: 21300000, guid: 82ffc1abb9f95a0468772002caab17b8,
         type: 3}
     - target: {fileID: 1604511908543175428, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
       propertyPath: PressedIcon
       value: 
-      objectReference: {fileID: 21300000, guid: 782caf7dd9d636a42b7670417a0b4af6,
+      objectReference: {fileID: 21300000, guid: 82ffc1abb9f95a0468772002caab17b8,
         type: 3}
     - target: {fileID: 1604511908543175428, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
@@ -1046,7 +1056,7 @@ PrefabInstance:
         type: 3}
       propertyPath: unpressedIcon
       value: 
-      objectReference: {fileID: 21300000, guid: 8ec441052813ada4ca887a545b7598d7,
+      objectReference: {fileID: 21300000, guid: 084ebdfe390b2c64cb36919492fbf330,
         type: 3}
     - target: {fileID: 2069838180344698419, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
@@ -1368,13 +1378,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: f325a8ebc1d3e9a4d9593a288e26ccec,
+      objectReference: {fileID: 21300000, guid: a05ad58ad25bebc42ac26c81c1d3272b,
         type: 3}
     - target: {fileID: 1604511908543175428, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
       propertyPath: PressedIcon
       value: 
-      objectReference: {fileID: 21300000, guid: 782caf7dd9d636a42b7670417a0b4af6,
+      objectReference: {fileID: 21300000, guid: a05ad58ad25bebc42ac26c81c1d3272b,
         type: 3}
     - target: {fileID: 1604511908543175428, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
@@ -1386,7 +1396,7 @@ PrefabInstance:
         type: 3}
       propertyPath: unpressedIcon
       value: 
-      objectReference: {fileID: 21300000, guid: f325a8ebc1d3e9a4d9593a288e26ccec,
+      objectReference: {fileID: 21300000, guid: 89d7d21c3b8867f41bca61a839dcacaf,
         type: 3}
     - target: {fileID: 2069838180344698419, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
@@ -1545,13 +1555,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 211eb86910af60a41a40f70cc575bc2c,
+      objectReference: {fileID: 21300000, guid: d4c3d66fa44a8854e9f7c454d7f30c17,
         type: 3}
     - target: {fileID: 1604511908543175428, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
       propertyPath: PressedIcon
       value: 
-      objectReference: {fileID: 21300000, guid: 782caf7dd9d636a42b7670417a0b4af6,
+      objectReference: {fileID: 21300000, guid: d4c3d66fa44a8854e9f7c454d7f30c17,
         type: 3}
     - target: {fileID: 1604511908543175428, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
@@ -1563,7 +1573,7 @@ PrefabInstance:
         type: 3}
       propertyPath: unpressedIcon
       value: 
-      objectReference: {fileID: 21300000, guid: 211eb86910af60a41a40f70cc575bc2c,
+      objectReference: {fileID: 21300000, guid: 955ccd3ed8b7a464a94ea92b4dd60422,
         type: 3}
     - target: {fileID: 2069838180344698419, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
@@ -1722,13 +1732,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 800b197b852cf5e46a8af0f51bea2b37,
+      objectReference: {fileID: 21300000, guid: c164e337f7c186946babba82e92c8576,
         type: 3}
     - target: {fileID: 1604511908543175428, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
       propertyPath: PressedIcon
       value: 
-      objectReference: {fileID: 21300000, guid: 782caf7dd9d636a42b7670417a0b4af6,
+      objectReference: {fileID: 21300000, guid: c164e337f7c186946babba82e92c8576,
         type: 3}
     - target: {fileID: 1604511908543175428, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}
@@ -1740,7 +1750,7 @@ PrefabInstance:
         type: 3}
       propertyPath: unpressedIcon
       value: 
-      objectReference: {fileID: 21300000, guid: 800b197b852cf5e46a8af0f51bea2b37,
+      objectReference: {fileID: 21300000, guid: a28792bdd067795408c713eeeb0187f7,
         type: 3}
     - target: {fileID: 2069838180344698419, guid: 49e5e58ffa9c4d64f93a04624be1098c,
         type: 3}

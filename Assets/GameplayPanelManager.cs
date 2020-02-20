@@ -40,11 +40,6 @@ public class GameplayPanelManager : MonoBehaviour
 
     public void UpdateTurnScore(float newTurnScore)
     {
-        if (turnScoreTween != null && turnScoreTween.IsPlaying())
-        {
-            turnScoreTween.Kill();
-        }
-
         turnScoreTween = DOTween.Sequence();
         turnScoreTween.Insert(0f,
             repBarTurnPointer.rectTransform
@@ -111,11 +106,6 @@ public class GameplayPanelManager : MonoBehaviour
     public void OnEnemyEnd(float newCurrentScore)
     {
         repBarEnemyPointer.DOFade(0.0f, 0.25f);
-
-        if (currScoreTween != null && currScoreTween.IsPlaying())
-        {
-            currScoreTween.Kill();
-        }
 
         currScoreTween = DOTween.Sequence();
         currScoreTween.Insert(0f,

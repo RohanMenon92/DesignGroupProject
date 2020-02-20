@@ -37,11 +37,11 @@ public class SelectorScript : MonoBehaviour
         }
 
         selectorImage.sprite = PressedIcon;
-        selectorImage.color = color;
+        transform.localScale = transform.localScale * 0.5f;
         isPressed = true;
 
         // Do Animation and unpress button
-        playButtonAnim = selectorImage.DOColor(Color.white, EncounterConstants.SelectorDelay).OnComplete(SelectorUnPressed);
+        playButtonAnim = transform.DOScale(1f, EncounterConstants.SelectorDelay).OnComplete(SelectorUnPressed);
     }
 
     public void SelectorUnPressed()
@@ -52,7 +52,6 @@ public class SelectorScript : MonoBehaviour
         }
 
         selectorImage.sprite = unpressedIcon;
-        selectorImage.color = Color.white;
         isPressed = false;
     }
 
