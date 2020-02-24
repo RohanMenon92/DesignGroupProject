@@ -7,6 +7,7 @@ public class PlayerEntitiesScript : MonoBehaviour
 {
     public Light stageLight;
     public List<Transform> stageEntities;
+    public Transform cameraTransform;
 
     int maxTurn;
     // Start is called before the first frame update
@@ -14,6 +15,8 @@ public class PlayerEntitiesScript : MonoBehaviour
     {
         maxTurn = stageEntities.Count;
         stageLight.intensity = 0;
+        cameraTransform.DOLocalMove(EncounterConstants.startStageCamPos, 1f).SetEase(Ease.InOutBack);
+        cameraTransform.DORotate(EncounterConstants.startStageCamRot, 1f).SetEase(Ease.InOutBack);
     }
 
     // Update is called once per frame
@@ -27,6 +30,9 @@ public class PlayerEntitiesScript : MonoBehaviour
         stageLight.DOIntensity(EncounterConstants.endLightIntensity, 1f);
         stageLight.transform.DORotate(new Vector3(90, 0, 0), 1f);
         stageLight.color = Color.white;
+
+        cameraTransform.DOLocalMove(EncounterConstants.startStageCamPos, 1f).SetEase(Ease.InBack);
+        cameraTransform.DORotate(EncounterConstants.startStageCamRot, 1f).SetEase(Ease.InOutBack);
     }
 
     public void TransitionToPlayer(int currentTurn)
@@ -37,8 +43,16 @@ public class PlayerEntitiesScript : MonoBehaviour
         }
         Color spotLightColor = EncounterConstants.PlayerColors[currentTurn];
 
-        stageLight.DOColor(spotLightColor, 0.5f);
-        stageLight.transform.DOLookAt(stageEntities[currentTurn].position, 1f).SetEase(Ease.InOutBack);
+        Sequence transitionSequence = DOTween.Sequence();
+
+        transitionSequence.Insert(0f, stageLight.DOColor(spotLightColor, 0.5f));
+        transitionSequence.Insert(0f, stageLight.transform.DOLookAt(stageEntities[currentTurn].position, 1f).SetEase(Ease.InOutBack));
+
+        Vector3 normalizedOrientation = stageEntities[currentTurn].localPosition.normalized * 3;
+
+        transitionSequence.Insert(0f, cameraTransform.DOMove(stageEntities[currentTurn].position + 
+            new Vector3(normalizedOrientation.x, 3, normalizedOrientation.z), 1f).SetEase(Ease.OutBack));
+        transitionSequence.Insert(1f, cameraTransform.DOLookAt(stageEntities[currentTurn].position, 0.4f).SetEase(Ease.OutBack));
     }
 
     public void ChangeLightSpotAngle(float value)

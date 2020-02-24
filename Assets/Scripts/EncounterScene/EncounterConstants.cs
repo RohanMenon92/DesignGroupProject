@@ -12,6 +12,9 @@ public static class EncounterConstants
         Color.yellow
     };
 
+    public static Vector3 startStageCamPos = new Vector3(-3.0f, 6.0f, 0.0f);
+    public static Vector3 startStageCamRot = new Vector3(30f, 90f, 0.0f);
+
     public static float startLightIntensity = 18f;
     //public static float focusLightIntensity = 0f;
     public static float endLightIntensity = 0f;
@@ -59,7 +62,7 @@ public static class EncounterConstants
     public static int NotePoolSize = 30;
     public static float SelectorDelay = 0.15f;
 
-    public static Vector3 cameraTurnPos = new Vector3(-6f, 5f, 0f);
+    public static Vector3 cameraTurnPos = new Vector3(-10f, 4f, 0f);
     public static Vector3 cameraTurnRot = new Vector3(30f, -90f, 0f);
 
     public static Vector3 cameraEnemyPos = new Vector3(6f, 5f, 0f);
