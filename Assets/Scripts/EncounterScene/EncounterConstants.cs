@@ -92,5 +92,5 @@ public static class EncounterConstants
 
     public static float repBarWidth = 1000;
     public static float maxScore = 700;
-
+    internal static Vector3 startLightRot = new Vector3(135f, 90f, 90f);
 }
