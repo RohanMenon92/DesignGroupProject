@@ -42,6 +42,8 @@ public static class EncounterConstants
         Start,
         Intro,
         Playing,
+        EnemyIntro,
+        Enemy,
         End,
         Idle
     }
@@ -52,8 +54,8 @@ public static class EncounterConstants
         StartGameUI,
         TurnIntro,
         TurnPlay,
-        EnemyIntro,
-        EnemyPlay,
+        //EnemyIntro,
+        //EnemyPlay,
         TurnPlayOut,
         EndGameUI,
         EndGame
@@ -62,10 +64,10 @@ public static class EncounterConstants
     public static int NotePoolSize = 30;
     public static float SelectorDelay = 0.15f;
 
-    public static Vector3 cameraTurnPos = new Vector3(-10f, 4f, 0f);
-    public static Vector3 cameraTurnRot = new Vector3(30f, -90f, 0f);
+    public static Vector3 cameraTurnPos = new Vector3(2.5f, 20f, 0f);
+    public static Vector3 cameraTurnRot = new Vector3(45f, -90f, 0f);
 
-    public static Vector3 cameraEnemyPos = new Vector3(6f, 5f, 0f);
+    public static Vector3 cameraEnemyPos = new Vector3(6f, 8.2f, 0f);
     public static Vector3 cameraEnemyRot = new Vector3(30f, 90f, 0f);
 
     public static Vector3 cameraOverviewPos = new Vector3(0f, 25f, -30f);
@@ -93,4 +95,11 @@ public static class EncounterConstants
     public static float repBarWidth = 1000;
     public static float maxScore = 700;
     internal static Vector3 startLightRot = new Vector3(135f, 90f, 90f);
+
+    public static float enemyDifficulty = 0.0f;
+    public static int setLength = 2;
+
+    public static float crowdYPosition = 1.9f;
+    public static float crowdMoveThreshold = 0.5f;
+    public static float crowdMoveProbability = 0.8f;
 }

@@ -51,11 +51,6 @@ public class GameplayPanelManager : MonoBehaviour
 
     public void UpdateEnemyScore(float newEnemyScore)
     {
-        if (enemyScoreTween != null && enemyScoreTween.IsPlaying())
-        {
-            enemyScoreTween.Kill();
-        }
-
         enemyScoreTween = DOTween.Sequence();
         enemyScoreTween.Insert(0f,
             repBarEnemyPointer.rectTransform
@@ -84,6 +79,8 @@ public class GameplayPanelManager : MonoBehaviour
 
     public void OnTurnEnd(float newCurrentScore)
     {
+        // Fade enemy and turn bar
+        repBarEnemyPointer.DOFade(0.0f, 0.25f);
         repBarTurnPointer.DOFade(0.0f, 0.25f);
 
         if (currScoreTween != null && currScoreTween.IsPlaying())
@@ -91,6 +88,7 @@ public class GameplayPanelManager : MonoBehaviour
             currScoreTween.Kill();
         }
 
+        // do tween to new score
         currScoreTween = DOTween.Sequence();
         currScoreTween.Insert(0f,
             repBarScorePointer.rectTransform
@@ -98,24 +96,5 @@ public class GameplayPanelManager : MonoBehaviour
             .SetEase(Ease.InOutBack));
 
         currScoreTween.Play();
-
-
-        //currScoreTween.Insert(0f, repBarScorePointer.transform.DOMove());
-    }
-
-    public void OnEnemyEnd(float newCurrentScore)
-    {
-        repBarEnemyPointer.DOFade(0.0f, 0.25f);
-
-        currScoreTween = DOTween.Sequence();
-        currScoreTween.Insert(0f,
-            repBarScorePointer.rectTransform
-            .DOAnchorPosX(-(newCurrentScore / EncounterConstants.maxScore) * (EncounterConstants.repBarWidth / 2), 0.5f)
-            .SetEase(Ease.InOutBack));
-
-        currScoreTween.Play();
-
-
-        //currScoreTween.Insert(0f, repBarScorePointer.transform.DOMove());
     }
 }

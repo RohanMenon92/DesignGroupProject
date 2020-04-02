@@ -39,10 +39,7 @@ public class PlayerEntitiesScript : MonoBehaviour
 
     public void TransitionToPlayer(int currentTurn)
     {
-        if(currentTurn == 0)
-        {
-            ChangeLightSpotAngle(30f);
-        }
+        ChangeLightSpotAngle(30f);
         Color spotLightColor = EncounterConstants.PlayerColors[currentTurn];
 
         Sequence transitionSequence = DOTween.Sequence();
@@ -50,9 +47,9 @@ public class PlayerEntitiesScript : MonoBehaviour
         transitionSequence.Insert(0f, stageLight.DOColor(spotLightColor, 0.5f));
         transitionSequence.Insert(0f, stageLight.transform.DOLookAt(stageEntities[currentTurn].position, 1f).SetEase(Ease.InOutBack));
 
-        Vector3 normalizedOrientation = stageEntities[currentTurn].localPosition.normalized * 3;
+        Vector3 normalizedOrientation = -stageEntities[currentTurn].localPosition.normalized * 3;
 
-        transitionSequence.Insert(0f, cameraTransform.DOMove(stageEntities[currentTurn].position + 
+        transitionSequence.Insert(0f, cameraTransform.DOMove(stageEntities[currentTurn].position +
             new Vector3(normalizedOrientation.x, 3, normalizedOrientation.z), 1f).SetEase(Ease.OutBack));
         transitionSequence.Insert(1f, cameraTransform.DOLookAt(stageEntities[currentTurn].position, 0.4f).SetEase(Ease.OutBack));
     }

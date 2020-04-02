@@ -57,11 +57,6 @@ public class SelectorScript : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D collision)
     {
-        if(!isPressed)
-        {
-            return;
-        }
-
         NoteScript collNoteScript = collision.GetComponent<NoteScript>();
 
         if (collNoteScript == null || collNoteScript.isCollected)
@@ -69,7 +64,18 @@ public class SelectorScript : MonoBehaviour
             return;
         }
 
-        noteGenManager.CollectNote(collNoteScript);
+        if (noteGenManager.GetCurrentState() == EncounterConstants.NotesGameStates.Playing)
+        {
+            if (!isPressed)
+            {
+                return;
+            }
+            noteGenManager.CollectPlayerNote(collNoteScript);
+        } else if(noteGenManager.GetCurrentState() == EncounterConstants.NotesGameStates.Enemy)
+        {
+            noteGenManager.CollectEnemyNote(collNoteScript);
+        }
+
         SelectorUnPressed();
     }
 }

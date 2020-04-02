@@ -9,10 +9,11 @@ public class EncounterGameManager : MonoBehaviour
     public GameplayPanelManager gamePanelManager;
     public Camera mainCamera;
 
+    public Light crowdLight;
     public CrowdEntitiesScript crowdEntities;
     public EnemyEntitiesScrpt enemyEntities;
 
-    int currentScore;
+    public int currentScore;
     int turnScore;
     int enemyScore;
 
@@ -24,6 +25,7 @@ public class EncounterGameManager : MonoBehaviour
     void Start()
     {
         FadeOutOverlayUI();
+        crowdLight.DOIntensity(0.0f, 0.2f);
     }
 
     // Update is called once per frame
@@ -46,12 +48,12 @@ public class EncounterGameManager : MonoBehaviour
                 //case EncounterConstants.GameplayState.TurnPlay:
                 //    SwitchState(EncounterConstants.GameplayState.EnemyIntro);
                 //    break;
-                case EncounterConstants.GameplayState.EnemyIntro:
-                    SwitchState(EncounterConstants.GameplayState.EnemyPlay);
-                    break;
-                case EncounterConstants.GameplayState.EnemyPlay:
-                    SwitchState(EncounterConstants.GameplayState.TurnPlayOut);
-                    break;
+                //case EncounterConstants.GameplayState.EnemyIntro:
+                //    SwitchState(EncounterConstants.GameplayState.EnemyPlay);
+                //    break;
+                //case EncounterConstants.GameplayState.EnemyPlay:
+                //    SwitchState(EncounterConstants.GameplayState.TurnPlayOut);
+                //    break;
                 case EncounterConstants.GameplayState.TurnPlayOut:
                     SwitchState(EncounterConstants.GameplayState.TurnIntro);
                     break;
@@ -91,16 +93,6 @@ public class EncounterGameManager : MonoBehaviour
                 }
                 break;
             case EncounterConstants.GameplayState.TurnPlay:
-                {
-                    switchAllowed = newState == EncounterConstants.GameplayState.EnemyIntro;
-                }
-                break;
-            case EncounterConstants.GameplayState.EnemyIntro:
-                {
-                    switchAllowed = newState == EncounterConstants.GameplayState.EnemyPlay;
-                }
-                break;
-            case EncounterConstants.GameplayState.EnemyPlay:
                 {
                     switchAllowed = newState == EncounterConstants.GameplayState.TurnPlayOut;
                 }
@@ -166,30 +158,33 @@ public class EncounterGameManager : MonoBehaviour
             case EncounterConstants.GameplayState.TurnPlay:
                 {
                     gamePanelManager.ShowTurnUI();
-                }
-                break;
-            case EncounterConstants.GameplayState.EnemyIntro:
-                {
-                    currentScore += turnScore;
-                    enemyScore = 0;
-
-                    gamePanelManager.OnTurnEnd(currentScore);
-                    EndTurnUI();
-                }
-                break;
-            case EncounterConstants.GameplayState.EnemyPlay:
-                {
                     gamePanelManager.ShowEnemyUI();
-                    // TODO: This should be removed and done through gameplay
-                    EnemyScoreDecrement(100);
                 }
                 break;
+            //case EncounterConstants.GameplayState.EnemyIntro:
+            //    {
+            //        currentScore += turnScore;
+            //        enemyScore = 0;
+
+            //        gamePanelManager.OnTurnEnd(currentScore);
+            //        EndTurnUI();
+            //    }
+            //    break;
+            //case EncounterConstants.GameplayState.EnemyPlay:
+            //    {
+            //        gamePanelManager.ShowEnemyUI();
+            //        // TODO: This should be removed and done through gameplay
+            //        EnemyScoreDecrement(100);
+            //    }
+            //    break;
             case EncounterConstants.GameplayState.TurnPlayOut:
                 {
-                    // TODO Delete this. Enemy score reduction
-                    currentScore -= enemyScore;
-                    gamePanelManager.OnEnemyEnd(currentScore);
-                    EndEnemyUI();
+                    ChangeScore();
+
+                    crowdLight.DOIntensity(3.0f, 1.0f);
+                    
+                    MoveCameraToOverview();
+                    MoveCrowds();
                 }
                 break;
             case EncounterConstants.GameplayState.EndGameUI:
@@ -223,14 +218,6 @@ public class EncounterGameManager : MonoBehaviour
                 }
                 break;
             case EncounterConstants.GameplayState.TurnPlay:
-                {
-                }
-                break;
-            case EncounterConstants.GameplayState.EnemyIntro:
-                {
-                }
-                break;
-            case EncounterConstants.GameplayState.EnemyPlay:
                 {
                 }
                 break;
@@ -274,14 +261,14 @@ public class EncounterGameManager : MonoBehaviour
                 {
                 }
                 break;
-            case EncounterConstants.GameplayState.EnemyIntro:
-                {
-                }
-                break;
-            case EncounterConstants.GameplayState.EnemyPlay:
-                {
-                }
-                break;
+            //case EncounterConstants.GameplayState.EnemyIntro:
+            //    {
+            //    }
+            //    break;
+            //case EncounterConstants.GameplayState.EnemyPlay:
+            //    {
+            //    }
+            //    break;
             case EncounterConstants.GameplayState.TurnPlayOut:
                 {
                 }
@@ -299,6 +286,15 @@ public class EncounterGameManager : MonoBehaviour
         }
     }
 
+    void ChangeScore()
+    {
+        currentScore += turnScore - enemyScore;
+        turnScore = 0;
+        enemyScore = 0;
+
+        gamePanelManager.OnTurnEnd(currentScore);
+    }
+
     void FadeInOverlayUI()
     {
         gamePanelManager.transform.localScale = Vector3.one * 0.8f;
@@ -312,19 +308,43 @@ public class EncounterGameManager : MonoBehaviour
         gamePanelManager.transform.DOScale(0.75f, 0.25f);
     }
 
-    void MoveCameraToTurnFocus()
+    void MoveCrowds()
+    {
+        Sequence moveSequence = DOTween.Sequence();
+        float delay = 0.0f;
+
+        foreach (Transform person in crowdEntities.transform)
+        {
+            float xValue = currentScore / 300;
+
+            if(Random.Range(0f, 1f) < EncounterConstants.crowdMoveProbability) // 
+            {
+                Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * Random.Range(1, 2f)), EncounterConstants.crowdYPosition, Random.Range(10f, -10f));
+
+                moveSequence.Insert(delay, person.DOMove(newPos, 1.5f).SetEase(Ease.InOutBack));
+                delay += 0.1f;
+            }
+        }
+
+        moveSequence.OnComplete(() => {
+            crowdLight.DOIntensity(0.0f, 1f);
+            SwitchState(EncounterConstants.GameplayState.TurnIntro);
+        });
+    }
+
+    public void MoveCameraToPlayer()
     {
         mainCamera.transform.DOMove(EncounterConstants.cameraTurnPos, 0.75f).SetEase(Ease.OutBack);
         mainCamera.transform.DORotate(EncounterConstants.cameraTurnRot, 1f).SetEase(Ease.OutSine);
     }
 
-    void MoveCameraToOverview()
+    public void MoveCameraToOverview()
     {
         mainCamera.transform.DOMove(EncounterConstants.cameraOverviewPos, 0.75f).SetEase(Ease.OutBack);
         mainCamera.transform.DORotate(EncounterConstants.cameraOverviewRot, 1f).SetEase(Ease.OutSine);
     }
 
-    void MoveCameraToEnemy()
+    public void MoveCameraToEnemy()
     {
         mainCamera.transform.DOMove(EncounterConstants.cameraEnemyPos, 0.75f).SetEase(Ease.OutBack);
         mainCamera.transform.DORotate(EncounterConstants.cameraEnemyRot, 1f).SetEase(Ease.OutSine);
@@ -332,18 +352,8 @@ public class EncounterGameManager : MonoBehaviour
 
     void StartNoteGame()
     {
-        MoveCameraToTurnFocus();
+        MoveCameraToPlayer();
         noteManager.StartGame();
-    }
-
-    void EndTurnUI()
-    {
-        MoveCameraToEnemy();
-    }
-
-    void EndEnemyUI()
-    {
-        MoveCameraToOverview();
     }
 
     public void TurnScoreIncrement(int scoreAmount)
@@ -365,6 +375,6 @@ public class EncounterGameManager : MonoBehaviour
 
     public void OnNotesEndComplete()
     {
-        SwitchState(EncounterConstants.GameplayState.EnemyIntro);
+        SwitchState(EncounterConstants.GameplayState.TurnPlayOut);
     }
 }
