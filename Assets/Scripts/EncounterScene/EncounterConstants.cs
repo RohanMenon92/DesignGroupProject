@@ -100,6 +100,5 @@ public static class EncounterConstants
     public static int setLength = 2;
 
     public static float crowdYPosition = 1.9f;
-    public static float crowdMoveThreshold = 0.5f;
-    public static float crowdMoveProbability = 0.8f;
+    public static float crowdMoveProbability = 0.5f;
 }

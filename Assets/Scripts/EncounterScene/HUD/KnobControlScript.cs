@@ -101,6 +101,7 @@ public class KnobControlScript : MonoBehaviour
 
     public void OnPlayerSelect()
     {
+        currentKnob = 0;
         moveLabels.DOFade(0f, 0.5f);
         playerLabels.DOFade(1f, 0.5f);
         showPlayers = true;
@@ -114,10 +115,12 @@ public class KnobControlScript : MonoBehaviour
 
     public void OnMoveSelect()
     {
+        currentKnob = 0;
         moveLabels.DOFade(1f, 0.5f);
         playerLabels.DOFade(0f, 0.5f);
         showPlayers = false;
         selectedSprites = moveSprites;
+
         AnimationToSelect(0);
         AnimationToDeselect(1);
         AnimationToDeselect(2);

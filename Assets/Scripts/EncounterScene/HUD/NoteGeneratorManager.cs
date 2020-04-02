@@ -567,7 +567,8 @@ public class NoteGeneratorManager : MonoBehaviour
         }
 
         // Add handicap based on difficulty
-        gameManager.EnemyScoreDecrement(scoreDecrement - (int)(scoreDecrement * 0.8f * (1 - EncounterConstants.enemyDifficulty)));
+        float handicapScore = scoreDecrement - (scoreDecrement * (0.2f * (1f - EncounterConstants.enemyDifficulty)));
+        gameManager.EnemyScoreDecrement((int)handicapScore);
 
         noteToStore.isCollected = true;
         noteToStore.PlaySuccessAnimation();

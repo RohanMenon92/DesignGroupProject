@@ -315,13 +315,13 @@ public class EncounterGameManager : MonoBehaviour
 
         foreach (Transform person in crowdEntities.transform)
         {
-            float xValue = currentScore / 300;
+            float xValue = 10f * (float)-currentScore / 600f;
 
             if(Random.Range(0f, 1f) < EncounterConstants.crowdMoveProbability) // 
             {
-                Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * Random.Range(1, 2f)), EncounterConstants.crowdYPosition, Random.Range(10f, -10f));
+                Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * Random.Range(1, 3f)), EncounterConstants.crowdYPosition, Random.Range(10f, -10f));
 
-                moveSequence.Insert(delay, person.DOMove(newPos, 1.5f).SetEase(Ease.InOutBack));
+                moveSequence.Insert(delay, person.DOLocalMove(newPos, 1.5f).SetEase(Ease.InOutQuad));
                 delay += 0.1f;
             }
         }
