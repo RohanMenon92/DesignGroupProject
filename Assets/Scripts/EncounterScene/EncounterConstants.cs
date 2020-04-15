@@ -19,6 +19,8 @@ public static class EncounterConstants
     //public static float focusLightIntensity = 0f;
     public static float endLightIntensity = 0f;
 
+    public static Vector3 KnobPlayPos = new Vector3(700f, 35f, 0f);
+    public static Vector3 KnobStartPos = new Vector3(600f, -250f, 0f);
 
     public static Color[] FretColors =
     {
@@ -30,10 +32,55 @@ public static class EncounterConstants
 
     public static Color[] KnobColors =
     {
-        Color.grey,
+        Color.cyan,
         Color.magenta,
-        Color.green,
-        Color.blue
+        Color.red
+    };
+
+    public static string[][] MoveDescriptions = new string[][] {
+        new string[]{
+            "This is the description for pitch",
+            "This is the description for amplifier",
+            "This is the description for solo"
+        },
+        new string[]{
+            "This is the description for root",
+            "This is the description for pickups",
+            "This is the description for rythm"
+        },
+        new string[]{
+            "This is the description for Jazzy",
+            "This is the description for Rocky",
+            "This is the description for Stance"
+        },
+        new string[]{
+            "This is the description for MetalHead",
+            "This is the description for Stomp",
+            "This is the description for Morale"
+        }
+    };
+
+    public static string[][] MoveNames = new string[][] {
+        new string[]{
+            "Pitch",
+            "Amplifier",
+            "Solo"
+        },
+        new string[]{
+            "Root",
+            "Pickups",
+            "Rythm"
+        },
+        new string[]{
+            "Jazzy",
+            "Rocky",
+            "Stance"
+        },
+        new string[]{
+            "MetalHead",
+            "Stomp",
+            "Morale"
+        }
     };
 
     // NoteManagerStates
@@ -41,6 +88,7 @@ public static class EncounterConstants
     {
         Start,
         Intro,
+        MoveSelect,
         Playing,
         EnemyIntro,
         Enemy,
@@ -66,6 +114,9 @@ public static class EncounterConstants
 
     public static Vector3 cameraTurnPos = new Vector3(2.5f, 20f, 0f);
     public static Vector3 cameraTurnRot = new Vector3(45f, -90f, 0f);
+
+    public static Vector3 cameraFocusPos = new Vector3(-9.5f, 6f, 0f);
+    public static Vector3 cameraFocusOffset = new Vector3(0f, -2f, 0f);
 
     public static Vector3 cameraEnemyPos = new Vector3(6f, 8.2f, 0f);
     public static Vector3 cameraEnemyRot = new Vector3(30f, 90f, 0f);

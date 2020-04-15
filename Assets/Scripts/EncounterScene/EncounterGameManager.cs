@@ -157,8 +157,6 @@ public class EncounterGameManager : MonoBehaviour
                 break;
             case EncounterConstants.GameplayState.TurnPlay:
                 {
-                    gamePanelManager.ShowTurnUI();
-                    gamePanelManager.ShowEnemyUI();
                 }
                 break;
             //case EncounterConstants.GameplayState.EnemyIntro:
@@ -338,6 +336,13 @@ public class EncounterGameManager : MonoBehaviour
         mainCamera.transform.DORotate(EncounterConstants.cameraTurnRot, 1f).SetEase(Ease.OutSine);
     }
 
+    public void MoveCameraToFocus(Transform bandMemberTransform)
+    {
+        mainCamera.transform.DOMove(EncounterConstants.cameraFocusPos, 1f).SetEase(Ease.OutBack).OnComplete(() => {
+            mainCamera.transform.DOLookAt(bandMemberTransform.position + EncounterConstants.cameraFocusOffset, 1f).SetEase(Ease.OutBack);
+        });
+    }
+
     public void MoveCameraToOverview()
     {
         mainCamera.transform.DOMove(EncounterConstants.cameraOverviewPos, 0.75f).SetEase(Ease.OutBack);
@@ -376,5 +381,15 @@ public class EncounterGameManager : MonoBehaviour
     public void OnNotesEndComplete()
     {
         SwitchState(EncounterConstants.GameplayState.TurnPlayOut);
+    }
+
+    public void ShowGamePanelTurn()
+    {
+        gamePanelManager.ShowTurnUI();
+    }
+
+    public void ShowGamePanelEnemy()
+    {
+        gamePanelManager.ShowEnemyUI();
     }
 }

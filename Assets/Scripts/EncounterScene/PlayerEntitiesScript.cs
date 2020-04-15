@@ -9,6 +9,8 @@ public class PlayerEntitiesScript : MonoBehaviour
     public List<Transform> stageEntities;
     public Transform cameraTransform;
 
+    public int moveCount = 3;
+
     int maxTurn;
     // Start is called before the first frame update
     void Start()
