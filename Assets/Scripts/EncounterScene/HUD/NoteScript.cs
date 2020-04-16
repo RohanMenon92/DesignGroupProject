@@ -3,16 +3,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NoteScript : MonoBehaviour
 {
-    public float noteSpeed = 5f;
     public bool isCollected = false;
     public int noteTypeID = 0;
 
     private NoteGeneratorManager noteGenManager;
 
-    // Start is called before the first frame update
     void Awake()
     {
         noteGenManager = FindObjectOfType<NoteGeneratorManager>();
@@ -29,7 +28,7 @@ public class NoteScript : MonoBehaviour
 
     void MoveNote()
     {
-        transform.Translate(-noteSpeed, 0f, 0f);
+        transform.Translate(-EncounterConstants.NoteSpeed, 0f, 0f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -43,18 +42,37 @@ public class NoteScript : MonoBehaviour
     public void OnNoteEndLimit()
     {
         PlayFailureAnimation();
-
-        transform.DOScale(0, 0.5f).SetEase(Ease.InBack).OnComplete(() => {
-            noteGenManager.StoreNoteScript(this);
-        });
     }
 
-    public void PlaySuccessAnimation()
+    public void PlaySuccessAnimation(Color gradeColor, Sprite noteSprite)
     {
-        
+        isCollected = true;
+
+        transform.SetParent(noteGenManager.reputationPointerTransform.parent);
+
+        // Create animation to collect note
+        Image noteImage = GetComponent<Image>();
+        noteImage.sprite = noteSprite;
+        noteImage.color = gradeColor;
+        Sequence completeSequence = DOTween.Sequence();
+
+        completeSequence.Insert(0f, GetComponent<RectTransform>()
+            .DOScale(1.5f, 0.25f).SetEase(Ease.InBack));
+        completeSequence.Insert(0.25f, GetComponent<RectTransform>()
+            .DOMove(noteGenManager.reputationPointerTransform.position, 0.75f).SetEase(Ease.InSine));
+        completeSequence.Insert(0.5f, noteImage.DOFade(0f, 0.5f));
+
+        completeSequence.OnComplete(() =>
+        {
+            noteGenManager.StoreNoteScript(this);
+        });
+        completeSequence.Play();
     }
     public void PlayFailureAnimation()
     {
-
+        noteGenManager.NoteMissed();
+        transform.DOScale(0, 0.5f).SetEase(Ease.InBack).OnComplete(() => {
+            noteGenManager.StoreNoteScript(this);
+        });
     }
 }

@@ -9,7 +9,8 @@ public class SelectorScript : MonoBehaviour
     public Sprite PressedIcon;
     public Sprite unpressedIcon;
 
-    public bool isPressed;
+    bool isPressed;
+    bool noteCollected = false;
 
     private NoteGeneratorManager noteGenManager;
     Image selectorImage;
@@ -40,6 +41,7 @@ public class SelectorScript : MonoBehaviour
         transform.localScale = transform.localScale * 0.5f;
         isPressed = true;
 
+        noteCollected = false;
         // Do Animation and unpress button
         playButtonAnim = transform.DOScale(1f, EncounterConstants.SelectorDelay).OnComplete(SelectorUnPressed);
     }
@@ -49,6 +51,11 @@ public class SelectorScript : MonoBehaviour
         if(playButtonAnim != null)
         {
             playButtonAnim.Kill(true);
+        }
+
+        if(!noteCollected && noteGenManager.GetCurrentState() == EncounterConstants.NotesGameStates.Playing)
+        {
+            noteGenManager.OnWrongPress();
         }
 
         selectorImage.sprite = unpressedIcon;
@@ -69,6 +76,10 @@ public class SelectorScript : MonoBehaviour
             if (!isPressed)
             {
                 return;
+            }
+            if(!noteCollected)
+            {
+                noteCollected = true;
             }
             noteGenManager.CollectPlayerNote(collNoteScript);
         } else if(noteGenManager.GetCurrentState() == EncounterConstants.NotesGameStates.Enemy)

@@ -22,6 +22,31 @@ public static class EncounterConstants
     public static Vector3 KnobPlayPos = new Vector3(700f, 35f, 0f);
     public static Vector3 KnobStartPos = new Vector3(600f, -250f, 0f);
 
+    public enum SoundEffects
+    {
+        MoveSelect,
+        PlayerSelect,
+        MenuNext,
+        Perfect,
+        SetComplete,
+        SetFailure,
+        Good,
+        Bing,
+        WrongPress
+    }
+    public enum CrowdEffects
+    {
+        CrowdStart,
+        CrowdSet,
+        CrowdIdle
+    }
+    public enum MusicEffects
+    {
+        PlayerWrong,
+        PlayerCorrect,
+        PlayerMiss
+    }
+
     public static Color[] FretColors =
     {
         Color.yellow,
@@ -116,7 +141,7 @@ public static class EncounterConstants
     public static Vector3 cameraTurnRot = new Vector3(45f, -90f, 0f);
 
     public static Vector3 cameraFocusPos = new Vector3(-9.5f, 6f, 0f);
-    public static Vector3 cameraFocusOffset = new Vector3(0f, -2f, 0f);
+    public static Vector3 cameraFocusOffset = new Vector3(0f, -3f, 0f);
 
     public static Vector3 cameraEnemyPos = new Vector3(6f, 8.2f, 0f);
     public static Vector3 cameraEnemyRot = new Vector3(30f, 90f, 0f);
@@ -143,6 +168,9 @@ public static class EncounterConstants
     public static int scoreGood = 10;
     public static int scoreOK = 5;
 
+    public static int scoreWrongPunishment = 5;
+    public static int scoreMissPunishment = 30;
+
     public static float repBarWidth = 1000;
     public static float maxScore = 700;
     internal static Vector3 startLightRot = new Vector3(135f, 90f, 90f);
@@ -152,4 +180,12 @@ public static class EncounterConstants
 
     public static float crowdYPosition = 1.9f;
     public static float crowdMoveProbability = 0.5f;
+
+    public static float NoteSpeed = 10f;
+    public static float MusicPlayDelay = 2f;
+
+    public static float CrowdStartDuration = 5f;
+    public static float CrowdStartDelay = 3f;
+
+    public static float CrowdSoundTransition = 2f;
 }

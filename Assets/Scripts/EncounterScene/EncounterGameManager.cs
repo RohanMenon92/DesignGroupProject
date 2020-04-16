@@ -5,13 +5,19 @@ using UnityEngine;
 
 public class EncounterGameManager : MonoBehaviour
 {
-    public NoteGeneratorManager noteManager;
-    public GameplayPanelManager gamePanelManager;
-    public Camera mainCamera;
+    [SerializeField]
+    NoteGeneratorManager noteManager;
+    [SerializeField]
+    GameplayPanelManager gamePanelManager;
+    [SerializeField]
+    Camera mainCamera;
 
-    public Light crowdLight;
-    public CrowdEntitiesScript crowdEntities;
-    public EnemyEntitiesScrpt enemyEntities;
+    [SerializeField]
+    Light crowdLight;
+    [SerializeField]
+    CrowdEntitiesScript crowdEntities;
+    [SerializeField]
+    EnemyEntitiesScrpt enemyEntities;
 
     public int currentScore;
     int turnScore;
@@ -20,10 +26,14 @@ public class EncounterGameManager : MonoBehaviour
     private EncounterConstants.GameplayState currentState = EncounterConstants.GameplayState.StartGame;
     private EncounterConstants.GameplayState lastState = EncounterConstants.GameplayState.StartGame;
 
+    private AudioManager audioManager;
+
     public delegate void AnimationCallback();
     // Start is called before the first frame update
     void Start()
     {
+        audioManager = FindObjectOfType<AudioManager>();
+        audioManager.PlayCrowdEffect(EncounterConstants.CrowdEffects.CrowdIdle);
         FadeOutOverlayUI();
         crowdLight.DOIntensity(0.0f, 0.2f);
     }
@@ -32,37 +42,22 @@ public class EncounterGameManager : MonoBehaviour
     void Update()
     {
         // This Update loop will be commented out when actual gameplay is written
-        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.T) || Input.GetKeyDown("joystick button 8") || Input.GetKeyDown("joystick button 10"))
+        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick button 8") || Input.GetKeyDown("joystick button 10"))
         {
             switch(currentState)
             {
                 case EncounterConstants.GameplayState.StartGame:
+                    audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.MenuNext);                    
                     SwitchState(EncounterConstants.GameplayState.StartGameUI);
                     break;
                 case EncounterConstants.GameplayState.StartGameUI:
+                    audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.MenuNext);
                     SwitchState(EncounterConstants.GameplayState.TurnIntro);
                     break;
-                //case EncounterConstants.GameplayState.TurnIntro:
-                //    SwitchState(EncounterConstants.GameplayState.TurnPlay);
-                //    break;
-                //case EncounterConstants.GameplayState.TurnPlay:
-                //    SwitchState(EncounterConstants.GameplayState.EnemyIntro);
-                //    break;
-                //case EncounterConstants.GameplayState.EnemyIntro:
-                //    SwitchState(EncounterConstants.GameplayState.EnemyPlay);
-                //    break;
-                //case EncounterConstants.GameplayState.EnemyPlay:
-                //    SwitchState(EncounterConstants.GameplayState.TurnPlayOut);
-                //    break;
                 case EncounterConstants.GameplayState.TurnPlayOut:
+                    audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.MenuNext);
                     SwitchState(EncounterConstants.GameplayState.TurnIntro);
                     break;
-                //case EncounterConstants.GameplayState.EndGameUI:
-                //    SwitchState(EncounterConstants.GameplayState.StartGameUI);
-                //    break;
-                //case EncounterConstants.GameplayState.EndGame:
-                //    SwitchState(EncounterConstants.GameplayState.StartGameUI);
-                //    break;
             }
         }
 
@@ -144,6 +139,7 @@ public class EncounterGameManager : MonoBehaviour
                 break;
             case EncounterConstants.GameplayState.StartGameUI:
                 {
+                    audioManager.PlayCrowdEffect(EncounterConstants.CrowdEffects.CrowdStart);
                     turnScore = 0;
                     currentScore = 0;
                     FadeInOverlayUI();
@@ -157,26 +153,12 @@ public class EncounterGameManager : MonoBehaviour
                 break;
             case EncounterConstants.GameplayState.TurnPlay:
                 {
+                    audioManager.PlayCrowdEffect(EncounterConstants.CrowdEffects.CrowdSet);
                 }
                 break;
-            //case EncounterConstants.GameplayState.EnemyIntro:
-            //    {
-            //        currentScore += turnScore;
-            //        enemyScore = 0;
-
-            //        gamePanelManager.OnTurnEnd(currentScore);
-            //        EndTurnUI();
-            //    }
-            //    break;
-            //case EncounterConstants.GameplayState.EnemyPlay:
-            //    {
-            //        gamePanelManager.ShowEnemyUI();
-            //        // TODO: This should be removed and done through gameplay
-            //        EnemyScoreDecrement(100);
-            //    }
-            //    break;
             case EncounterConstants.GameplayState.TurnPlayOut:
                 {
+                    audioManager.PlayCrowdEffect(EncounterConstants.CrowdEffects.CrowdIdle);
                     ChangeScore();
 
                     crowdLight.DOIntensity(3.0f, 1.0f);
@@ -259,14 +241,6 @@ public class EncounterGameManager : MonoBehaviour
                 {
                 }
                 break;
-            //case EncounterConstants.GameplayState.EnemyIntro:
-            //    {
-            //    }
-            //    break;
-            //case EncounterConstants.GameplayState.EnemyPlay:
-            //    {
-            //    }
-            //    break;
             case EncounterConstants.GameplayState.TurnPlayOut:
                 {
                 }
@@ -320,7 +294,7 @@ public class EncounterGameManager : MonoBehaviour
                 Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * Random.Range(1, 3f)), EncounterConstants.crowdYPosition, Random.Range(10f, -10f));
 
                 moveSequence.Insert(delay, person.DOLocalMove(newPos, 1.5f).SetEase(Ease.InOutQuad));
-                delay += 0.1f;
+                delay += 0.5f;
             }
         }
 
@@ -367,6 +341,15 @@ public class EncounterGameManager : MonoBehaviour
         gamePanelManager.UpdateTurnScore(currentScore + turnScore);
     }
 
+    public void TurnScoreDecrement(int scoreAmount)
+    {
+        if(turnScore - scoreAmount > 0)
+        {
+            turnScore -= scoreAmount;
+        }
+        gamePanelManager.UpdateTurnScore(currentScore + turnScore);
+    }
+
     public void EnemyScoreDecrement(int scoreAmount)
     {
         enemyScore += scoreAmount;
@@ -380,6 +363,7 @@ public class EncounterGameManager : MonoBehaviour
 
     public void OnNotesEndComplete()
     {
+        audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.SetComplete);
         SwitchState(EncounterConstants.GameplayState.TurnPlayOut);
     }
 
