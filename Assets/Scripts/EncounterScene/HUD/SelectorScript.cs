@@ -17,9 +17,13 @@ public class SelectorScript : MonoBehaviour
 
     Tween playButtonAnim;
 
+    EncounterConstants encounterConstants;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        encounterConstants = FindObjectOfType<EncounterConstants>();
         selectorImage = this.GetComponent<Image>();
         noteGenManager = FindObjectOfType<NoteGeneratorManager>();
     }
@@ -43,7 +47,7 @@ public class SelectorScript : MonoBehaviour
 
         noteCollected = false;
         // Do Animation and unpress button
-        playButtonAnim = transform.DOScale(1f, EncounterConstants.SelectorDelay).OnComplete(SelectorUnPressed);
+        playButtonAnim = transform.DOScale(1f, encounterConstants.SelectorDelay).OnComplete(SelectorUnPressed);
     }
 
     public void SelectorUnPressed()

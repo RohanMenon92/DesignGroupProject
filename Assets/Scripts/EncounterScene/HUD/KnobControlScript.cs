@@ -21,7 +21,20 @@ public class KnobControlScript : MonoBehaviour
 
     bool showPlayers = false;
 
+    Color[] PlayerColors;
+    Color[] MoveColors;
+    string[][] MoveNames;
+    Vector3 KnobPlayPos;
 
+    private void Awake()
+    {
+        EncounterConstants encounterConstants = FindObjectOfType<EncounterConstants>();
+        PlayerColors = encounterConstants.PlayerColors;
+        MoveColors = encounterConstants.MoveColors;
+        MoveNames = encounterConstants.MoveNames;
+        KnobPlayPos = encounterConstants.KnobPlayPos;
+
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -49,7 +62,7 @@ public class KnobControlScript : MonoBehaviour
         selectSequence.Insert(0f, selectedSprites[knobPosition].DOScale(1.2f, 0.5f).SetEase(Ease.OutBack));
         selectSequence.Insert(0f,
             selectedSprites[knobPosition].GetComponent<Image>().
-            DOColor(showPlayers ? EncounterConstants.PlayerColors[knobPosition] : EncounterConstants.KnobColors[knobPosition], 0.5f));
+            DOColor(showPlayers ? PlayerColors[knobPosition] : MoveColors[knobPosition], 0.5f));
         selectSequence.Insert(0f,
             selectedSprites[knobPosition].GetComponentInChildren<TextMeshProUGUI>().
             DOColor(Color.white, 0.5f));
@@ -71,7 +84,7 @@ public class KnobControlScript : MonoBehaviour
 
         selectSequence.Insert(0f,
             selectedSprites[knobPosition].GetComponentInChildren<TextMeshProUGUI>().
-            DOColor(showPlayers ? EncounterConstants.PlayerColors[knobPosition] : EncounterConstants.KnobColors[knobPosition], 0.5f));
+            DOColor(showPlayers ? PlayerColors[knobPosition] : MoveColors[knobPosition], 0.5f));
     }
 
     public void NextSelection()
@@ -120,7 +133,7 @@ public class KnobControlScript : MonoBehaviour
 
                 selectSequence.Insert(0f,
                     sprite.GetComponentInChildren<TextMeshProUGUI>().
-                    DOColor(EncounterConstants.PlayerColors[index], 0.5f));
+                    DOColor(PlayerColors[index], 0.5f));
                 selectSequence.Insert(0f,
                     sprite.GetComponentInChildren<TextMeshProUGUI>().
                     DOFade(1f, 0.5f));
@@ -129,7 +142,7 @@ public class KnobControlScript : MonoBehaviour
                 selectSequence.Insert(0f, sprite.DOScale(1.2f, 0.5f).SetEase(Ease.OutBack));
                 selectSequence.Insert(0f,
                     sprite.GetComponent<Image>().
-                    DOColor(EncounterConstants.PlayerColors[index], 0.5f));
+                    DOColor(PlayerColors[index], 0.5f));
                 selectSequence.Insert(0f,
                     sprite.GetComponentInChildren<TextMeshProUGUI>().
                     DOColor(Color.white, 0.5f));
@@ -180,14 +193,14 @@ public class KnobControlScript : MonoBehaviour
 
                 selectSequence.Insert(0f,
                     sprite.GetComponentInChildren<TextMeshProUGUI>().
-                    DOColor(EncounterConstants.KnobColors[index], 0.5f));
+                    DOColor(MoveColors[index], 0.5f));
             }
             else
             {
                 selectSequence.Insert(0f, sprite.DOScale(1.2f, 0.5f).SetEase(Ease.OutBack));
                 selectSequence.Insert(0f,
                     sprite.GetComponent<Image>().
-                    DOColor(EncounterConstants.KnobColors[index], 0.5f));
+                    DOColor(MoveColors[index], 0.5f));
                 selectSequence.Insert(0f,
                     sprite.GetComponentInChildren<TextMeshProUGUI>().
                     DOColor(Color.white, 0.5f));
@@ -205,7 +218,7 @@ public class KnobControlScript : MonoBehaviour
 
     internal void OnPlayerSelected(int currentPlayer)
     {
-        string[] moveNames = EncounterConstants.MoveNames[currentPlayer];
+        string[] moveNames = MoveNames[currentPlayer];
 
         int index = 0;
         foreach(string moveName in moveNames)
@@ -229,7 +242,7 @@ public class KnobControlScript : MonoBehaviour
             }
             index++;
         }
-        selectSequence.Insert(0.75f, transform.DOLocalMove(EncounterConstants.KnobPlayPos, 0.5f).SetEase(Ease.InOutBack));
+        selectSequence.Insert(0.75f, transform.DOLocalMove(KnobPlayPos, 0.5f).SetEase(Ease.InOutBack));
         selectSequence.Insert(0.75f, transform.DOScale(2f, 0.5f).SetEase(Ease.InOutBack));
 
         selectSequence.Play();

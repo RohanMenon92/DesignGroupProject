@@ -17,11 +17,14 @@ public class GameplayPanelManager : MonoBehaviour
     Sequence turnScoreTween;
     Sequence enemyScoreTween;
 
+    EncounterConstants encounterConstants;
+
     // Start is called before the first frame update
     void Start()
     {
+        encounterConstants = FindObjectOfType<EncounterConstants>();
         // SetReputationBarWidth
-        repBarBG.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, EncounterConstants.repBarWidth + 400f);
+        repBarBG.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, encounterConstants.repBarWidth + 400f);
 
         repBarTurnPointer.DOColor(Color.cyan, 0.5f).OnComplete(() => {
             repBarTurnPointer.DOFade(0.0f, 0.25f);
@@ -43,7 +46,7 @@ public class GameplayPanelManager : MonoBehaviour
         turnScoreTween = DOTween.Sequence();
         turnScoreTween.Insert(0f,
             repBarTurnPointer.rectTransform
-            .DOAnchorPosX(-(newTurnScore / EncounterConstants.maxScore) * (EncounterConstants.repBarWidth / 2), 0.2f)
+            .DOAnchorPosX(-(newTurnScore / encounterConstants.maxScore) * (encounterConstants.repBarWidth / 2), 0.2f)
             .SetEase(Ease.InOutSine));
 
         turnScoreTween.Play();
@@ -54,7 +57,7 @@ public class GameplayPanelManager : MonoBehaviour
         enemyScoreTween = DOTween.Sequence();
         enemyScoreTween.Insert(0f,
             repBarEnemyPointer.rectTransform
-            .DOAnchorPosX(-(newEnemyScore / EncounterConstants.maxScore) * (EncounterConstants.repBarWidth / 2), 0.2f)
+            .DOAnchorPosX(-(newEnemyScore / encounterConstants.maxScore) * (encounterConstants.repBarWidth / 2), 0.2f)
             .SetEase(Ease.InOutSine));
 
         enemyScoreTween.Play();
@@ -92,7 +95,7 @@ public class GameplayPanelManager : MonoBehaviour
         currScoreTween = DOTween.Sequence();
         currScoreTween.Insert(0f,
             repBarScorePointer.rectTransform
-            .DOAnchorPosX(-(newCurrentScore / EncounterConstants.maxScore) * (EncounterConstants.repBarWidth / 2), 0.5f)
+            .DOAnchorPosX(-(newCurrentScore / encounterConstants.maxScore) * (encounterConstants.repBarWidth / 2), 0.5f)
             .SetEase(Ease.InOutBack));
 
         currScoreTween.Play();

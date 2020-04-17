@@ -11,9 +11,11 @@ public class NoteScript : MonoBehaviour
     public int noteTypeID = 0;
 
     private NoteGeneratorManager noteGenManager;
+    EncounterConstants encounterConstants;
 
     void Awake()
     {
+        encounterConstants = FindObjectOfType<EncounterConstants>();
         noteGenManager = FindObjectOfType<NoteGeneratorManager>();
     }
 
@@ -28,7 +30,7 @@ public class NoteScript : MonoBehaviour
 
     void MoveNote()
     {
-        transform.Translate(-EncounterConstants.NoteSpeed, 0f, 0f);
+        transform.Translate(-encounterConstants.NoteSpeed, 0f, 0f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

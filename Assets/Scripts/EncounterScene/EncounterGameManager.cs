@@ -20,22 +20,52 @@ public class EncounterGameManager : MonoBehaviour
     EnemyEntitiesScrpt enemyEntities;
 
     public int currentScore;
+    
     int turnScore;
     int enemyScore;
 
-    private EncounterConstants.GameplayState currentState = EncounterConstants.GameplayState.StartGame;
-    private EncounterConstants.GameplayState lastState = EncounterConstants.GameplayState.StartGame;
+    EncounterConstants.GameplayState currentState = EncounterConstants.GameplayState.StartGame;
+    EncounterConstants.GameplayState lastState = EncounterConstants.GameplayState.StartGame;
 
-    private AudioManager audioManager;
+    AudioManager audioManager;
+
+    float crowdMoveProbability;
+    float crowdYPosition;
+    Vector3 cameraEnemyRot;
+    Vector3 cameraEnemyPos;
+    Vector3 cameraOverviewRot;
+    Vector3 cameraOverviewPos;
+    Vector3 cameraFocusOffset;
+    Vector3 cameraFocusPos;
+    Vector3 cameraTurnRot;
+    Vector3 cameraTurnPos;
 
     public delegate void AnimationCallback();
     // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
         audioManager = FindObjectOfType<AudioManager>();
-        audioManager.PlayCrowdEffect(EncounterConstants.CrowdEffects.CrowdIdle);
+
+        // Take values from encounter constants
+        EncounterConstants encounterConstants = FindObjectOfType<EncounterConstants>();
+        crowdMoveProbability = encounterConstants.crowdMoveProbability;
+        cameraEnemyRot = encounterConstants.cameraEnemyRot;
+        cameraEnemyPos = encounterConstants.cameraEnemyPos;
+        cameraOverviewRot = encounterConstants.cameraOverviewRot;
+        cameraOverviewPos = encounterConstants.cameraOverviewPos;
+        cameraFocusOffset = encounterConstants.cameraFocusOffset;
+        cameraFocusPos = encounterConstants.cameraFocusPos;
+        cameraTurnRot = encounterConstants.cameraTurnRot;
+        cameraTurnPos = encounterConstants.cameraTurnPos;
+        crowdYPosition = encounterConstants.crowdYPosition;
+    }
+
+    void Start()
+    {
         FadeOutOverlayUI();
         crowdLight.DOIntensity(0.0f, 0.2f);
+        audioManager.PlayCrowdEffect(EncounterConstants.CrowdEffects.CrowdIdle);
     }
 
     // Update is called once per frame
@@ -289,9 +319,9 @@ public class EncounterGameManager : MonoBehaviour
         {
             float xValue = 10f * (float)-currentScore / 600f;
 
-            if(Random.Range(0f, 1f) < EncounterConstants.crowdMoveProbability) // 
+            if(Random.Range(0f, 1f) < crowdMoveProbability) // 
             {
-                Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * Random.Range(1, 3f)), EncounterConstants.crowdYPosition, Random.Range(10f, -10f));
+                Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * Random.Range(1, 3f)), crowdYPosition, Random.Range(10f, -10f));
 
                 moveSequence.Insert(delay, person.DOLocalMove(newPos, 1.5f).SetEase(Ease.InOutQuad));
                 delay += 0.5f;
@@ -306,27 +336,27 @@ public class EncounterGameManager : MonoBehaviour
 
     public void MoveCameraToPlayer()
     {
-        mainCamera.transform.DOMove(EncounterConstants.cameraTurnPos, 0.75f).SetEase(Ease.OutBack);
-        mainCamera.transform.DORotate(EncounterConstants.cameraTurnRot, 1f).SetEase(Ease.OutSine);
+        mainCamera.transform.DOMove(cameraTurnPos, 0.75f).SetEase(Ease.OutBack);
+        mainCamera.transform.DORotate(cameraTurnRot, 1f).SetEase(Ease.OutSine);
     }
 
     public void MoveCameraToFocus(Transform bandMemberTransform)
     {
-        mainCamera.transform.DOMove(EncounterConstants.cameraFocusPos, 1f).SetEase(Ease.OutBack).OnComplete(() => {
-            mainCamera.transform.DOLookAt(bandMemberTransform.position + EncounterConstants.cameraFocusOffset, 1f).SetEase(Ease.OutBack);
+        mainCamera.transform.DOMove(cameraFocusPos, 1f).SetEase(Ease.OutBack).OnComplete(() => {
+            mainCamera.transform.DOLookAt(bandMemberTransform.position + cameraFocusOffset, 1f).SetEase(Ease.OutBack);
         });
     }
 
     public void MoveCameraToOverview()
     {
-        mainCamera.transform.DOMove(EncounterConstants.cameraOverviewPos, 0.75f).SetEase(Ease.OutBack);
-        mainCamera.transform.DORotate(EncounterConstants.cameraOverviewRot, 1f).SetEase(Ease.OutSine);
+        mainCamera.transform.DOMove(cameraOverviewPos, 0.75f).SetEase(Ease.OutBack);
+        mainCamera.transform.DORotate(cameraOverviewRot, 1f).SetEase(Ease.OutSine);
     }
 
     public void MoveCameraToEnemy()
     {
-        mainCamera.transform.DOMove(EncounterConstants.cameraEnemyPos, 0.75f).SetEase(Ease.OutBack);
-        mainCamera.transform.DORotate(EncounterConstants.cameraEnemyRot, 1f).SetEase(Ease.OutSine);
+        mainCamera.transform.DOMove(cameraEnemyPos, 0.75f).SetEase(Ease.OutBack);
+        mainCamera.transform.DORotate(cameraEnemyRot, 1f).SetEase(Ease.OutSine);
     }
 
     void StartNoteGame()
