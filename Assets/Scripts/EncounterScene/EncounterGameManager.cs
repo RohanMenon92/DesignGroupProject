@@ -3,6 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//// Attack Status
+//public class AttackStatus
+//{
+//    public bool isEnemy = false;
+//    public bool isActive = false;
+
+//    public void OnStart(MoveEffects effectI)
+//    {
+//        //Call Functions For Enabling Here
+//        isActive = false;
+//    }
+
+//    public void OnStop()
+//    {
+//        isActive = true;
+//    }
+//}
+
 public class EncounterGameManager : MonoBehaviour
 {
     [SerializeField]
@@ -20,7 +39,9 @@ public class EncounterGameManager : MonoBehaviour
     EnemyEntitiesScrpt enemyEntities;
 
     public int currentScore;
-    
+
+    public Dictionary<MoveEffects, bool> movesActive = new Dictionary<MoveEffects, bool>();
+
     int turnScore;
     int enemyScore;
 
@@ -58,6 +79,37 @@ public class EncounterGameManager : MonoBehaviour
         cameraTurnRot = encounterConstants.cameraTurnRot;
         cameraTurnPos = encounterConstants.cameraTurnPos;
         crowdYPosition = encounterConstants.crowdYPosition;
+
+        movesActive.Clear();
+        // Add Attack statuses
+        foreach (PlayerMove move in encounterConstants.GuitarMoves)
+        {
+            if(move.effect != MoveEffects.None)
+            {
+                movesActive.Add(move.effect, false);
+            }
+        }
+        foreach (PlayerMove move in encounterConstants.BassMoves)
+        {
+            if (move.effect != MoveEffects.None)
+            {
+                movesActive.Add(move.effect, false);
+            }
+        }
+        foreach (PlayerMove move in encounterConstants.KeytarMoves)
+        {
+            if (move.effect != MoveEffects.None)
+            {
+                movesActive.Add(move.effect, false);
+            }
+        }
+        foreach (PlayerMove move in encounterConstants.DrumMoves)
+        {
+            if (move.effect != MoveEffects.None)
+            {
+                movesActive.Add(move.effect, false);
+            }
+        }
     }
 
     void Start()
@@ -381,7 +433,7 @@ public class EncounterGameManager : MonoBehaviour
         SwitchState(GameplayState.TurnPlay);
     }
 
-    public void OnNotesEndComplete()
+    public void OnSetComplete()
     {
         audioManager.PlaySoundEffect(SoundEffects.SetComplete);
         SwitchState(GameplayState.TurnPlayOut);
@@ -395,5 +447,21 @@ public class EncounterGameManager : MonoBehaviour
     public void ShowGamePanelEnemy()
     {
         gamePanelManager.ShowEnemyUI();
+    }
+
+    public void EnableAttackEffect(MoveEffects attack)
+    {
+        if (!movesActive[attack])
+        {
+            movesActive[attack] = true;
+        }
+    }
+
+    public void StopAttackEffect(MoveEffects attack)
+    {
+        if(movesActive[attack])
+        {
+            movesActive[attack] = false;
+        }
     }
 }

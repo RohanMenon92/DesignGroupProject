@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Move Definitions
 [System.Serializable]
-public struct AttackMove
+public class PlayerMove
 {
     public string name;
     public string description;
     public float score;
     public float hypeRate;
     public int turnLock;
-    public AttackEffects effect;
-    int currentLock;
+    public MoveEffects effect;
+    public int currentLock;
 
-    public AttackMove(string nameI, string descriptionI, float scoreI, float hypeRateI, int turnLockI, AttackEffects effectI)
+    public PlayerMove(string nameI, string descriptionI, float scoreI, float hypeRateI, int turnLockI, MoveEffects effectI)
     {
         name = nameI;
         description = descriptionI;
@@ -23,9 +24,28 @@ public struct AttackMove
         effect = effectI;
         currentLock = 0;
     }
+
+    public void LockMove()
+    {
+        currentLock = turnLock;
+    }
+
+    public void DecrementLock()
+    {
+        if(currentLock > 0)
+        {
+            currentLock--;
+        }
+    }
+
+    public bool IsUnlocked()
+    {
+        return currentLock == 0;
+    }
+
 };
 
-
+// Enums
 public enum SoundEffects
 {
     MoveSelect,
@@ -51,7 +71,7 @@ public enum MusicEffects
     PlayerMiss
 }
 
-public enum AttackEffects
+public enum MoveEffects
 {
     None,
     Amplifier, // Boost Crowd Interest for 1 turn
@@ -72,7 +92,7 @@ public enum NotesGameStates
     Playing,
     EnemyIntro,
     Enemy,
-    End,
+    EndSet,
     Idle
 }
 
@@ -173,32 +193,32 @@ public class EncounterConstants: MonoBehaviour
     public int HypeValueStart = 25;
 
     [Header("Move Lists")]
-    public AttackMove[] GuitarMoves = new AttackMove[]
+    public PlayerMove[] GuitarMoves = new PlayerMove[]
     {
-        new AttackMove("Pitch", "This is the description for pitch", 1.5f,2,0, AttackEffects.None),
-        new AttackMove("Amplifier", "This is the description for amplifier", 0.8f,3,2, AttackEffects.Amplifier),
-        new AttackMove("Solo", "This is the description for solo", 0.7f,5,3, AttackEffects.Solo)
+        new PlayerMove("Pitch", "This is the description for pitch", 1.5f,2,0, MoveEffects.None),
+        new PlayerMove("Amplifier", "This is the description for amplifier", 0.8f,3,2, MoveEffects.Amplifier),
+        new PlayerMove("Solo", "This is the description for solo", 0.7f,5,3, MoveEffects.Solo)
     };
 
-    public AttackMove[] BassMoves = new AttackMove[]
+    public PlayerMove[] BassMoves = new PlayerMove[]
     {
-        new AttackMove("Root", "This is the description for root", 1.5f,2,0, AttackEffects.None),
-        new AttackMove("Pickups", "This is the description for pickups", 0.7f,3,4, AttackEffects.Pickups),
-        new AttackMove("Rythm", "This is the description for rythm", 0.6f,5,4, AttackEffects.Rhythm)
+        new PlayerMove("Root", "This is the description for root", 1.5f,2,0, MoveEffects.None),
+        new PlayerMove("Pickups", "This is the description for pickups", 0.7f,3,4, MoveEffects.Pickups),
+        new PlayerMove("Rythm", "This is the description for rythm", 0.6f,5,4, MoveEffects.Rhythm)
     };
 
-    public AttackMove[] KeytarMoves = new AttackMove[]
+    public PlayerMove[] KeytarMoves = new PlayerMove[]
     {
-        new AttackMove("Jazzy", "This is the description for jazzy", 1.5f,3,0, AttackEffects.None),
-        new AttackMove("Rocky", "This is the description for rocky", 2,5,2, AttackEffects.None),
-        new AttackMove("Crazy Stand", "This is the description for stance", 1,12,4, AttackEffects.CrazyStand)
+        new PlayerMove("Jazzy", "This is the description for jazzy", 1.5f,3,0, MoveEffects.None),
+        new PlayerMove("Rocky", "This is the description for rocky", 2,5,2, MoveEffects.None),
+        new PlayerMove("Crazy Stand", "This is the description for stance", 1,12,4, MoveEffects.CrazyStand)
     };
 
-    public AttackMove[] DrumMoves = new AttackMove[]
+    public PlayerMove[] DrumMoves = new PlayerMove[]
     {
-        new AttackMove("MetalHead", "This is the description for metalhead", 1.5f,2,0, AttackEffects.None),
-        new AttackMove("Stomp", "This is the description for stomp", 0.8f,3,3, AttackEffects.Stomp),
-        new AttackMove("Morale", "This is the description for morale", 1f,3,1, AttackEffects.Morale)
+        new PlayerMove("MetalHead", "This is the description for metalhead", 1.5f,2,0, MoveEffects.None),
+        new PlayerMove("Stomp", "This is the description for stomp", 0.8f,3,3, MoveEffects.Stomp),
+        new PlayerMove("Morale", "This is the description for morale", 1f,3,1, MoveEffects.Morale)
     };
 
 
@@ -247,4 +267,14 @@ public class EncounterConstants: MonoBehaviour
     public Color BaseHypeColor = Color.blue;
     public Color CanHypeColor = Color.cyan;
     public Color IsHypeColor = Color.green;
+
+    public float moveLockedScale = 0.6f;
+    public float moveLockScale = 0.7f;
+    public float knobDeselectScale = 0.8f;
+    public float moveSelectedScale = 1.2f;
+    public Color moveLockedColour = Color.red;
+    public Color moveLockColor = Color.gray;
+    public Color moveLockTextColor = Color.black;
+    public float descriptionTransition = 1.5f;
+
 }

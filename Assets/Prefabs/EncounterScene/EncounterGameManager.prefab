@@ -54,6 +54,7 @@ MonoBehaviour:
   crowdEntities: {fileID: 2144341777011369306}
   enemyEntities: {fileID: 4777297748878130187}
   currentScore: 0
+  attacksActive: []
 --- !u!114 &6539794831237340233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,67 +116,91 @@ MonoBehaviour:
   GuitarMoves:
   - name: Pitch
     description: This is the description for pitch
-    score: 1
+    score: 1.5
     hypeRate: 2
-    turnLock: 3
+    turnLock: 0
+    effect: 0
+    currentLock: 0
   - name: Amplifier
     description: This is the description for amplifier
-    score: 2
+    score: 0.8
     hypeRate: 3
-    turnLock: 4
+    turnLock: 2
+    effect: 1
+    currentLock: 0
   - name: Solo
     description: This is the description for solo
-    score: 2
-    hypeRate: 3
-    turnLock: 4
+    score: 0.7
+    hypeRate: 5
+    turnLock: 3
+    effect: 2
+    currentLock: 0
   BassMoves:
   - name: Root
     description: This is the description for root
-    score: 1
+    score: 1.5
     hypeRate: 2
-    turnLock: 3
+    turnLock: 0
+    effect: 0
+    currentLock: 0
   - name: Pickups
     description: This is the description for pickups
-    score: 2
+    score: 0.7
     hypeRate: 3
     turnLock: 4
+    effect: 3
+    currentLock: 0
   - name: Rythm
     description: This is the description for rythm
-    score: 2
-    hypeRate: 3
+    score: 0.6
+    hypeRate: 5
     turnLock: 4
+    effect: 4
+    currentLock: 0
   KeytarMoves:
   - name: Jazzy
     description: This is the description for jazzy
-    score: 1
-    hypeRate: 2
-    turnLock: 3
+    score: 1.5
+    hypeRate: 3
+    turnLock: 0
+    effect: 0
+    currentLock: 0
   - name: Rocky
     description: This is the description for rocky
     score: 2
-    hypeRate: 3
-    turnLock: 4
+    hypeRate: 5
+    turnLock: 2
+    effect: 0
+    currentLock: 0
   - name: Crazy Stand
     description: This is the description for stance
-    score: 2
-    hypeRate: 3
+    score: 1
+    hypeRate: 12
     turnLock: 4
+    effect: 7
+    currentLock: 0
   DrumMoves:
   - name: MetalHead
     description: This is the description for metalhead
-    score: 1
+    score: 1.5
     hypeRate: 2
-    turnLock: 3
+    turnLock: 0
+    effect: 0
+    currentLock: 0
   - name: Stomp
     description: This is the description for stomp
-    score: 2
+    score: 0.8
     hypeRate: 3
-    turnLock: 4
+    turnLock: 3
+    effect: 5
+    currentLock: 0
   - name: Morale
     description: This is the description for morale
-    score: 2
+    score: 1
     hypeRate: 3
-    turnLock: 4
+    turnLock: 1
+    effect: 6
+    currentLock: 0
   startStageCamPos: {x: -3, y: 6, z: 0}
   startStageCamRot: {x: 30, y: 90, z: 0}
   cameraTurnPos: {x: 2.5, y: 20, z: 0}
@@ -206,6 +231,13 @@ MonoBehaviour:
   BaseHypeColor: {r: 0, g: 0, b: 1, a: 1}
   CanHypeColor: {r: 0, g: 1, b: 1, a: 1}
   IsHypeColor: {r: 0, g: 1, b: 0, a: 1}
+  moveLockedScale: 0.6
+  moveLockScale: 0.7
+  knobDeselectScale: 0.8
+  moveSelectedScale: 1.2
+  moveLockedColour: {r: 1, g: 0, b: 0, a: 1}
+  moveLockColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  moveLockTextColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &1613359358541547869
 GameObject:
   m_ObjectHideFlags: 0

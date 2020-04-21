@@ -43,7 +43,7 @@ public class HypeMeterUI : MonoBehaviour
             return;
         }
 
-        if (hypeIncrementSequence != null && hypeIncrementSequence.IsPlaying())
+        if (hypeIncrementSequence != null)
         {
             hypeIncrementSequence.Complete(true);
         }
@@ -74,7 +74,7 @@ public class HypeMeterUI : MonoBehaviour
             hypeValue -= amount;
         }
 
-        if (hypeIncrementSequence != null && hypeIncrementSequence.IsPlaying())
+        if (hypeIncrementSequence != null)
         {
             hypeIncrementSequence.Complete(true);
         }
@@ -98,7 +98,7 @@ public class HypeMeterUI : MonoBehaviour
     {
         canHype = true;
 
-        if (hypeAnimateSequence != null && hypeAnimateSequence.IsPlaying())
+        if (hypeAnimateSequence != null)
         {
             hypeAnimateSequence.Complete(true);
         }
@@ -117,7 +117,7 @@ public class HypeMeterUI : MonoBehaviour
         isHyped = true;
         canHype = false;
 
-        if (hypeAnimateSequence != null && hypeAnimateSequence.IsPlaying())
+        if (hypeAnimateSequence != null)
         {
             hypeAnimateSequence.Complete(true);
         }
@@ -153,7 +153,7 @@ public class HypeMeterUI : MonoBehaviour
 
     void AnimateCantHype()
     {
-        if(hypeAnimateSequence != null && hypeAnimateSequence.IsPlaying())
+        if(hypeAnimateSequence != null)
         {
             hypeAnimateSequence.Complete(true);
         }
