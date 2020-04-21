@@ -54,7 +54,6 @@ MonoBehaviour:
   crowdEntities: {fileID: 2144341777011369306}
   enemyEntities: {fileID: 4777297748878130187}
   currentScore: 0
-  attacksActive: []
 --- !u!114 &6539794831237340233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,7 +102,7 @@ MonoBehaviour:
   hypeMissPunishment: 5
   maxScore: 700
   enemyDifficulty: 0
-  setLength: 2
+  setLength: 4
   crowdYPosition: 1.9
   crowdMoveProbability: 0.5
   NoteSpeed: 10
@@ -238,6 +237,7 @@ MonoBehaviour:
   moveLockedColour: {r: 1, g: 0, b: 0, a: 1}
   moveLockColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   moveLockTextColor: {r: 0, g: 0, b: 0, a: 1}
+  descriptionTransition: 1.5
 --- !u!1 &1613359358541547869
 GameObject:
   m_ObjectHideFlags: 0

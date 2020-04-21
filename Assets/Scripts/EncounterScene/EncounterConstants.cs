@@ -178,7 +178,7 @@ public class EncounterConstants: MonoBehaviour
     public float enemyDifficulty = 0.0f;
 
     [Header("Game Values")]
-    public int setLength = 2;
+    public int setLength = 4;
     public float crowdYPosition = 1.9f;
     public float crowdMoveProbability = 0.5f;
 

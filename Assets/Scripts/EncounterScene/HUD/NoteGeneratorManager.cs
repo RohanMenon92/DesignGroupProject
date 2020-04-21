@@ -64,7 +64,6 @@ public class NoteGeneratorManager : MonoBehaviour
     //private NotesGameStates lastState = NotesGameStates.Idle;
     int currentPlayer = 0;
     int currentMove = 0;
-    int currSong = 0;
 
     int currSet = 0;
 
@@ -111,7 +110,7 @@ public class NoteGeneratorManager : MonoBehaviour
             GameObject newNote = Instantiate(notePrefab, unusedNotePool);
             newNote.SetActive(false);
         }
-        EndSetAnimation(() => {
+        ClearUI(() => {
             initialFadeComplete = true;
         });
     }
@@ -487,7 +486,7 @@ public class NoteGeneratorManager : MonoBehaviour
             case NotesGameStates.EndSet:
                 {
                     ReducePlayerMoves();
-                    EndSetAnimation(() =>
+                    ClearUI(() =>
                     {
                         SwitchState(NotesGameStates.Idle);
                         gameManager.OnSetComplete();
@@ -557,12 +556,12 @@ public class NoteGeneratorManager : MonoBehaviour
 
     IEnumerator PlaySong()
     {
-        selfPlayableDirector.playableAsset = playableSongs[currSong];
+        selfPlayableDirector.playableAsset = playableSongs[currSet];
 
         selfPlayableDirector.Play();
 
         yield return new WaitForSeconds(encounterConstants.MusicPlayDelay);
-        audioManager.StartMusic(currSong);
+        audioManager.StartMusic(currSet);
     }
 
     private void SelectSongAndPlay(AnimationCallback animCallback)
@@ -575,11 +574,11 @@ public class NoteGeneratorManager : MonoBehaviour
 
     IEnumerator PlayEnemySong()
     {
-        selfPlayableDirector.playableAsset = playableSongs[currSong];
+        selfPlayableDirector.playableAsset = playableSongs[currSet];
         selfPlayableDirector.Play();
 
         yield return new WaitForSeconds(encounterConstants.MusicPlayDelay);
-        audioManager.StartMusic(currSong);
+        audioManager.StartMusic(currSet);
     }
 
     private void SelectEnemySongAndPlay(AnimationCallback animCallback)
@@ -697,7 +696,6 @@ public class NoteGeneratorManager : MonoBehaviour
         // Should only be called once
         songFinishRecieved = false;
 
-        currSong++;
         currSet++;
         if (currSet >= encounterConstants.setLength)
         {
@@ -706,7 +704,7 @@ public class NoteGeneratorManager : MonoBehaviour
         }
         else
         {
-            EndSetAnimation(null);
+            ClearUI(null);
             Debug.Log("Switching to intro");
             SwitchState(NotesGameStates.Intro);
         }
@@ -1031,7 +1029,7 @@ public class NoteGeneratorManager : MonoBehaviour
         return playerMoves[currentPlayer][moveID].IsUnlocked();
     }
 
-    public void EndSetAnimation(AnimationCallback animCallback)
+    public void ClearUI(AnimationCallback animCallback)
     {
         Debug.Log("Set Complete Called");
         Sequence uiFadeOutSequence = DOTween.Sequence();
