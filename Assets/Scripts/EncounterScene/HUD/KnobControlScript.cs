@@ -23,17 +23,17 @@ public class KnobControlScript : MonoBehaviour
 
     Color[] PlayerColors;
     Color[] MoveColors;
-    string[][] MoveNames;
-    Vector3 KnobPlayPos;
+
+    EncounterConstants encounterConstants;
+    EncounterConstants.AttackMove[][] Moves = new EncounterConstants.AttackMove[][] { };
 
     private void Awake()
     {
-        EncounterConstants encounterConstants = FindObjectOfType<EncounterConstants>();
+        encounterConstants = FindObjectOfType<EncounterConstants>();
         PlayerColors = encounterConstants.PlayerColors;
         MoveColors = encounterConstants.MoveColors;
-        MoveNames = encounterConstants.MoveNames;
-        KnobPlayPos = encounterConstants.KnobPlayPos;
 
+        Moves = new EncounterConstants.AttackMove[][] { encounterConstants.GuitarMoves, encounterConstants.BassMoves, encounterConstants.KeytarMoves, encounterConstants.DrumMoves };
     }
     // Start is called before the first frame update
     void Start()
@@ -218,14 +218,13 @@ public class KnobControlScript : MonoBehaviour
 
     internal void OnPlayerSelected(int currentPlayer)
     {
-        string[] moveNames = MoveNames[currentPlayer];
-
         int index = 0;
-        foreach(string moveName in moveNames)
+        // Iterate through and find moves
+        foreach (EncounterConstants.AttackMove move in Moves[currentPlayer])
         {
-            moveSprites[index].GetComponentInChildren<TextMeshProUGUI>().text = moveName;
+            moveSprites[index].GetComponentInChildren<TextMeshProUGUI>().text = move.name;
             index++;
-        }
+        };
     }
 
     internal void OnMoveSelected(int currentMove)
@@ -242,7 +241,7 @@ public class KnobControlScript : MonoBehaviour
             }
             index++;
         }
-        selectSequence.Insert(0.75f, transform.DOLocalMove(KnobPlayPos, 0.5f).SetEase(Ease.InOutBack));
+        selectSequence.Insert(0.75f, transform.DOLocalMove(encounterConstants.KnobPlayPos, 0.5f).SetEase(Ease.InOutBack));
         selectSequence.Insert(0.75f, transform.DOScale(2f, 0.5f).SetEase(Ease.InOutBack));
 
         selectSequence.Play();

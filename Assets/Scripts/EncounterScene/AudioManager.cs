@@ -37,19 +37,14 @@ public class AudioManager : MonoBehaviour
         public List<AudioSet> list;
     }
     public SongList musicClips;
-
-    float CrowdStartDelay;
-    float CrowdSoundTransition;
-    float CrowdStartDuration;
+    
+    EncounterConstants encounterConstants;
 
     // Start is called before the first frame update
     void Awake()
     {
         // Take values from encounter constants
-        EncounterConstants encounterConstants = FindObjectOfType<EncounterConstants>();
-        CrowdStartDelay = encounterConstants.CrowdStartDelay;
-        CrowdSoundTransition = encounterConstants.CrowdSoundTransition;
-        CrowdStartDuration = encounterConstants.CrowdStartDuration;
+        encounterConstants = FindObjectOfType<EncounterConstants>();
     }
 
     // Update is called once per frame
@@ -99,21 +94,21 @@ public class AudioManager : MonoBehaviour
             case EncounterConstants.CrowdEffects.CrowdStart:
                 audioCrowdStart.volume = 1;
                 audioCrowdStart.Play();
-                audioCrowdStart.DOFade(0f, CrowdStartDuration).SetDelay(CrowdStartDelay);
+                audioCrowdStart.DOFade(0f, encounterConstants.CrowdStartDuration).SetDelay(encounterConstants.CrowdStartDelay);
                 break;
             case EncounterConstants.CrowdEffects.CrowdIdle:
                 audioCrowdBG.volume = 0;
                 audioCrowdBG.Play();
-                audioCrowdBG.DOFade(1f, CrowdSoundTransition);
-                audioCrowdSet.DOFade(0f, CrowdSoundTransition).OnComplete(() => {
+                audioCrowdBG.DOFade(1f, encounterConstants.CrowdSoundTransition);
+                audioCrowdSet.DOFade(0f, encounterConstants.CrowdSoundTransition).OnComplete(() => {
                     audioCrowdSet.Stop();
                 });
                 break;
             case EncounterConstants.CrowdEffects.CrowdSet:
                 audioCrowdSet.volume = 0;
                 audioCrowdSet.Play();
-                audioCrowdSet.DOFade(1f, CrowdSoundTransition);
-                audioCrowdBG.DOFade(0f, CrowdSoundTransition).OnComplete(() => {
+                audioCrowdSet.DOFade(1f, encounterConstants.CrowdSoundTransition);
+                audioCrowdBG.DOFade(0f, encounterConstants.CrowdSoundTransition).OnComplete(() => {
                     audioCrowdBG.Stop();
                 });
                 break;

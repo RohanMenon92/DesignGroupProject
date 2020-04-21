@@ -43,51 +43,28 @@ public class EncounterConstants: MonoBehaviour
         Color.yellow
     };
 
-    [Header("Move Names")]
-    public string[][] MoveNames = new string[][] {
-        new string[]{
-            "Pitch",
-            "Amplifier",
-            "Solo"
-        },
-        new string[]{
-            "Root",
-            "Pickups",
-            "Rythm"
-        },
-        new string[]{
-            "Jazzy",
-            "Rocky",
-            "Stance"
-        },
-        new string[]{
-            "MetalHead",
-            "Stomp",
-            "Morale"
-        }
-    };
+    // EXAMLE CODE
+    //public people[] person;
 
-    [Header("Move Descriptions")]
-    public string[][] MoveDescriptions = new string[][] {
-        new string[]{
-            "This is the description for pitch",
-            "This is the description for amplifier",
-            "This is the description for solo"
-        },
-        new string[]{
-            "This is the description for root",
-            "This is the description for pickups",
-            "This is the description for rythm"
-        },
-        new string[]{
-            "This is the description for Jazzy",
-            "This is the description for Rocky",
-            "This is the description for Stance"
-        },
-        new string[]{
-            "This is the description for MetalHead",
-            "This is the description for Stomp",
-            "This is the description for Morale"
+    [System.Serializable]
+    public struct AttackMove
+    {
+        public string name;
+        public string description;
+        public float score;
+        public float hypeRate;
+        public int turnLock;
+
+        int currentLock;
+
+        public AttackMove(string nameI, string descriptionI, float scoreI, float hypeRateI, int turnLockI)
+        {
+            name = nameI;
+            description = descriptionI;
+            score = scoreI;
+            hypeRate = hypeRateI;
+            turnLock = turnLockI;
+            currentLock = 0;
         }
     };
 
@@ -96,12 +73,15 @@ public class EncounterConstants: MonoBehaviour
     public float accuracyGood = 20;
     public float accuracyOK = 40;
 
-    public int scorePerfect = 15;
-    public int scoreGood = 10;
-    public int scoreOK = 5;
+    public int scorePerfectMultiplier = 15;
+    public int scoreGoodMultiplier = 10;
+    public int scoreOKMultiplier = 5;
 
     public int scoreWrongPunishment = 5;
     public int scoreMissPunishment = 30;
+
+    public int hypeWrongPunishment = 1;
+    public int hypeMissPunishment = 5;
 
     public float maxScore = 700;
 
@@ -119,9 +99,37 @@ public class EncounterConstants: MonoBehaviour
     public float CrowdStartDelay = 3f;
 
     public float CrowdSoundTransition = 2f;
+    public int HypeValueMax = 100;
+    public int HypeValueStart = 25;
 
-    //[Header("Attack Values")]
+    [Header("Move Lists")]
+    public AttackMove[] GuitarMoves = new AttackMove[]
+    {
+        new AttackMove("Pitch", "This is the description for pitch", 1.5f,2,0),
+        new AttackMove("Amplifier", "This is the description for amplifier", 0.8f,3,2),
+        new AttackMove("Solo", "This is the description for solo", 0.7f,5,3)
+    };
 
+    public AttackMove[] BassMoves = new AttackMove[]
+    {
+        new AttackMove("Root", "This is the description for root", 1.5f,2,0),
+        new AttackMove("Pickups", "This is the description for pickups", 0.7f,3,4),
+        new AttackMove("Rythm", "This is the description for rythm", 0.6f,5,4)
+    };
+
+    public AttackMove[] KeytarMoves = new AttackMove[]
+    {
+        new AttackMove("Jazzy", "This is the description for jazzy", 1.5f,3,0),
+        new AttackMove("Rocky", "This is the description for rocky", 2,5,2),
+        new AttackMove("Stance", "This is the description for stance", 2,12,4)
+    };
+
+    public AttackMove[] DrumMoves = new AttackMove[]
+    {
+        new AttackMove("MetalHead", "This is the description for metalhead", 1.5f,2,0),
+        new AttackMove("Stomp", "This is the description for stomp", 0.8f,3,3),
+        new AttackMove("Morale", "This is the description for morale", 1f,3,1)
+    };
 
 
     [Header("Camera Position And Rotation Variables")]
@@ -154,6 +162,21 @@ public class EncounterConstants: MonoBehaviour
     public float SelectorDelay = 0.15f;
 
     public float repBarWidth = 1000;
+
+    public float CannotHypeScale = 0.8f;
+    public float BaseHypeScale = 1.0f;
+    public float CanHypeScale = 1.1f;
+    public float IsHypeScale = 1.3f;
+
+    public float CannotHypeDuration = 0.3f;
+    public float HypeIncrementDuration = 0.3f;
+    public float CanHypeDuration = 0.5f;
+    public float IsHypedDuration = 1.0f;
+
+    public Color CannotHypeColor = Color.red;
+    public Color BaseHypeColor = Color.blue;
+    public Color CanHypeColor = Color.cyan;
+    public Color IsHypeColor = Color.green;
 
     public enum SoundEffects
     {

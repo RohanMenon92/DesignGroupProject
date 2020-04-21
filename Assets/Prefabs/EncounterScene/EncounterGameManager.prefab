@@ -90,6 +90,70 @@ MonoBehaviour:
   - {r: 1, g: 0, b: 1, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  GuitarMoves:
+  - name: Pitch
+    description: This is the description for pitch
+    score: 1
+    hypeRate: 2
+    turnLock: 3
+  - name: Amplifier
+    description: This is the description for amplifier
+    score: 2
+    hypeRate: 3
+    turnLock: 4
+  - name: Solo
+    description: This is the description for solo
+    score: 2
+    hypeRate: 3
+    turnLock: 4
+  BassMoves:
+  - name: Root
+    description: This is the description for root
+    score: 1
+    hypeRate: 2
+    turnLock: 3
+  - name: Pickups
+    description: This is the description for pickups
+    score: 2
+    hypeRate: 3
+    turnLock: 4
+  - name: Rythm
+    description: This is the description for rythm
+    score: 2
+    hypeRate: 3
+    turnLock: 4
+  KeytarMoves:
+  - name: Jazzy
+    description: This is the description for jazzy
+    score: 1
+    hypeRate: 2
+    turnLock: 3
+  - name: Rocky
+    description: This is the description for rocky
+    score: 2
+    hypeRate: 3
+    turnLock: 4
+  - name: Stance
+    description: This is the description for stance
+    score: 2
+    hypeRate: 3
+    turnLock: 4
+  DrumMoves:
+  - name: MetalHead
+    description: This is the description for metalhead
+    score: 1
+    hypeRate: 2
+    turnLock: 3
+  - name: Stomp
+    description: This is the description for stomp
+    score: 2
+    hypeRate: 3
+    turnLock: 4
+  - name: Morale
+    description: This is the description for morale
+    score: 2
+    hypeRate: 3
+    turnLock: 4
   accuracyPerfect: 10
   accuracyGood: 20
   accuracyOK: 40

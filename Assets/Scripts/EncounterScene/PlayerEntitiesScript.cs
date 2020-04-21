@@ -8,7 +8,6 @@ public class PlayerEntitiesScript : MonoBehaviour
     public Light stageLight;
     public List<Transform> stageEntities;
     public Transform cameraTransform;
-    public int moveCount = 0;
 
     int maxTurn;
 

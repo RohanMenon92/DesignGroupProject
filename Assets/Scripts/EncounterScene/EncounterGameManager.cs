@@ -25,7 +25,6 @@ public class EncounterGameManager : MonoBehaviour
     int enemyScore;
 
     EncounterConstants.GameplayState currentState = EncounterConstants.GameplayState.StartGame;
-    EncounterConstants.GameplayState lastState = EncounterConstants.GameplayState.StartGame;
 
     AudioManager audioManager;
 
@@ -92,7 +91,7 @@ public class EncounterGameManager : MonoBehaviour
         }
 
         //Debug.Log(currentState);
-        CheckState();
+        OnProcessState(currentState);
     }
 
     void SwitchState(EncounterConstants.GameplayState newState)
@@ -141,19 +140,10 @@ public class EncounterGameManager : MonoBehaviour
 
         if (switchAllowed)
         {
+            OnExitState(currentState);
             currentState = newState;
-        }
-    }
-
-    void CheckState()
-    {
-        if (currentState != lastState)
-        {
-            OnExitState(lastState);
             OnEnterState(currentState);
-            lastState = currentState;
         }
-        OnProcessState(currentState);
     }
 
     // Check entry to stateEnter
