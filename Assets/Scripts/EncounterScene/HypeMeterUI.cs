@@ -38,32 +38,24 @@ public class HypeMeterUI : MonoBehaviour
 
     public void IncrementHypeValue(int amount)
     {
-        if(hypeValue > hypeValueMax)
-        {
-            return;
-        }
-
-        hypeValue += amount;
-        // Do Animation for HypeValue
-
+        
         if (hypeIncrementSequence != null && hypeIncrementSequence.IsPlaying())
         {
             hypeIncrementSequence.Complete(true);
         }
 
-        hypeIncrementSequence.Insert(0, hypeBar.transform.DOScaleY(hypeValue / hypeValueMax, encounterConstants.HypeIncrementDuration).SetEase(Ease.InOutBack));
 
-        hypeIncrementSequence.Insert(0, hypeBar.DOColor(encounterConstants.CanHypeColor, encounterConstants.HypeIncrementDuration).SetLoops(2, LoopType.Yoyo).OnComplete(() =>
+        if (hypeValue > hypeValueMax)
         {
+            AnimateCanHype();
+        } else
+        {
+            hypeValue += amount;
+            // Do Animation for HypeValue
 
-            if (hypeValue >= hypeValueMax)
-            {
-                AnimateCanHype();
-            } else
-            {
-                hypeBar.DOColor(encounterConstants.BaseHypeColor, encounterConstants.HypeIncrementDuration / 2);
-            }
-        }));
+            hypeIncrementSequence = DOTween.Sequence();
+            hypeIncrementSequence.Insert(0, hypeBar.transform.DOScaleY(hypeValue / hypeValueMax, encounterConstants.HypeIncrementDuration).SetEase(Ease.InOutBack));
+        }
     }
 
     public void DecrementHypeValue(int amount)
@@ -78,13 +70,8 @@ public class HypeMeterUI : MonoBehaviour
             hypeIncrementSequence.Complete(true);
         }
 
-
+        hypeIncrementSequence = DOTween.Sequence();
         hypeIncrementSequence.Insert(0, hypeBar.transform.DOScaleY(hypeValue/hypeValueMax, encounterConstants.HypeIncrementDuration).SetEase(Ease.InOutBack));
-
-        hypeIncrementSequence.Insert(0, hypeBar.DOColor(encounterConstants.CannotHypeColor, encounterConstants.HypeIncrementDuration/2).OnComplete(() =>
-        {
-            hypeBar.DOColor(encounterConstants.BaseHypeColor, encounterConstants.HypeIncrementDuration/2);
-        }));
     }
 
     public void TryHype()
@@ -106,14 +93,13 @@ public class HypeMeterUI : MonoBehaviour
         {
             hypeAnimateSequence.Complete(true);
         }
-
+        hypeAnimateSequence = DOTween.Sequence();
         hypeAnimateSequence.Insert(0, transform.DOScale(encounterConstants.CanHypeScale, encounterConstants.CanHypeDuration).SetEase(Ease.InOutBack));
 
         hypeAnimateSequence.Insert(encounterConstants.CanHypeDuration / 2, hypeBar.DOColor(encounterConstants.CanHypeColor, encounterConstants.CanHypeDuration / 2).SetEase(Ease.InOutQuad));
         hypeAnimateSequence.Insert(encounterConstants.CanHypeDuration, hypeBar.DOFade(0.9f, encounterConstants.CanHypeDuration).SetEase(Ease.InOutBack));
 
         hypeAnimateSequence.Play();
-
     }
 
 
@@ -126,6 +112,8 @@ public class HypeMeterUI : MonoBehaviour
         {
             hypeAnimateSequence.Complete(true);
         }
+
+        hypeAnimateSequence = DOTween.Sequence();
 
         hypeAnimateSequence.Insert(0, transform.DOScale(encounterConstants.IsHypeScale, encounterConstants.IsHypedDuration).SetEase(Ease.InOutBack));
 
@@ -144,6 +132,7 @@ public class HypeMeterUI : MonoBehaviour
             hypeAnimateSequence.Complete(true);
         }
 
+        hypeAnimateSequence = DOTween.Sequence();
         hypeAnimateSequence.Insert(0, transform.DOScale(encounterConstants.BaseHypeScale, encounterConstants.IsHypedDuration).SetEase(Ease.InOutBack));
 
         hypeAnimateSequence.Insert(encounterConstants.IsHypedDuration / 2, hypeBar.DOColor(encounterConstants.BaseHypeColor, encounterConstants.IsHypedDuration / 2).SetEase(Ease.InOutQuad));
@@ -160,6 +149,7 @@ public class HypeMeterUI : MonoBehaviour
             hypeAnimateSequence.Complete(true);
         }
 
+        hypeAnimateSequence = DOTween.Sequence();
         hypeAnimateSequence.Insert(0, transform.DOScale(encounterConstants.CannotHypeScale, 
             encounterConstants.CannotHypeDuration/2).SetEase(Ease.InOutBack));
 
@@ -170,7 +160,7 @@ public class HypeMeterUI : MonoBehaviour
         hypeAnimateSequence.Insert(encounterConstants.CannotHypeDuration / 2, transform.DOScale(encounterConstants.BaseHypeScale,
             encounterConstants.CannotHypeDuration / 2).SetEase(Ease.InOutBack));
 
-        hypeAnimateSequence.Insert(encounterConstants.CannotHypeDuration / 2, hypeBar.DOColor(encounterConstants.BaseHypeColor,
+        hypeAnimateSequence.Insert(encounterConstants.CannotHypeDuration, hypeBar.DOColor(encounterConstants.BaseHypeColor,
             encounterConstants.CannotHypeDuration / 2).SetEase(Ease.InOutQuad));
 
         hypeAnimateSequence.Play();
