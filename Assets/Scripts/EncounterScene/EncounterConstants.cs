@@ -2,6 +2,101 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public struct AttackMove
+{
+    public string name;
+    public string description;
+    public float score;
+    public float hypeRate;
+    public int turnLock;
+    public AttackEffects effect;
+    int currentLock;
+
+    public AttackMove(string nameI, string descriptionI, float scoreI, float hypeRateI, int turnLockI, AttackEffects effectI)
+    {
+        name = nameI;
+        description = descriptionI;
+        score = scoreI;
+        hypeRate = hypeRateI;
+        turnLock = turnLockI;
+        effect = effectI;
+        currentLock = 0;
+    }
+};
+
+
+public enum SoundEffects
+{
+    MoveSelect,
+    PlayerSelect,
+    MenuNext,
+    Perfect,
+    SetComplete,
+    SetFailure,
+    Good,
+    Bing,
+    WrongPress
+}
+public enum CrowdEffects
+{
+    CrowdStart,
+    CrowdSet,
+    CrowdIdle
+}
+public enum MusicEffects
+{
+    PlayerWrong,
+    PlayerCorrect,
+    PlayerMiss
+}
+
+public enum AttackEffects
+{
+    None,
+    Amplifier, // Boost Crowd Interest for 1 turn
+    Solo, // Play Solo, allow large increment to crowd interest
+    Pickups, // Boost Accuracy, Ok notes become good notes etc
+    Rhythm, // Reduce opponents gain of crowd inerest by 50%
+    Stomp, // Prevent next enemy from playing
+    Morale, // Invincibility for 1 set to crowd interest
+    CrazyStand
+}
+
+// NoteManagerStates
+public enum NotesGameStates
+{
+    Start,
+    Intro,
+    MoveSelect,
+    Playing,
+    EnemyIntro,
+    Enemy,
+    End,
+    Idle
+}
+
+// GamePlayManagerStates
+public enum GameplayState
+{
+    StartGame,
+    StartGameUI,
+    TurnIntro,
+    TurnPlay,
+    //EnemyIntro,
+    //EnemyPlay,
+    TurnPlayOut,
+    EndGameUI,
+    EndGame
+}
+
+public enum AccuracyRating
+{
+    Perfect,
+    Good,
+    OK
+}
+
 public class EncounterConstants: MonoBehaviour
 {
     [Header("Player Colours")]
@@ -43,31 +138,6 @@ public class EncounterConstants: MonoBehaviour
         Color.yellow
     };
 
-    // EXAMLE CODE
-    //public people[] person;
-
-    [System.Serializable]
-    public struct AttackMove
-    {
-        public string name;
-        public string description;
-        public float score;
-        public float hypeRate;
-        public int turnLock;
-
-        int currentLock;
-
-        public AttackMove(string nameI, string descriptionI, float scoreI, float hypeRateI, int turnLockI)
-        {
-            name = nameI;
-            description = descriptionI;
-            score = scoreI;
-            hypeRate = hypeRateI;
-            turnLock = turnLockI;
-            currentLock = 0;
-        }
-    };
-
     [Header("Score Values")]
     public float accuracyPerfect = 10;
     public float accuracyGood = 20;
@@ -105,30 +175,30 @@ public class EncounterConstants: MonoBehaviour
     [Header("Move Lists")]
     public AttackMove[] GuitarMoves = new AttackMove[]
     {
-        new AttackMove("Pitch", "This is the description for pitch", 1.5f,2,0),
-        new AttackMove("Amplifier", "This is the description for amplifier", 0.8f,3,2),
-        new AttackMove("Solo", "This is the description for solo", 0.7f,5,3)
+        new AttackMove("Pitch", "This is the description for pitch", 1.5f,2,0, AttackEffects.None),
+        new AttackMove("Amplifier", "This is the description for amplifier", 0.8f,3,2, AttackEffects.Amplifier),
+        new AttackMove("Solo", "This is the description for solo", 0.7f,5,3, AttackEffects.Solo)
     };
 
     public AttackMove[] BassMoves = new AttackMove[]
     {
-        new AttackMove("Root", "This is the description for root", 1.5f,2,0),
-        new AttackMove("Pickups", "This is the description for pickups", 0.7f,3,4),
-        new AttackMove("Rythm", "This is the description for rythm", 0.6f,5,4)
+        new AttackMove("Root", "This is the description for root", 1.5f,2,0, AttackEffects.None),
+        new AttackMove("Pickups", "This is the description for pickups", 0.7f,3,4, AttackEffects.Pickups),
+        new AttackMove("Rythm", "This is the description for rythm", 0.6f,5,4, AttackEffects.Rhythm)
     };
 
     public AttackMove[] KeytarMoves = new AttackMove[]
     {
-        new AttackMove("Jazzy", "This is the description for jazzy", 1.5f,3,0),
-        new AttackMove("Rocky", "This is the description for rocky", 2,5,2),
-        new AttackMove("Stance", "This is the description for stance", 2,12,4)
+        new AttackMove("Jazzy", "This is the description for jazzy", 1.5f,3,0, AttackEffects.None),
+        new AttackMove("Rocky", "This is the description for rocky", 2,5,2, AttackEffects.None),
+        new AttackMove("Crazy Stand", "This is the description for stance", 1,12,4, AttackEffects.CrazyStand)
     };
 
     public AttackMove[] DrumMoves = new AttackMove[]
     {
-        new AttackMove("MetalHead", "This is the description for metalhead", 1.5f,2,0),
-        new AttackMove("Stomp", "This is the description for stomp", 0.8f,3,3),
-        new AttackMove("Morale", "This is the description for morale", 1f,3,1)
+        new AttackMove("MetalHead", "This is the description for metalhead", 1.5f,2,0, AttackEffects.None),
+        new AttackMove("Stomp", "This is the description for stomp", 0.8f,3,3, AttackEffects.Stomp),
+        new AttackMove("Morale", "This is the description for morale", 1f,3,1, AttackEffects.Morale)
     };
 
 
@@ -177,63 +247,4 @@ public class EncounterConstants: MonoBehaviour
     public Color BaseHypeColor = Color.blue;
     public Color CanHypeColor = Color.cyan;
     public Color IsHypeColor = Color.green;
-
-    public enum SoundEffects
-    {
-        MoveSelect,
-        PlayerSelect,
-        MenuNext,
-        Perfect,
-        SetComplete,
-        SetFailure,
-        Good,
-        Bing,
-        WrongPress
-    }
-    public enum CrowdEffects
-    {
-        CrowdStart,
-        CrowdSet,
-        CrowdIdle
-    }
-    public enum MusicEffects
-    {
-        PlayerWrong,
-        PlayerCorrect,
-        PlayerMiss
-    }
-
-    // NoteManagerStates
-    public enum NotesGameStates
-    {
-        Start,
-        Intro,
-        MoveSelect,
-        Playing,
-        EnemyIntro,
-        Enemy,
-        End,
-        Idle
-    }
-
-    // GamePlayManagerStates
-    public enum GameplayState
-    {
-        StartGame,
-        StartGameUI,
-        TurnIntro,
-        TurnPlay,
-        //EnemyIntro,
-        //EnemyPlay,
-        TurnPlayOut,
-        EndGameUI,
-        EndGame
-    }
-
-    public enum AccuracyRating
-    {
-        Perfect,
-        Good,
-        OK
-    }
 }

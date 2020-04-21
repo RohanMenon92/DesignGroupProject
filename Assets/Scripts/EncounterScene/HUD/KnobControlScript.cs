@@ -25,7 +25,7 @@ public class KnobControlScript : MonoBehaviour
     Color[] MoveColors;
 
     EncounterConstants encounterConstants;
-    EncounterConstants.AttackMove[][] Moves = new EncounterConstants.AttackMove[][] { };
+    AttackMove[][] Moves = new AttackMove[][] { };
 
     private void Awake()
     {
@@ -33,7 +33,7 @@ public class KnobControlScript : MonoBehaviour
         PlayerColors = encounterConstants.PlayerColors;
         MoveColors = encounterConstants.MoveColors;
 
-        Moves = new EncounterConstants.AttackMove[][] { encounterConstants.GuitarMoves, encounterConstants.BassMoves, encounterConstants.KeytarMoves, encounterConstants.DrumMoves };
+        Moves = new AttackMove[][] { encounterConstants.GuitarMoves, encounterConstants.BassMoves, encounterConstants.KeytarMoves, encounterConstants.DrumMoves };
     }
     // Start is called before the first frame update
     void Start()
@@ -220,7 +220,7 @@ public class KnobControlScript : MonoBehaviour
     {
         int index = 0;
         // Iterate through and find moves
-        foreach (EncounterConstants.AttackMove move in Moves[currentPlayer])
+        foreach (AttackMove move in Moves[currentPlayer])
         {
             moveSprites[index].GetComponentInChildren<TextMeshProUGUI>().text = move.name;
             index++;

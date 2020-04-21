@@ -53,50 +53,50 @@ public class AudioManager : MonoBehaviour
         
     }
 
-    public void PlaySoundEffect(EncounterConstants.SoundEffects effectID)
+    public void PlaySoundEffect(SoundEffects effectID)
     {
         switch(effectID)
         {
-            case EncounterConstants.SoundEffects.Bing:
+            case SoundEffects.Bing:
                 audioMenu.PlayOneShot(setBing);
                 break;
-            case EncounterConstants.SoundEffects.Good:
+            case SoundEffects.Good:
                 audioMenu.PlayOneShot(setDing);
                 break;
-            case EncounterConstants.SoundEffects.MenuNext:
+            case SoundEffects.MenuNext:
                 audioMenu.PlayOneShot(menuNext);
                 break;
-            case EncounterConstants.SoundEffects.MoveSelect:
+            case SoundEffects.MoveSelect:
                 audioMenu.PlayOneShot(moveSelect);
                 break;
-            case EncounterConstants.SoundEffects.PlayerSelect:
+            case SoundEffects.PlayerSelect:
                 audioMenu.PlayOneShot(playerSelect);
                 break;
-            case EncounterConstants.SoundEffects.Perfect:
+            case SoundEffects.Perfect:
                 audioMenu.PlayOneShot(perfect);
                 break;
-            case EncounterConstants.SoundEffects.SetComplete:
+            case SoundEffects.SetComplete:
                 audioNotes.PlayOneShot(setComplete);
                 break;
-            case EncounterConstants.SoundEffects.SetFailure:
+            case SoundEffects.SetFailure:
                 audioNotes.PlayOneShot(setFailure);
                 break;
-            case EncounterConstants.SoundEffects.WrongPress:
+            case SoundEffects.WrongPress:
                 audioNotes.PlayOneShot(wrongPress);
                 break;
         }
     }
 
-    public void PlayCrowdEffect(EncounterConstants.CrowdEffects crowdEffectID)
+    public void PlayCrowdEffect(CrowdEffects crowdEffectID)
     {
         switch(crowdEffectID)
         {
-            case EncounterConstants.CrowdEffects.CrowdStart:
+            case CrowdEffects.CrowdStart:
                 audioCrowdStart.volume = 1;
                 audioCrowdStart.Play();
                 audioCrowdStart.DOFade(0f, encounterConstants.CrowdStartDuration).SetDelay(encounterConstants.CrowdStartDelay);
                 break;
-            case EncounterConstants.CrowdEffects.CrowdIdle:
+            case CrowdEffects.CrowdIdle:
                 audioCrowdBG.volume = 0;
                 audioCrowdBG.Play();
                 audioCrowdBG.DOFade(1f, encounterConstants.CrowdSoundTransition);
@@ -104,7 +104,7 @@ public class AudioManager : MonoBehaviour
                     audioCrowdSet.Stop();
                 });
                 break;
-            case EncounterConstants.CrowdEffects.CrowdSet:
+            case CrowdEffects.CrowdSet:
                 audioCrowdSet.volume = 0;
                 audioCrowdSet.Play();
                 audioCrowdSet.DOFade(1f, encounterConstants.CrowdSoundTransition);
@@ -115,16 +115,16 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayMusicEffect(EncounterConstants.MusicEffects musicEffectID, int trackID)
+    public void PlayMusicEffect(MusicEffects musicEffectID, int trackID)
     {
         switch (musicEffectID)
         {
-            case EncounterConstants.MusicEffects.PlayerCorrect:
+            case MusicEffects.PlayerCorrect:
                 // Expose parameter and call mixer DOSetFloat
                 break;
-            case EncounterConstants.MusicEffects.PlayerMiss:
+            case MusicEffects.PlayerMiss:
                 break;
-            case EncounterConstants.MusicEffects.PlayerWrong:
+            case MusicEffects.PlayerWrong:
                 break;
         }
     }

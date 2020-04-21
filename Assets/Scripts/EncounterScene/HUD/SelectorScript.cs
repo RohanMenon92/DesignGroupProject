@@ -57,7 +57,7 @@ public class SelectorScript : MonoBehaviour
             playButtonAnim.Kill(true);
         }
 
-        if(!noteCollected && noteGenManager.GetCurrentState() == EncounterConstants.NotesGameStates.Playing)
+        if(!noteCollected && noteGenManager.GetCurrentState() == NotesGameStates.Playing)
         {
             noteGenManager.OnWrongPress();
         }
@@ -75,7 +75,7 @@ public class SelectorScript : MonoBehaviour
             return;
         }
 
-        if (noteGenManager.GetCurrentState() == EncounterConstants.NotesGameStates.Playing)
+        if (noteGenManager.GetCurrentState() == NotesGameStates.Playing)
         {
             if (!isPressed)
             {
@@ -86,7 +86,7 @@ public class SelectorScript : MonoBehaviour
                 noteCollected = true;
             }
             noteGenManager.CollectPlayerNote(collNoteScript);
-        } else if(noteGenManager.GetCurrentState() == EncounterConstants.NotesGameStates.Enemy)
+        } else if(noteGenManager.GetCurrentState() == NotesGameStates.Enemy)
         {
             noteGenManager.CollectEnemyNote(collNoteScript);
         }

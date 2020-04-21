@@ -38,7 +38,11 @@ public class HypeMeterUI : MonoBehaviour
 
     public void IncrementHypeValue(int amount)
     {
-        
+        if(isHyped)
+        {
+            return;
+        }
+
         if (hypeIncrementSequence != null && hypeIncrementSequence.IsPlaying())
         {
             hypeIncrementSequence.Complete(true);
@@ -60,6 +64,11 @@ public class HypeMeterUI : MonoBehaviour
 
     public void DecrementHypeValue(int amount)
     {
+        if (isHyped)
+        {
+            return;
+        }
+
         if (hypeValue > amount)
         {
             hypeValue -= amount;
@@ -164,7 +173,6 @@ public class HypeMeterUI : MonoBehaviour
             encounterConstants.CannotHypeDuration / 2).SetEase(Ease.InOutQuad));
 
         hypeAnimateSequence.Play();
-        //hypeBar.transform.DOScale(encounterConstants.);
     }
 
 

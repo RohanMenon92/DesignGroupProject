@@ -90,6 +90,28 @@ MonoBehaviour:
   - {r: 1, g: 0, b: 1, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  accuracyPerfect: 10
+  accuracyGood: 20
+  accuracyOK: 40
+  scorePerfectMultiplier: 15
+  scoreGoodMultiplier: 10
+  scoreOKMultiplier: 5
+  scoreWrongPunishment: 5
+  scoreMissPunishment: 30
+  hypeWrongPunishment: 1
+  hypeMissPunishment: 5
+  maxScore: 700
+  enemyDifficulty: 0
+  setLength: 2
+  crowdYPosition: 1.9
+  crowdMoveProbability: 0.5
+  NoteSpeed: 10
+  MusicPlayDelay: 2
+  CrowdStartDuration: 5
+  CrowdStartDelay: 3
+  CrowdSoundTransition: 2
+  HypeValueMax: 100
+  HypeValueStart: 25
   GuitarMoves:
   - name: Pitch
     description: This is the description for pitch
@@ -133,7 +155,7 @@ MonoBehaviour:
     score: 2
     hypeRate: 3
     turnLock: 4
-  - name: Stance
+  - name: Crazy Stand
     description: This is the description for stance
     score: 2
     hypeRate: 3
@@ -154,24 +176,6 @@ MonoBehaviour:
     score: 2
     hypeRate: 3
     turnLock: 4
-  accuracyPerfect: 10
-  accuracyGood: 20
-  accuracyOK: 40
-  scorePerfect: 15
-  scoreGood: 10
-  scoreOK: 5
-  scoreWrongPunishment: 5
-  scoreMissPunishment: 30
-  maxScore: 700
-  enemyDifficulty: 0
-  setLength: 2
-  crowdYPosition: 1.9
-  crowdMoveProbability: 0.5
-  NoteSpeed: 10
-  MusicPlayDelay: 2
-  CrowdStartDuration: 5
-  CrowdStartDelay: 3
-  CrowdSoundTransition: 2
   startStageCamPos: {x: -3, y: 6, z: 0}
   startStageCamRot: {x: 30, y: 90, z: 0}
   cameraTurnPos: {x: 2.5, y: 20, z: 0}
@@ -190,6 +194,18 @@ MonoBehaviour:
   notePoolSize: 30
   SelectorDelay: 0.15
   repBarWidth: 1000
+  CannotHypeScale: 0.8
+  BaseHypeScale: 1
+  CanHypeScale: 1.1
+  IsHypeScale: 1.3
+  CannotHypeDuration: 0.3
+  HypeIncrementDuration: 0.3
+  CanHypeDuration: 0.5
+  IsHypedDuration: 1
+  CannotHypeColor: {r: 1, g: 0, b: 0, a: 1}
+  BaseHypeColor: {r: 0, g: 0, b: 1, a: 1}
+  CanHypeColor: {r: 0, g: 1, b: 1, a: 1}
+  IsHypeColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &1613359358541547869
 GameObject:
   m_ObjectHideFlags: 0

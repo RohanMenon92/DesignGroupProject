@@ -50,8 +50,8 @@ public class NoteGeneratorManager : MonoBehaviour
     EncounterGameManager gameManager;
     AudioManager audioManager;
 
-    private EncounterConstants.NotesGameStates currentState = EncounterConstants.NotesGameStates.Idle;
-    //private EncounterConstants.NotesGameStates lastState = EncounterConstants.NotesGameStates.Idle;
+    private NotesGameStates currentState = NotesGameStates.Idle;
+    //private NotesGameStates lastState = NotesGameStates.Idle;
     int currentPlayer = 0;
     int currentMove = 0;
     int currSong = 0;
@@ -67,6 +67,8 @@ public class NoteGeneratorManager : MonoBehaviour
     [SerializeField]
     Sprite noteOK;
 
+    
+
     public bool songFinishRecieved = false;
 
     public delegate void AnimationCallback();
@@ -77,7 +79,7 @@ public class NoteGeneratorManager : MonoBehaviour
     EncounterConstants encounterConstants;
 
     HypeMeterUI hypeMeterUI;
-    EncounterConstants.AttackMove[][] Moves = new EncounterConstants.AttackMove[][] { };
+    AttackMove[][] Moves = new AttackMove[][] { };
     private void Awake()
     {
         selfPlayableDirector = GetComponent<PlayableDirector>();
@@ -88,7 +90,7 @@ public class NoteGeneratorManager : MonoBehaviour
         // Take values from encounter constants
         encounterConstants = FindObjectOfType<EncounterConstants>();
 
-        Moves = new EncounterConstants.AttackMove[][] { encounterConstants.GuitarMoves, encounterConstants.BassMoves, encounterConstants.KeytarMoves, encounterConstants.DrumMoves };
+        Moves = new AttackMove[][] { encounterConstants.GuitarMoves, encounterConstants.BassMoves, encounterConstants.KeytarMoves, encounterConstants.DrumMoves };
     }
 
     void Start()
@@ -107,26 +109,26 @@ public class NoteGeneratorManager : MonoBehaviour
     {
         hypeMeterUI.DecrementHypeValue(encounterConstants.hypeWrongPunishment);
         gameManager.TurnScoreDecrement(encounterConstants.scoreWrongPunishment);
-        audioManager.PlayMusicEffect(EncounterConstants.MusicEffects.PlayerWrong, currentPlayer);
-        audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.WrongPress);
+        audioManager.PlayMusicEffect(MusicEffects.PlayerWrong, currentPlayer);
+        audioManager.PlaySoundEffect(SoundEffects.WrongPress);
     }
 
     public void NoteMissed()
     {
         hypeMeterUI.DecrementHypeValue(encounterConstants.hypeMissPunishment);
         gameManager.TurnScoreDecrement(encounterConstants.scoreMissPunishment);
-        audioManager.PlayMusicEffect(EncounterConstants.MusicEffects.PlayerMiss, currentPlayer);
-        audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.SetFailure);
+        audioManager.PlayMusicEffect(MusicEffects.PlayerMiss, currentPlayer);
+        audioManager.PlaySoundEffect(SoundEffects.SetFailure);
     }
 
-    public EncounterConstants.NotesGameStates GetCurrentState()
+    public NotesGameStates GetCurrentState()
     {
         return currentState;
     }
 
     void NextInstrumentSelection()
     {
-        audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.PlayerSelect);
+        audioManager.PlaySoundEffect(SoundEffects.PlayerSelect);
         currentPlayer++;
         if (currentPlayer >= playerEntities.stageEntities.Count)
         {
@@ -140,7 +142,7 @@ public class NoteGeneratorManager : MonoBehaviour
 
     void LastInstrumentSelection()
     {
-        audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.PlayerSelect);
+        audioManager.PlaySoundEffect(SoundEffects.PlayerSelect);
         currentPlayer--;
         if (currentPlayer < 0f)
         {
@@ -169,7 +171,7 @@ public class NoteGeneratorManager : MonoBehaviour
 
     void NextMoveSelection()
     {
-        audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.MoveSelect);
+        audioManager.PlaySoundEffect(SoundEffects.MoveSelect);
         currentMove++;
         if (currentMove >= Moves[currentPlayer].Length)
         {
@@ -182,7 +184,7 @@ public class NoteGeneratorManager : MonoBehaviour
 
     void LastMoveSelection()
     {
-        audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.MoveSelect);
+        audioManager.PlaySoundEffect(SoundEffects.MoveSelect);
         currentMove--;
         if (currentMove < 0f)
         {
@@ -197,13 +199,13 @@ public class NoteGeneratorManager : MonoBehaviour
     {
         switch (currentState)
         {
-            case EncounterConstants.NotesGameStates.Start:
+            case NotesGameStates.Start:
                 break;
 
-            case EncounterConstants.NotesGameStates.Idle:
+            case NotesGameStates.Idle:
                 break;
 
-            case EncounterConstants.NotesGameStates.Intro:
+            case NotesGameStates.Intro:
                 if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown("joystick button 5"))
                 {
                     LastInstrumentSelection();
@@ -218,7 +220,7 @@ public class NoteGeneratorManager : MonoBehaviour
                     OnInstrumentSelect();
                 }
                 break;
-            case EncounterConstants.NotesGameStates.MoveSelect:
+            case NotesGameStates.MoveSelect:
                 if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown("joystick button 5"))
                 {
                     LastMoveSelection();
@@ -233,7 +235,7 @@ public class NoteGeneratorManager : MonoBehaviour
                     OnMoveSelected();
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Playing:
+            case NotesGameStates.Playing:
                 if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown("joystick button 3"))
                 {
                     selectors[0].SelectorPressed(encounterConstants.FretColors[0]);
@@ -257,11 +259,11 @@ public class NoteGeneratorManager : MonoBehaviour
                 }
 
                 break;
-            case EncounterConstants.NotesGameStates.EnemyIntro:
+            case NotesGameStates.EnemyIntro:
                 break;
-            case EncounterConstants.NotesGameStates.Enemy:
+            case NotesGameStates.Enemy:
                 break;
-            case EncounterConstants.NotesGameStates.End:
+            case NotesGameStates.End:
                 break;
         }
     }
@@ -280,51 +282,51 @@ public class NoteGeneratorManager : MonoBehaviour
         }
     }
 
-    void SwitchState(EncounterConstants.NotesGameStates newState)
+    void SwitchState(NotesGameStates newState)
     {
         bool switchAllowed = false;
 
         // Do check for if switch is possible
         switch (currentState)
         {
-            case EncounterConstants.NotesGameStates.Idle:
+            case NotesGameStates.Idle:
                 {
-                    switchAllowed = newState == EncounterConstants.NotesGameStates.Start;
+                    switchAllowed = newState == NotesGameStates.Start;
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Start:
+            case NotesGameStates.Start:
                 {
-                    switchAllowed = newState == EncounterConstants.NotesGameStates.Intro;
+                    switchAllowed = newState == NotesGameStates.Intro;
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Intro:
+            case NotesGameStates.Intro:
                 {
-                    switchAllowed = newState == EncounterConstants.NotesGameStates.MoveSelect;
+                    switchAllowed = newState == NotesGameStates.MoveSelect;
                 }
                 break;
-            case EncounterConstants.NotesGameStates.MoveSelect:
+            case NotesGameStates.MoveSelect:
                 {
-                    switchAllowed = newState == EncounterConstants.NotesGameStates.Playing;
+                    switchAllowed = newState == NotesGameStates.Playing;
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Playing:
+            case NotesGameStates.Playing:
                 {
-                    switchAllowed = newState == EncounterConstants.NotesGameStates.EnemyIntro;
+                    switchAllowed = newState == NotesGameStates.EnemyIntro;
                 }
                 break;
-            case EncounterConstants.NotesGameStates.EnemyIntro:
+            case NotesGameStates.EnemyIntro:
                 {
-                    switchAllowed = newState == EncounterConstants.NotesGameStates.Enemy;
+                    switchAllowed = newState == NotesGameStates.Enemy;
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Enemy:
+            case NotesGameStates.Enemy:
                 {
-                    switchAllowed = newState == EncounterConstants.NotesGameStates.Intro || newState == EncounterConstants.NotesGameStates.End;
+                    switchAllowed = newState == NotesGameStates.Intro || newState == NotesGameStates.End;
                 }
                 break;
-            case EncounterConstants.NotesGameStates.End:
+            case NotesGameStates.End:
                 {
-                    switchAllowed = newState == EncounterConstants.NotesGameStates.Idle;
+                    switchAllowed = newState == NotesGameStates.Idle;
                 }
                 break;
         }
@@ -343,7 +345,7 @@ public class NoteGeneratorManager : MonoBehaviour
     }
 
     // Check entry to stateEnter
-    void OnEnterState(EncounterConstants.NotesGameStates stateEnter)
+    void OnEnterState(NotesGameStates stateEnter)
     {
         if(stateMachineDebug)
         {
@@ -351,22 +353,22 @@ public class NoteGeneratorManager : MonoBehaviour
         }
         switch (stateEnter)
         {
-            case EncounterConstants.NotesGameStates.Idle:
+            case NotesGameStates.Idle:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Start:
+            case NotesGameStates.Start:
                 {
                     Debug.Log("In Start ");
                     currSet = 0;
 
                     OnStartGame(() => {
-                        SwitchState(EncounterConstants.NotesGameStates.Intro);
+                        SwitchState(NotesGameStates.Intro);
                     });
                     // Start Game Function Fade In UI Here, call from EncounterGameManager?
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Intro:
+            case NotesGameStates.Intro:
                 {
                     // Call function to fade UI and call next state
                     Debug.Log("In Intro Enter " + currSet);
@@ -379,7 +381,7 @@ public class NoteGeneratorManager : MonoBehaviour
                     });
                 }
                 break;
-            case EncounterConstants.NotesGameStates.MoveSelect:
+            case NotesGameStates.MoveSelect:
                 {
                     // Call function to fade UI and call next state
                     Debug.Log("In MoveSelect " + currentPlayer);
@@ -392,7 +394,7 @@ public class NoteGeneratorManager : MonoBehaviour
                     });
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Playing:
+            case NotesGameStates.Playing:
                 {
                     Debug.Log("In Playing " + currentMove);
                     songFinishRecieved = false;
@@ -411,16 +413,16 @@ public class NoteGeneratorManager : MonoBehaviour
                     });
                 }
                 break;
-            case EncounterConstants.NotesGameStates.EnemyIntro:
+            case NotesGameStates.EnemyIntro:
                 {
                     Debug.Log("In Enemy Enter Intro");
                     gameManager.MoveCameraToEnemy();
                     OnEnemyIntro(() => {
-                        SwitchState(EncounterConstants.NotesGameStates.Enemy);
+                        SwitchState(NotesGameStates.Enemy);
                     });
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Enemy:
+            case NotesGameStates.Enemy:
                 {
                     songFinishRecieved = false;
                     Debug.Log("In Enemy Enter");
@@ -438,11 +440,11 @@ public class NoteGeneratorManager : MonoBehaviour
 
                 }
                 break;
-            case EncounterConstants.NotesGameStates.End:
+            case NotesGameStates.End:
                 {
                     FadeOutUI(() =>
                     {
-                        SwitchState(EncounterConstants.NotesGameStates.Idle);
+                        SwitchState(NotesGameStates.Idle);
                         gameManager.OnNotesEndComplete();
                         //gameManager switch state
                     });
@@ -453,17 +455,17 @@ public class NoteGeneratorManager : MonoBehaviour
 
     void OnInstrumentSelect()
     {
-        audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.MenuNext);
+        audioManager.PlaySoundEffect(SoundEffects.MenuNext);
         knobControl.OnPlayerSelected(currentPlayer);
-        SwitchState(EncounterConstants.NotesGameStates.MoveSelect);
+        SwitchState(NotesGameStates.MoveSelect);
     }
 
     void OnMoveSelected()
     {
-        audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.MenuNext);
+        audioManager.PlaySoundEffect(SoundEffects.MenuNext);
         knobControl.OnMoveSelected(currentMove);
         HideMoveDescription();
-        SwitchState(EncounterConstants.NotesGameStates.Playing);
+        SwitchState(NotesGameStates.Playing);
     }
 
     IEnumerator PlaySong()
@@ -508,7 +510,7 @@ public class NoteGeneratorManager : MonoBehaviour
         playSongCallback = null;
     }
 
-    void OnExitState(EncounterConstants.NotesGameStates stateExit)
+    void OnExitState(NotesGameStates stateExit)
     {
         if (stateMachineDebug)
         {
@@ -517,61 +519,61 @@ public class NoteGeneratorManager : MonoBehaviour
 
         switch (stateExit)
         {
-            case EncounterConstants.NotesGameStates.Idle:
+            case NotesGameStates.Idle:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Start:
+            case NotesGameStates.Start:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Intro:
+            case NotesGameStates.Intro:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.MoveSelect:
+            case NotesGameStates.MoveSelect:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Playing:
+            case NotesGameStates.Playing:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.EnemyIntro:
+            case NotesGameStates.EnemyIntro:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Enemy:
+            case NotesGameStates.Enemy:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.End:
+            case NotesGameStates.End:
                 {
                 }
                 break;
         }
     }
-    void OnProcessState(EncounterConstants.NotesGameStates stateProcess)
+    void OnProcessState(NotesGameStates stateProcess)
     {
         switch (stateProcess)
         {
-            case EncounterConstants.NotesGameStates.Idle:
+            case NotesGameStates.Idle:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Start:
+            case NotesGameStates.Start:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Intro:
+            case NotesGameStates.Intro:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.MoveSelect:
+            case NotesGameStates.MoveSelect:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Playing:
+            case NotesGameStates.Playing:
                 {
                     // Switch state to enemy intro after song is finished and all notes are collected
                     if(songFinishRecieved && unusedNotePool.childCount == encounterConstants.notePoolSize)
@@ -579,15 +581,15 @@ public class NoteGeneratorManager : MonoBehaviour
                         // Should only be called once
                         songFinishRecieved = false;
 
-                        SwitchState(EncounterConstants.NotesGameStates.EnemyIntro);
+                        SwitchState(NotesGameStates.EnemyIntro);
                     }
                 }
                 break;
-            case EncounterConstants.NotesGameStates.EnemyIntro:
+            case NotesGameStates.EnemyIntro:
                 {
                 }
                 break;
-            case EncounterConstants.NotesGameStates.Enemy:
+            case NotesGameStates.Enemy:
                 {
                     // Switch state to enemy intro after song is finished and all notes are collected
                     if (songFinishRecieved && unusedNotePool.childCount == encounterConstants.notePoolSize)
@@ -596,7 +598,7 @@ public class NoteGeneratorManager : MonoBehaviour
                     }
                 }
                 break;
-            case EncounterConstants.NotesGameStates.End:
+            case NotesGameStates.End:
                 {
                 }
                 break;
@@ -613,19 +615,19 @@ public class NoteGeneratorManager : MonoBehaviour
         if (currSet >= encounterConstants.setLength)
         {
             Debug.Log("Switching to end");
-            SwitchState(EncounterConstants.NotesGameStates.End);
+            SwitchState(NotesGameStates.End);
         }
         else
         {
             FadeOutUI(null);
             Debug.Log("Switching to intro");
-            SwitchState(EncounterConstants.NotesGameStates.Intro);
+            SwitchState(NotesGameStates.Intro);
         }
     }
 
     public void StartGame()
     {
-        SwitchState(EncounterConstants.NotesGameStates.Start);
+        SwitchState(NotesGameStates.Start);
     }
 
     void OnStartGame(AnimationCallback animCallback)
@@ -658,7 +660,7 @@ public class NoteGeneratorManager : MonoBehaviour
         newNote.noteTypeID = noteGeneratorID;
         newNote.transform.SetParent(noteGenerators[noteGeneratorID].transform.parent);
         newNote.GetComponent<RectTransform>().localPosition = noteGenerators[noteGeneratorID].GetComponent<RectTransform>().localPosition;
-        //noteImage.color = EncounterConstants.FretColors[noteGeneratorID];
+        //noteImage.color = FretColors[noteGeneratorID];
 
         // Reset for animation
         newNote.isCollected = false;
@@ -683,14 +685,14 @@ public class NoteGeneratorManager : MonoBehaviour
         // Calculate random accuracy
         float accuracyRating = UnityEngine.Random.Range(10 * (1 - encounterConstants.enemyDifficulty), 60f - (20 * encounterConstants.enemyDifficulty));
 
-        EncounterConstants.AccuracyRating currRating = EncounterConstants.AccuracyRating.OK;
+        AccuracyRating currRating = AccuracyRating.OK;
         if (accuracyRating < encounterConstants.accuracyPerfect)
         {
-            currRating = EncounterConstants.AccuracyRating.Perfect;
+            currRating = AccuracyRating.Perfect;
         }
         else if (accuracyRating < encounterConstants.accuracyGood)
         {
-            currRating = EncounterConstants.AccuracyRating.Good;
+            currRating = AccuracyRating.Good;
         }
 
         Color gradeColor = encounterConstants.missedNoteColor;
@@ -699,21 +701,21 @@ public class NoteGeneratorManager : MonoBehaviour
 
         switch (currRating)
         {
-            case EncounterConstants.AccuracyRating.Perfect:
+            case AccuracyRating.Perfect:
                 gradeColor = encounterConstants.EnemyGradeColors[0];
                 noteSprite = notePerfect;
                 scoreDecrement = encounterConstants.scorePerfectMultiplier;
 
-                audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.Perfect);
+                audioManager.PlaySoundEffect(SoundEffects.Perfect);
                 break;
-            case EncounterConstants.AccuracyRating.Good:
+            case AccuracyRating.Good:
                 gradeColor = encounterConstants.EnemyGradeColors[1];
                 noteSprite = noteGood;
                 scoreDecrement = encounterConstants.scoreGoodMultiplier;
 
-                audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.Good);
+                audioManager.PlaySoundEffect(SoundEffects.Good);
                 break;
-            case EncounterConstants.AccuracyRating.OK:
+            case AccuracyRating.OK:
                 gradeColor = encounterConstants.EnemyGradeColors[2];
                 noteSprite = noteOK;
                 scoreDecrement = encounterConstants.scoreOKMultiplier;
@@ -731,13 +733,13 @@ public class NoteGeneratorManager : MonoBehaviour
     {
         // Calculate Score
         float accuracyRating = Mathf.Abs(noteToStore.transform.position.x - selectors[noteToStore.noteTypeID].transform.position.x);
-        EncounterConstants.AccuracyRating currRating = EncounterConstants.AccuracyRating.OK;
+        AccuracyRating currRating = AccuracyRating.OK;
         if (accuracyRating < encounterConstants.accuracyPerfect)
         {
-            currRating = EncounterConstants.AccuracyRating.Perfect;
+            currRating = AccuracyRating.Perfect;
         } else if (accuracyRating < encounterConstants.accuracyGood)
         {
-            currRating = EncounterConstants.AccuracyRating.Good;
+            currRating = AccuracyRating.Good;
         }
 
         Color gradeColor = encounterConstants.missedNoteColor;
@@ -746,21 +748,21 @@ public class NoteGeneratorManager : MonoBehaviour
 
         switch (currRating)
         {
-            case EncounterConstants.AccuracyRating.Perfect:
+            case AccuracyRating.Perfect:
                 gradeColor = encounterConstants.PlayerGradeColors[0];
                 noteSprite = notePerfect;
                 scoreMultiplier = encounterConstants.scorePerfectMultiplier;
 
-                audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.Perfect);
+                audioManager.PlaySoundEffect(SoundEffects.Perfect);
                 break;
-            case EncounterConstants.AccuracyRating.Good:
+            case AccuracyRating.Good:
                 gradeColor = encounterConstants.PlayerGradeColors[1];
                 noteSprite = noteGood;
                 scoreMultiplier = encounterConstants.scoreGoodMultiplier;
 
-                audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.Good);
+                audioManager.PlaySoundEffect(SoundEffects.Good);
                 break;
-            case EncounterConstants.AccuracyRating.OK:
+            case AccuracyRating.OK:
                 gradeColor = encounterConstants.PlayerGradeColors[2];
                 noteSprite = noteOK;
                 scoreMultiplier = encounterConstants.scoreOKMultiplier;
@@ -771,7 +773,7 @@ public class NoteGeneratorManager : MonoBehaviour
         hypeMeterUI.IncrementHypeValue((int)Moves[currentPlayer][currentMove].hypeRate);
         gameManager.TurnScoreIncrement((int)(scoreMultiplier * Moves[currentPlayer][currentMove].score));
 
-        audioManager.PlayMusicEffect(EncounterConstants.MusicEffects.PlayerCorrect, currentPlayer);
+        audioManager.PlayMusicEffect(MusicEffects.PlayerCorrect, currentPlayer);
         noteToStore.PlaySuccessAnimation(gradeColor, noteSprite);
     }
 

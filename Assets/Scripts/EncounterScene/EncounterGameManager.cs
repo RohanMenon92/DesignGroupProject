@@ -24,7 +24,7 @@ public class EncounterGameManager : MonoBehaviour
     int turnScore;
     int enemyScore;
 
-    EncounterConstants.GameplayState currentState = EncounterConstants.GameplayState.StartGame;
+    GameplayState currentState = GameplayState.StartGame;
 
     AudioManager audioManager;
 
@@ -64,7 +64,7 @@ public class EncounterGameManager : MonoBehaviour
     {
         FadeOutOverlayUI();
         crowdLight.DOIntensity(0.0f, 0.2f);
-        audioManager.PlayCrowdEffect(EncounterConstants.CrowdEffects.CrowdIdle);
+        audioManager.PlayCrowdEffect(CrowdEffects.CrowdIdle);
     }
 
     // Update is called once per frame
@@ -75,17 +75,17 @@ public class EncounterGameManager : MonoBehaviour
         {
             switch(currentState)
             {
-                case EncounterConstants.GameplayState.StartGame:
-                    audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.MenuNext);                    
-                    SwitchState(EncounterConstants.GameplayState.StartGameUI);
+                case GameplayState.StartGame:
+                    audioManager.PlaySoundEffect(SoundEffects.MenuNext);                    
+                    SwitchState(GameplayState.StartGameUI);
                     break;
-                case EncounterConstants.GameplayState.StartGameUI:
-                    audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.MenuNext);
-                    SwitchState(EncounterConstants.GameplayState.TurnIntro);
+                case GameplayState.StartGameUI:
+                    audioManager.PlaySoundEffect(SoundEffects.MenuNext);
+                    SwitchState(GameplayState.TurnIntro);
                     break;
-                case EncounterConstants.GameplayState.TurnPlayOut:
-                    audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.MenuNext);
-                    SwitchState(EncounterConstants.GameplayState.TurnIntro);
+                case GameplayState.TurnPlayOut:
+                    audioManager.PlaySoundEffect(SoundEffects.MenuNext);
+                    SwitchState(GameplayState.TurnIntro);
                     break;
             }
         }
@@ -94,44 +94,44 @@ public class EncounterGameManager : MonoBehaviour
         OnProcessState(currentState);
     }
 
-    void SwitchState(EncounterConstants.GameplayState newState)
+    void SwitchState(GameplayState newState)
     {
         bool switchAllowed = false;
 
         // Do check for if switch is possible
         switch (currentState)
         {
-            case EncounterConstants.GameplayState.StartGame:
+            case GameplayState.StartGame:
                 {
-                    switchAllowed = newState == EncounterConstants.GameplayState.StartGameUI;
+                    switchAllowed = newState == GameplayState.StartGameUI;
                 }
                 break;
-            case EncounterConstants.GameplayState.StartGameUI:
+            case GameplayState.StartGameUI:
                 {
-                    switchAllowed = newState == EncounterConstants.GameplayState.TurnIntro;
+                    switchAllowed = newState == GameplayState.TurnIntro;
                 }
                 break;
-            case EncounterConstants.GameplayState.TurnIntro:
+            case GameplayState.TurnIntro:
                 {
-                    switchAllowed = newState == EncounterConstants.GameplayState.TurnPlay;
+                    switchAllowed = newState == GameplayState.TurnPlay;
                 }
                 break;
-            case EncounterConstants.GameplayState.TurnPlay:
+            case GameplayState.TurnPlay:
                 {
-                    switchAllowed = newState == EncounterConstants.GameplayState.TurnPlayOut;
+                    switchAllowed = newState == GameplayState.TurnPlayOut;
                 }
                 break;
-            case EncounterConstants.GameplayState.TurnPlayOut:
+            case GameplayState.TurnPlayOut:
                 {
-                    switchAllowed = newState == EncounterConstants.GameplayState.EndGameUI || newState == EncounterConstants.GameplayState.TurnIntro;
+                    switchAllowed = newState == GameplayState.EndGameUI || newState == GameplayState.TurnIntro;
                 }
                 break;
-            case EncounterConstants.GameplayState.EndGameUI:
+            case GameplayState.EndGameUI:
                 {
-                    switchAllowed = newState == EncounterConstants.GameplayState.EndGame;
+                    switchAllowed = newState == GameplayState.EndGame;
                 }
                 break;
-            case EncounterConstants.GameplayState.EndGame:
+            case GameplayState.EndGame:
                 {
                     switchAllowed = false;
                 }
@@ -147,38 +147,38 @@ public class EncounterGameManager : MonoBehaviour
     }
 
     // Check entry to stateEnter
-    void OnEnterState(EncounterConstants.GameplayState stateEnter)
+    void OnEnterState(GameplayState stateEnter)
     {
         switch (stateEnter)
         {
 
-            case EncounterConstants.GameplayState.StartGame:
+            case GameplayState.StartGame:
                 {
                     //noteManager.FadeOutUI();
                 }
                 break;
-            case EncounterConstants.GameplayState.StartGameUI:
+            case GameplayState.StartGameUI:
                 {
-                    audioManager.PlayCrowdEffect(EncounterConstants.CrowdEffects.CrowdStart);
+                    audioManager.PlayCrowdEffect(CrowdEffects.CrowdStart);
                     turnScore = 0;
                     currentScore = 0;
                     FadeInOverlayUI();
                 }
                 break;
-            case EncounterConstants.GameplayState.TurnIntro:
+            case GameplayState.TurnIntro:
                 {
                     turnScore = 0;
                     StartNoteGame();
                 }
                 break;
-            case EncounterConstants.GameplayState.TurnPlay:
+            case GameplayState.TurnPlay:
                 {
-                    audioManager.PlayCrowdEffect(EncounterConstants.CrowdEffects.CrowdSet);
+                    audioManager.PlayCrowdEffect(CrowdEffects.CrowdSet);
                 }
                 break;
-            case EncounterConstants.GameplayState.TurnPlayOut:
+            case GameplayState.TurnPlayOut:
                 {
-                    audioManager.PlayCrowdEffect(EncounterConstants.CrowdEffects.CrowdIdle);
+                    audioManager.PlayCrowdEffect(CrowdEffects.CrowdIdle);
                     ChangeScore();
 
                     crowdLight.DOIntensity(3.0f, 1.0f);
@@ -187,90 +187,90 @@ public class EncounterGameManager : MonoBehaviour
                     MoveCrowds();
                 }
                 break;
-            case EncounterConstants.GameplayState.EndGameUI:
+            case GameplayState.EndGameUI:
                 {
                     FadeOutOverlayUI();
                 }
                 break;
-            case EncounterConstants.GameplayState.EndGame:
+            case GameplayState.EndGame:
                 {
 
                 }
                 break;
         }
     }
-    void OnExitState(EncounterConstants.GameplayState stateExit)
+    void OnExitState(GameplayState stateExit)
     {
         switch (stateExit)
         {
 
-            case EncounterConstants.GameplayState.StartGame:
+            case GameplayState.StartGame:
                 {
                 }
                 break;
-            case EncounterConstants.GameplayState.StartGameUI:
+            case GameplayState.StartGameUI:
                 {
                 }
                 break;
-            case EncounterConstants.GameplayState.TurnIntro:
-                {
-
-                }
-                break;
-            case EncounterConstants.GameplayState.TurnPlay:
-                {
-                }
-                break;
-            case EncounterConstants.GameplayState.TurnPlayOut:
-                {
-                }
-                break;
-            case EncounterConstants.GameplayState.EndGameUI:
+            case GameplayState.TurnIntro:
                 {
 
                 }
                 break;
-            case EncounterConstants.GameplayState.EndGame:
+            case GameplayState.TurnPlay:
+                {
+                }
+                break;
+            case GameplayState.TurnPlayOut:
+                {
+                }
+                break;
+            case GameplayState.EndGameUI:
+                {
+
+                }
+                break;
+            case GameplayState.EndGame:
                 {
 
                 }
                 break;
         }
     }
-    void OnProcessState(EncounterConstants.GameplayState stateProcess)
+    void OnProcessState(GameplayState stateProcess)
     {
 
         switch (stateProcess)
         {
-            case EncounterConstants.GameplayState.StartGame:
+            case GameplayState.StartGame:
                 {
 
                 }
                 break;
-            case EncounterConstants.GameplayState.StartGameUI:
+            case GameplayState.StartGameUI:
                 {
 
                 }
                 break;
-            case EncounterConstants.GameplayState.TurnIntro:
+            case GameplayState.TurnIntro:
                 {
 
                 }
                 break;
-            case EncounterConstants.GameplayState.TurnPlay:
+            case GameplayState.TurnPlay:
                 {
                 }
                 break;
-            case EncounterConstants.GameplayState.TurnPlayOut:
+            case GameplayState.TurnPlayOut:
                 {
                 }
                 break;
-            case EncounterConstants.GameplayState.EndGameUI:
+            case GameplayState.EndGameUI:
                 {
 
                 }
                 break;
-            case EncounterConstants.GameplayState.EndGame:
+            case GameplayState.EndGame:
                 {
 
                 }
@@ -320,7 +320,7 @@ public class EncounterGameManager : MonoBehaviour
 
         moveSequence.OnComplete(() => {
             crowdLight.DOIntensity(0.0f, 1f);
-            SwitchState(EncounterConstants.GameplayState.TurnIntro);
+            SwitchState(GameplayState.TurnIntro);
         });
     }
 
@@ -378,13 +378,13 @@ public class EncounterGameManager : MonoBehaviour
 
     public void OnNotesStartComplete()
     {
-        SwitchState(EncounterConstants.GameplayState.TurnPlay);
+        SwitchState(GameplayState.TurnPlay);
     }
 
     public void OnNotesEndComplete()
     {
-        audioManager.PlaySoundEffect(EncounterConstants.SoundEffects.SetComplete);
-        SwitchState(EncounterConstants.GameplayState.TurnPlayOut);
+        audioManager.PlaySoundEffect(SoundEffects.SetComplete);
+        SwitchState(GameplayState.TurnPlayOut);
     }
 
     public void ShowGamePanelTurn()

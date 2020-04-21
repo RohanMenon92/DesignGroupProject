@@ -4137,7 +4137,7 @@ PrefabInstance:
     - target: {fileID: 4085599375340521567, guid: 22464a73519c1844fbda21176f435509,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.9700117
+      value: 0.04503846
       objectReference: {fileID: 0}
     - target: {fileID: 4085599375340521567, guid: 22464a73519c1844fbda21176f435509,
         type: 3}
@@ -8597,6 +8597,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 2.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6539794831237340233, guid: 401665af93e6f204d88649e1a37d3a5e,
+        type: 3}
+      propertyPath: KeytarMoves.Array.data[2].name
+      value: Crazy Stand
       objectReference: {fileID: 0}
     - target: {fileID: 6828319092422799736, guid: 401665af93e6f204d88649e1a37d3a5e,
         type: 3}
