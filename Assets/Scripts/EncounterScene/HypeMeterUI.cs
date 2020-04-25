@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using static NoteGeneratorManager;
 
 public class HypeMeterUI : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class HypeMeterUI : MonoBehaviour
     public Image hypeBar;
 
     Sequence hypeAnimateSequence;
-    Sequence hypeIncrementSequence;
+    Sequence hypeChangeSequence;
 
     EncounterConstants encounterConstants;
     NoteGeneratorManager noteGeneratorManager;
@@ -44,9 +45,9 @@ public class HypeMeterUI : MonoBehaviour
             return;
         }
 
-        if (hypeIncrementSequence != null)
+        if (hypeChangeSequence != null)
         {
-            hypeIncrementSequence.Complete(true);
+            hypeChangeSequence.Complete(true);
         }
 
 
@@ -58,8 +59,8 @@ public class HypeMeterUI : MonoBehaviour
             hypeValue += amount;
             // Do Animation for HypeValue
 
-            hypeIncrementSequence = DOTween.Sequence();
-            hypeIncrementSequence.Insert(0, hypeBar.transform.DOScaleY(hypeValue / hypeValueMax, encounterConstants.HypeIncrementDuration).SetEase(Ease.InOutBack));
+            hypeChangeSequence = DOTween.Sequence();
+            hypeChangeSequence.Insert(0, hypeBar.transform.DOScaleY(hypeValue / hypeValueMax, encounterConstants.HypeIncrementDuration).SetEase(Ease.InOutBack));
         }
     }
 
@@ -75,13 +76,13 @@ public class HypeMeterUI : MonoBehaviour
             hypeValue -= amount;
         }
 
-        if (hypeIncrementSequence != null)
+        if (hypeChangeSequence != null)
         {
-            hypeIncrementSequence.Complete(true);
+            hypeChangeSequence.Complete(true);
         }
 
-        hypeIncrementSequence = DOTween.Sequence();
-        hypeIncrementSequence.Insert(0, hypeBar.transform.DOScaleY(hypeValue/hypeValueMax, encounterConstants.HypeIncrementDuration).SetEase(Ease.InOutBack));
+        hypeChangeSequence = DOTween.Sequence();
+        hypeChangeSequence.Insert(0, hypeBar.transform.DOScaleY(hypeValue/hypeValueMax, encounterConstants.HypeIncrementDuration).SetEase(Ease.InOutBack));
     }
 
     public void TryHype()
@@ -137,21 +138,27 @@ public class HypeMeterUI : MonoBehaviour
         // Emit particles
     }
 
-    void AnimateHypeComplete()
+    public void AnimateHypeComplete(AnimationCallback animCallback)
     {
+        hypeValue = 0;
         if (hypeAnimateSequence != null && hypeAnimateSequence.IsPlaying())
         {
             hypeAnimateSequence.Complete(true);
         }
 
         hypeAnimateSequence = DOTween.Sequence();
+
+        hypeChangeSequence.Insert(0, hypeBar.transform.DOScaleY(hypeValue / hypeValueMax, encounterConstants.HypeIncrementDuration*3).SetEase(Ease.InOutBack));
+
         hypeAnimateSequence.Insert(0, transform.DOScale(encounterConstants.BaseHypeScale, encounterConstants.IsHypedDuration).SetEase(Ease.InOutBack));
 
         hypeAnimateSequence.Insert(encounterConstants.IsHypedDuration / 2, hypeBar.DOColor(encounterConstants.BaseHypeColor, encounterConstants.IsHypedDuration / 2).SetEase(Ease.InOutQuad));
 
         hypeAnimateSequence.Insert(encounterConstants.IsHypedDuration, hypeBar.DOFade(0.75f, encounterConstants.IsHypedDuration).SetEase(Ease.InOutBack));
 
-        hypeAnimateSequence.Play();
+        hypeAnimateSequence.OnComplete(() => {
+            animCallback?.Invoke();
+        });
     }
 
     void AnimateCantHype()

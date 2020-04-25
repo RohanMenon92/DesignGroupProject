@@ -75,7 +75,7 @@ public class SelectorScript : MonoBehaviour
             return;
         }
 
-        if (noteGenManager.GetCurrentState() == NotesGameStates.Playing)
+        if (noteGenManager.GetCurrentState() == NotesGameStates.Playing || noteGenManager.GetCurrentState() == NotesGameStates.Hyped)
         {
             if (!isPressed)
             {

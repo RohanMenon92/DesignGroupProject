@@ -94,7 +94,8 @@ public enum NotesGameStates
     EnemyIntro,
     Enemy,
     EndSet,
-    Idle
+    Idle,
+    Hyped
 }
 
 // GamePlayManagerStates
@@ -243,7 +244,8 @@ public class EncounterConstants: MonoBehaviour
     public Vector3 cameraOverviewRot = new Vector3(45f, 0f, 0f);
 
     [Header("UI Values")]
-    public Vector3 KnobPlayPos = new Vector3(700f, 35f, 0f);
+    public Color HypeLight = Color.white;
+    public Vector3 KnobPlayPos = new Vector3(600f, 55f, 0f);
     public Vector3 KnobStartPos = new Vector3(600f, -250f, 0f);
     public float SelectorDelay = 0.15f;
 
@@ -301,4 +303,5 @@ public class EncounterConstants: MonoBehaviour
     public Vector3 startLightRot = new Vector3(135f, 90f, 90f);
 
     public int notePoolSize = 30;
+    public Vector3 firstKnobRotation = new Vector3(0f, 0f, -27.575f);
 }

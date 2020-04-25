@@ -11,34 +11,22 @@ public class PlayerEntitiesScript : MonoBehaviour
 
     int maxTurn;
 
-    Vector3 startStageCamPos;
-    Vector3 startStageCamRot;
-    Vector3 startLightRot;
-    float endLightIntensity;
-    Color[] PlayerColors;
-    float startLightIntensity;
+    EncounterConstants encounterConstants;
 
     // Start is called before the first frame update
     void Awake()
     {
         // Take values from encounter constants
-        EncounterConstants encounterConstants = FindObjectOfType<EncounterConstants>();
-
-        startStageCamPos = encounterConstants.startStageCamPos;
-        startStageCamRot = encounterConstants.startStageCamRot;
-        startLightRot = encounterConstants.startLightRot;
-        endLightIntensity = encounterConstants.endLightIntensity;
-        PlayerColors = encounterConstants.PlayerColors;
-        startLightIntensity = encounterConstants.startLightIntensity;
+        encounterConstants = FindObjectOfType<EncounterConstants>();
     }
     void Start()
     {
         maxTurn = stageEntities.Count;
         stageLight.intensity = 0;
-        cameraTransform.DOLocalMove(startStageCamPos, 1f).SetEase(Ease.InOutBack);
-        cameraTransform.DORotate(startStageCamRot, 1f).SetEase(Ease.InOutBack);
-        stageLight.transform.DORotate(startLightRot, 1f);
-        stageLight.DOIntensity(endLightIntensity, 1f);
+        cameraTransform.DOLocalMove(encounterConstants.startStageCamPos, 1f).SetEase(Ease.InOutBack);
+        cameraTransform.DORotate(encounterConstants.startStageCamRot, 1f).SetEase(Ease.InOutBack);
+        stageLight.transform.DORotate(encounterConstants.startLightRot, 1f);
+        stageLight.DOIntensity(encounterConstants.endLightIntensity, 1f);
     }
 
     // Update is called once per frame
@@ -46,21 +34,32 @@ public class PlayerEntitiesScript : MonoBehaviour
     {
     }
 
+    public void OnHyped()
+    {
+        ChangeLightSpotAngle(90f);
+        stageLight.DOColor(encounterConstants.HypeLight, 0.5f);
+        stageLight.transform.DORotate(encounterConstants.startLightRot, 0.5f);
+        stageLight.DOIntensity(encounterConstants.startLightIntensity, 1f);
+
+        cameraTransform.DOLocalMove(encounterConstants.startStageCamPos, 1f).SetEase(Ease.InBack);
+        cameraTransform.DORotate(encounterConstants.startStageCamRot, 1f).SetEase(Ease.InOutBack);
+    }
+
     public void ResetBandEndTurn()
     {
         ChangeLightSpotAngle(90f);
-        stageLight.DOIntensity(endLightIntensity, 1f);
-        stageLight.transform.DORotate(startLightRot, 1f);
+        stageLight.DOIntensity(encounterConstants.endLightIntensity, 1f);
+        stageLight.transform.DORotate(encounterConstants.startLightRot, 1f);
         stageLight.color = Color.white;
 
-        cameraTransform.DOLocalMove(startStageCamPos, 1f).SetEase(Ease.InBack);
-        cameraTransform.DORotate(startStageCamRot, 1f).SetEase(Ease.InOutBack);
+        cameraTransform.DOLocalMove(encounterConstants.startStageCamPos, 1f).SetEase(Ease.InBack);
+        cameraTransform.DORotate(encounterConstants.startStageCamRot, 1f).SetEase(Ease.InOutBack);
     }
 
     public void TransitionToPlayer(int currentTurn)
     {
         ChangeLightSpotAngle(30f);
-        Color spotLightColor = PlayerColors[currentTurn];
+        Color spotLightColor = encounterConstants.PlayerColors[currentTurn];
 
         Sequence transitionSequence = DOTween.Sequence();
 
@@ -81,6 +80,6 @@ public class PlayerEntitiesScript : MonoBehaviour
 
     public void StartTurn()
     {
-        stageLight.DOIntensity(startLightIntensity, 0.5f);
+        stageLight.DOIntensity(encounterConstants.startLightIntensity, 0.5f);
     }
 }

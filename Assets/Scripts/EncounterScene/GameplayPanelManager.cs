@@ -76,7 +76,7 @@ public class GameplayPanelManager : MonoBehaviour
 
     public void ShowEnemyUI(float enemyScore)
     {
-        repBarEnemyPointer.rectTransform.DOAnchorPosX(-((enemyScore / encounterConstants.maxScore) * (encounterConstants.repBarWidth / 2)), 0.5f).SetEase(Ease.InOutBack);
+        repBarEnemyPointer.rectTransform.DOAnchorPosX(-(enemyScore / encounterConstants.maxScore) * (encounterConstants.repBarWidth / 2), 0.5f).SetEase(Ease.InOutBack);
         repBarEnemyPointer.DOColor(Color.red, 0.5f).OnComplete(() => {
             repBarEnemyPointer.DOFade(0.5f, 0.25f);
         });

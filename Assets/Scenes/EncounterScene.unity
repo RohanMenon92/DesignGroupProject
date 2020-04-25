@@ -4309,31 +4309,6 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4326459644628444104, guid: 22464a73519c1844fbda21176f435509,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4326459644628444104, guid: 22464a73519c1844fbda21176f435509,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4326459644628444104, guid: 22464a73519c1844fbda21176f435509,
-        type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4326459644628444104, guid: 22464a73519c1844fbda21176f435509,
-        type: 3}
-      propertyPath: m_textInfo.pageCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4326459644628444104, guid: 22464a73519c1844fbda21176f435509,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 17.9
-      objectReference: {fileID: 0}
     - target: {fileID: 4525541704417858599, guid: 22464a73519c1844fbda21176f435509,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -4643,7 +4618,7 @@ PrefabInstance:
     - target: {fileID: 8266178949545877049, guid: 22464a73519c1844fbda21176f435509,
         type: 3}
       propertyPath: m_Alpha
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22464a73519c1844fbda21176f435509, type: 3}
@@ -7977,11 +7952,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 198883646087424936, guid: d2fc4f4ed9054b44ab2c7f68b26d3d22,
-        type: 3}
-      propertyPath: musicClips.list.Array.size
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 198883646087424936, guid: d2fc4f4ed9054b44ab2c7f68b26d3d22,
         type: 3}
       propertyPath: musicClips.list.Array.data[3].list.Array.size
