@@ -43,38 +43,40 @@ public class GameplayPanelManager : MonoBehaviour
 
     public void UpdateTurnScore(float newTurnScore)
     {
+        turnScoreTween.Complete();
         turnScoreTween = DOTween.Sequence();
         turnScoreTween.Insert(0f,
             repBarTurnPointer.rectTransform
             .DOAnchorPosX(-(newTurnScore / encounterConstants.maxScore) * (encounterConstants.repBarWidth / 2), 0.2f)
-            .SetEase(Ease.InOutSine));
+            .SetEase(Ease.OutBack));
 
         turnScoreTween.Play();
     }
 
     public void UpdateEnemyScore(float newEnemyScore)
     {
+        enemyScoreTween.Complete();
         enemyScoreTween = DOTween.Sequence();
         enemyScoreTween.Insert(0f,
             repBarEnemyPointer.rectTransform
             .DOAnchorPosX(-(newEnemyScore / encounterConstants.maxScore) * (encounterConstants.repBarWidth / 2), 0.2f)
-            .SetEase(Ease.InOutSine));
+            .SetEase(Ease.OutBack));
 
         enemyScoreTween.Play();
     }
 
-    public void ShowTurnUI()
+    public void ShowTurnUI(float turnScore)
     {
-        repBarTurnPointer.rectTransform.position = repBarScorePointer.rectTransform.position;
+        repBarTurnPointer.rectTransform.DOAnchorPosX((-(turnScore / encounterConstants.maxScore) * (encounterConstants.repBarWidth / 2)), 0.5f).SetEase(Ease.InOutBack);
         repBarTurnPointer.DOColor(Color.cyan, 0.5f).OnComplete(() => {
             repBarTurnPointer.DOFade(0.5f, 0.25f);
         });
 
     }
 
-    public void ShowEnemyUI()
+    public void ShowEnemyUI(float enemyScore)
     {
-        repBarEnemyPointer.rectTransform.position = repBarScorePointer.rectTransform.position;
+        repBarEnemyPointer.rectTransform.DOAnchorPosX(-((enemyScore / encounterConstants.maxScore) * (encounterConstants.repBarWidth / 2)), 0.5f).SetEase(Ease.InOutBack);
         repBarEnemyPointer.DOColor(Color.red, 0.5f).OnComplete(() => {
             repBarEnemyPointer.DOFade(0.5f, 0.25f);
         });

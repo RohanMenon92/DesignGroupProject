@@ -31,8 +31,6 @@ public class NoteGeneratorManager : MonoBehaviour
     [SerializeField]
     GameObject notePrefab;
     
-    public Transform reputationPointerTransform;
-
     [SerializeField]
     KnobControlScript knobControl;
 
@@ -46,6 +44,9 @@ public class NoteGeneratorManager : MonoBehaviour
     TextMeshProUGUI lockCounter;
 
     [SerializeField]
+    Image moveEffect;
+
+    [SerializeField]
     Image moveLock;
 
     [SerializeField]
@@ -53,6 +54,8 @@ public class NoteGeneratorManager : MonoBehaviour
 
     [SerializeField]
     bool stateMachineDebug = false;
+
+    public Transform reputationPointerTransform;
 
     PlayableDirector selfPlayableDirector;
 
@@ -129,15 +132,27 @@ public class NoteGeneratorManager : MonoBehaviour
 
     public void NoteMissed()
     {
-        hypeMeterUI.DecrementHypeValue(encounterConstants.hypeMissPunishment);
-        gameManager.TurnScoreDecrement(encounterConstants.scoreMissPunishment);
-        audioManager.PlayMusicEffect(MusicEffects.PlayerMiss, currentPlayer);
+        if(currentState == NotesGameStates.Playing)
+        {
+            hypeMeterUI.DecrementHypeValue(encounterConstants.hypeMissPunishment);
+            gameManager.TurnScoreDecrement(encounterConstants.scoreMissPunishment);
+            audioManager.PlayMusicEffect(MusicEffects.PlayerMiss, currentPlayer);
+        } else
+        {
+            gameManager.TurnScoreIncrement(encounterConstants.scoreMissPunishment);
+            audioManager.PlayMusicEffect(MusicEffects.PlayerMiss, currentPlayer);
+        }
         //audioManager.PlaySoundEffect(SoundEffects.SetFailure);
     }
 
     public NotesGameStates GetCurrentState()
     {
         return currentState;
+    }
+
+    internal void HasHyped()
+    {
+        throw new NotImplementedException();
     }
 
     void NextInstrumentSelection()
@@ -178,20 +193,31 @@ public class NoteGeneratorManager : MonoBehaviour
 
         bool isUnlocked = playerMoves[currentPlayer][currentMove].IsUnlocked();
 
-        descriptionSequence.Insert(0f, moveLock.DOFade(0f, encounterConstants.descriptionTransition/3));
+        PlayerMove move = playerMoves[currentPlayer][currentMove];
+
+        descriptionSequence.Insert(0f, moveLock.DOFade(0f, encounterConstants.descriptionTransition / 3));
+        descriptionSequence.Insert(0f, moveEffect.DOFade(0f, encounterConstants.descriptionTransition / 3));
         descriptionSequence.Insert(0f, lockCounter.DOFade(0f, encounterConstants.descriptionTransition / 3));
-        descriptionSequence.Insert(0.1f, moveTitle.DOFade(0f, encounterConstants.descriptionTransition / 3));
-        descriptionSequence.Insert(0.1f, moveDescription.DOFade(0f, encounterConstants.descriptionTransition / 3).OnComplete(() => {
+        descriptionSequence.Insert(0f, moveTitle.DOFade(0f, encounterConstants.descriptionTransition / 3));
+        descriptionSequence.Insert(0f, moveDescription.DOFade(0f, encounterConstants.descriptionTransition / 3));
+
+        descriptionSequence.Insert(0.2f, moveCanvas.DOFade(0f, encounterConstants.descriptionTransition / 3)
+        .OnComplete(() => {
             // Update Values
-            moveDescription.text = playerMoves[currentPlayer][currentMove].description;
+            string descString = move.description +
+                "\n\n Crowd Gain: " + move.score + 
+                "\n Hype Gain: " + move.hypeRate + "%\n" + 
+                (move.turnLock > 0 ? ("Locks For: " + move.turnLock + " turns") : "Infinite Use");
+            moveDescription.text = descString;
             moveTitle.text = playerMoves[currentPlayer][currentMove].name;
+
             if (isUnlocked)
             {
-                moveDescription.color = encounterConstants.MoveColors[currentMove];
+                moveTitle.color = encounterConstants.PlayerColors[currentPlayer];
+                moveDescription.color = encounterConstants.moveUnlockedTextColour;
             } else
             {
-
-                moveDescription.color = Color.white;
+                moveDescription.color = encounterConstants.moveLockTextColor;
                 lockCounter.text = playerMoves[currentPlayer][currentMove].currentLock + " turns";
 
                 moveLock.color = encounterConstants.MoveColors[currentMove];
@@ -200,19 +226,51 @@ public class NoteGeneratorManager : MonoBehaviour
         }));
 
 
-        Color moveColor = moveCanvas.GetComponent<Image>().color;
+        Color moveColor = encounterConstants.MoveColors[currentMove];
 
-        if (isUnlocked)
-        {
-            moveColor = encounterConstants.PlayerColors[currentPlayer];
-
-        } else
-        {
+        if (!isUnlocked) {
             moveColor = encounterConstants.moveLockColor;
             descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveLock.DOFade(1f, 1f));
             descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, lockCounter.DOFade(1f, 1f));
         }
+
+        if (move.effect != MoveEffects.None)
+        {
+            switch (move.effect)
+            {
+                case MoveEffects.Amplifier:
+                    moveEffect.sprite = gameManager.AmplifierSprite;
+                    break;
+                case MoveEffects.CrazyStand:
+                    moveEffect.sprite = gameManager.CrazyStandSprite;
+                    break;
+                case MoveEffects.Rhythm:
+                    moveEffect.sprite = gameManager.RythmSprite;
+                    break;
+                case MoveEffects.Stomp:
+                    moveEffect.sprite = gameManager.StompSprite;
+                    break;
+            }
+
+            descriptionSequence.Insert(encounterConstants.descriptionTransition / 2,
+                moveEffect.DOColor(encounterConstants.MoveColors[currentMove], encounterConstants.descriptionTransition / 2));
+        }
+        else
+        {
+            descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, 
+                moveEffect.DOFade(0f, encounterConstants.descriptionTransition / 2).OnComplete(() => {
+                    moveEffect.sprite = null;
+                }));
+        }
+
         descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveCanvas.GetComponent<Image>().DOColor(moveColor, encounterConstants.descriptionTransition / 2));
+
+        Vector2 descPos = knobControl.moveLabels.GetComponentsInChildren<Image>(true)[3].GetComponent<RectTransform>().anchoredPosition + encounterConstants.descriptionOffset;
+
+        descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, 
+            moveCanvas.GetComponent<RectTransform>().DOAnchorPos(descPos, encounterConstants.descriptionTransition / 2));
+
+        descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveCanvas.DOFade(1f, encounterConstants.descriptionTransition / 2));
         descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveTitle.DOFade(1f, encounterConstants.descriptionTransition / 2));
         descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveDescription.DOFade(1f, encounterConstants.descriptionTransition / 2));
     }
@@ -226,8 +284,8 @@ public class NoteGeneratorManager : MonoBehaviour
             currentMove = 0;
         }
 
-        UpdateMoveDescription();
         knobControl.NextSelection();
+        UpdateMoveDescription();
     }
 
     void LastMoveSelection()
@@ -239,8 +297,8 @@ public class NoteGeneratorManager : MonoBehaviour
             currentMove = playerMoves[currentPlayer].Length - 1;
         }
 
-        UpdateMoveDescription();
         knobControl.LastSelection();
+        UpdateMoveDescription();
     }
 
     void TakeInput()
@@ -263,9 +321,14 @@ public class NoteGeneratorManager : MonoBehaviour
                     NextInstrumentSelection();
                 }
                 
-                if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick button 1"))
+                if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick button 0"))
                 {
                     OnInstrumentSelect();
+                }
+
+                if (Input.GetKeyDown(KeyCode.LeftControl) || (Input.GetKeyDown("joystick button 4") && Input.GetKeyDown("joystick button 5")))
+                {
+                    hypeMeterUI.TryHype();
                 }
                 break;
             case NotesGameStates.MoveSelect:
@@ -277,10 +340,14 @@ public class NoteGeneratorManager : MonoBehaviour
                 {
                     NextMoveSelection();
                 }
-                
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick button 1"))
+
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick button 0"))
                 {
                     OnMoveSelected();
+                }
+                if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("joystick button 1"))
+                {
+                    OnMoveCancel();
                 }
                 break;
             case NotesGameStates.Playing:
@@ -300,12 +367,6 @@ public class NoteGeneratorManager : MonoBehaviour
                 {
                     selectors[3].SelectorPressed(encounterConstants.FretColors[3]);
                 }
-
-                if (Input.GetKeyDown(KeyCode.Space) || (Input.GetKeyDown("joystick button 4") && Input.GetKeyDown("joystick button 5")))
-                {
-                    hypeMeterUI.TryHype();
-                }
-
                 break;
             case NotesGameStates.EnemyIntro:
                 break;
@@ -354,7 +415,7 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.MoveSelect:
                 {
-                    switchAllowed = newState == NotesGameStates.Playing;
+                    switchAllowed = newState == NotesGameStates.Playing || newState == NotesGameStates.Intro;
                 }
                 break;
             case NotesGameStates.Playing:
@@ -518,7 +579,7 @@ public class NoteGeneratorManager : MonoBehaviour
     void OnInstrumentSelect()
     {
         audioManager.PlaySoundEffect(SoundEffects.MenuNext);
-        knobControl.OnPlayerSelected(playerMoves[currentPlayer]);
+        knobControl.OnPlayerSelected(playerMoves[currentPlayer], currentPlayer);
         SwitchState(NotesGameStates.MoveSelect);
     }
 
@@ -532,6 +593,12 @@ public class NoteGeneratorManager : MonoBehaviour
         {
             CannotSelectMove();
         }
+    }
+
+    void OnMoveCancel()
+    {
+        HideMoveDescription();
+        SwitchState(NotesGameStates.Intro);
     }
 
     void MakeEnemyMissTurn()
@@ -847,7 +914,9 @@ public class NoteGeneratorManager : MonoBehaviour
         }
 
         // Add handicap based on difficulty
-        if(!hasMissed)
+        Debug.Log("Check miss " + accuracyRating);
+
+        if (!hasMissed)
         {
             float handicapScore = scoreDecrement - (scoreDecrement * (0.2f * (1f - encounterConstants.enemyDifficulty)));
 
@@ -862,6 +931,8 @@ public class NoteGeneratorManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("Check miss " + accuracyRating);
+            noteToStore.isCollected = true;
             noteToStore.PlayFailureAnimation();
         }
     }
@@ -943,7 +1014,6 @@ public class NoteGeneratorManager : MonoBehaviour
 
     void OnIntro(AnimationCallback animCallback)
     {
-
         // Fade in Knob Controller
         Sequence uiFadeInSequence = DOTween.Sequence();
 
@@ -972,7 +1042,7 @@ public class NoteGeneratorManager : MonoBehaviour
         Sequence uiFadeInSequence = DOTween.Sequence();
 
         uiFadeInSequence.Insert(0f, moveCanvas.DOFade(1f, 0.5f));
-        uiFadeInSequence.Insert(0.25f, moveCanvas.GetComponent<Image>().DOColor(encounterConstants.PlayerColors[currentPlayer], 0.5f));
+        uiFadeInSequence.Insert(0.25f, moveCanvas.GetComponent<Image>().DOColor(encounterConstants.MoveColors[currentMove], 0.5f));
 
         // ROHAN DO FADE UI HERE
         UpdateMoveDescription();
@@ -1016,7 +1086,18 @@ public class NoteGeneratorManager : MonoBehaviour
         uiFadeInSequence.OnComplete(() =>
         {
             // Fade color to grey
-            FadeColorUI(Color.grey, animCallback, true);
+            FadeOutBG(animCallback);
+            //FadeColorUI(Color.grey, animCallback, true);
+        });
+    }
+
+    public void FadeOutBG(AnimationCallback animationCallback)
+    {
+        Sequence uiColorSequence = DOTween.Sequence();
+
+        uiColorSequence.Insert(0f, this.GetComponent<Image>().DOFade(0f, 0.5f)).OnComplete(() =>
+        {
+            animationCallback?.Invoke();
         });
     }
 
@@ -1024,7 +1105,6 @@ public class NoteGeneratorManager : MonoBehaviour
     {
         Sequence uiColorSequence = DOTween.Sequence();
         
-        uiColorSequence.Insert(0f, knobControl.knobSprite.GetComponent<Image>().DOColor(uiColor, 0.5f));
         uiColorSequence.Insert(0f, this.GetComponent<Image>().DOColor(uiColor, 0.5f));
 
         float delay = 0.0f;

@@ -18,11 +18,12 @@ public class HypeMeterUI : MonoBehaviour
     Sequence hypeIncrementSequence;
 
     EncounterConstants encounterConstants;
-
+    NoteGeneratorManager noteGeneratorManager;
     // Start is called before the first frame update
     void Start()
     {
         encounterConstants = FindObjectOfType<EncounterConstants>();
+        noteGeneratorManager = FindObjectOfType<NoteGeneratorManager>();
         hypeValue = encounterConstants.HypeValueStart;
         hypeValueMax = encounterConstants.HypeValueMax;
 
@@ -129,7 +130,9 @@ public class HypeMeterUI : MonoBehaviour
         hypeAnimateSequence.Insert(encounterConstants.IsHypedDuration/2, hypeBar.DOColor(encounterConstants.IsHypeColor, encounterConstants.IsHypedDuration/2).SetEase(Ease.InOutQuad));
         hypeAnimateSequence.Insert(encounterConstants.IsHypedDuration, hypeBar.DOFade(1f, encounterConstants.IsHypedDuration).SetEase(Ease.InOutBack));
 
-        hypeAnimateSequence.Play();
+        hypeAnimateSequence.OnComplete(() => {
+            noteGeneratorManager.HasHyped();
+        });
         // Animate Hype Mask getting larger
         // Emit particles
     }

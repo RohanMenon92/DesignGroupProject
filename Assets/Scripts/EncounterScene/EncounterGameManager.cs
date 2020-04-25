@@ -463,12 +463,12 @@ public class EncounterGameManager : MonoBehaviour
 
     public void ShowGamePanelTurn()
     {
-        gamePanelManager.ShowTurnUI();
+        gamePanelManager.ShowTurnUI(turnScore);
     }
 
     public void ShowGamePanelEnemy()
     {
-        gamePanelManager.ShowEnemyUI();
+        gamePanelManager.ShowEnemyUI(enemyScore);
     }
 
     public void StartMoveEffect(MoveEffects attack)

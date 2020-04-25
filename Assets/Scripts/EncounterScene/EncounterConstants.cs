@@ -177,7 +177,7 @@ public class EncounterConstants: MonoBehaviour
     public float maxScore = 700;
 
     public float enemyDifficulty = 0.0f;
-    public float enemyMissThreshold = 80f;
+    public float enemyMissThreshold = 90f;
 
     [Header("Game Values")]
     public int setLength = 4;
@@ -222,6 +222,9 @@ public class EncounterConstants: MonoBehaviour
         new PlayerMove("Stomp", "Play a verse that skips the next opponent's turn.", 0.8f,3,3, MoveEffects.Stomp),
         //new PlayerMove("Morale", "Play a verse that negates all crowd interest gain for both teams for 1 turn.", 1f,3,1, MoveEffects.Morale)
     };
+    public float amplifierMultiplier = 1.5f;
+    public float rhythmMultiplier = 0.8f;
+    public float CrazyStandNoteDelay = 2.0f;
 
     [Header("Camera Position And Rotation Variables")]
     public Vector3 startStageCamPos = new Vector3(-3.0f, 6.0f, 0.0f);
@@ -244,8 +247,9 @@ public class EncounterConstants: MonoBehaviour
     public Vector3 KnobStartPos = new Vector3(600f, -250f, 0f);
     public float SelectorDelay = 0.15f;
 
-    public float repBarWidth = 1000;
+    public float knobSelectScale = 1.25f;
 
+    public float repBarWidth = 1000;
     public float CannotHypeScale = 0.8f;
     public float BaseHypeScale = 1.0f;
     public float CanHypeScale = 1.1f;
@@ -268,7 +272,13 @@ public class EncounterConstants: MonoBehaviour
     public Color moveLockedColour = Color.red;
     public Color moveLockColor = Color.gray;
     public Color moveLockTextColor = Color.black;
+    public Color moveUnlockedTextColour = Color.white;
     public float descriptionTransition = 1.5f;
+
+    public float moveEffectDuration = 0.5f;
+    public Color effectAnimateColor = Color.blue;
+    public float moveAnimateDuration = 0.2f;
+    public Vector2 descriptionOffset = new Vector2(-150, 10);
 
     [Header("Audio Control Values")]
     public float MusicCompressorMute = -60f;
@@ -291,11 +301,4 @@ public class EncounterConstants: MonoBehaviour
     public Vector3 startLightRot = new Vector3(135f, 90f, 90f);
 
     public int notePoolSize = 30;
-    public float moveEffectDuration = 0.5f;
-    public Color effectAnimateColor = Color.blue;
-
-    public float amplifierMultiplier = 1.5f;
-    public float rhythmMultiplier = 0.8f;
-    public float CrazyStandNoteDelay = 2.0f;
-    internal float moveAnimateDuration = 0.2f;
 }

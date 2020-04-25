@@ -107,7 +107,7 @@ MonoBehaviour:
   hypeMissPunishment: 5
   maxScore: 700
   enemyDifficulty: 0
-  enemyMissThreshold: 80
+  enemyMissThreshold: 90
   setLength: 4
   crowdYPosition: 1.9
   crowdMoveProbability: 0.5
@@ -179,6 +179,9 @@ MonoBehaviour:
     turnLock: 3
     effect: 3
     currentLock: 0
+  amplifierMultiplier: 1.5
+  rhythmMultiplier: 0.8
+  CrazyStandNoteDelay: 2
   startStageCamPos: {x: -3, y: 6, z: 0}
   startStageCamRot: {x: 30, y: 90, z: 0}
   cameraTurnPos: {x: 2.5, y: 20, z: 0}
@@ -212,7 +215,12 @@ MonoBehaviour:
   moveLockedColour: {r: 1, g: 0, b: 0, a: 1}
   moveLockColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   moveLockTextColor: {r: 0, g: 0, b: 0, a: 1}
+  moveUnlockedTextColour: {r: 1, g: 1, b: 1, a: 1}
   descriptionTransition: 1.5
+  moveEffectDuration: 0.5
+  effectAnimateColor: {r: 0, g: 0, b: 1, a: 1}
+  moveAnimateDuration: 0.2
+  descriptionOffset: {x: -150, y: 10}
   MusicCompressorMute: -60
   MusicCompressorNormal: 0
   MusicMissDelay: 0.4
@@ -226,7 +234,6 @@ MonoBehaviour:
   endLightIntensity: 0
   startLightRot: {x: 135, y: 90, z: 90}
   notePoolSize: 30
-  moveEffectFadeDuration: 0.5
 --- !u!1 &1613359358541547869
 GameObject:
   m_ObjectHideFlags: 0

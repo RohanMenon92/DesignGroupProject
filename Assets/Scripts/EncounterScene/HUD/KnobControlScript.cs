@@ -8,9 +8,11 @@ using UnityEngine.UI;
 
 public class KnobControlScript : MonoBehaviour
 {
-    public RectTransform knobSprite;
+    public Image knobSprite;
+    public Transform knobRotate;
     public CanvasGroup playerLabels;
     public CanvasGroup moveLabels;
+    public Image pointerImage;
 
     public Sprite selectedImage;
     public Sprite unselectedImage;
@@ -86,6 +88,8 @@ public class KnobControlScript : MonoBehaviour
         Color imageColor = showPlayers ? PlayerColors[knobPosition] : noteGeneratorManager.IsMoveUnlocked(knobPosition) ? MoveColors[knobPosition] : encounterConstants.moveLockTextColor;
         Color textColor = showPlayers ? Color.white : noteGeneratorManager.IsMoveUnlocked(knobPosition) ? Color.white : encounterConstants.moveLockColor;
 
+        selectSequence.Insert(0f, knobSprite.DOColor(imageColor, 0.5f));
+
         selectSequence.Insert(0f, selectedSprites[knobPosition].GetComponent<RectTransform>().DOScale(encounterConstants.moveSelectedScale, 0.5f).SetEase(Ease.OutBack));
         selectSequence.Insert(0f,
             selectedSprites[knobPosition].
@@ -97,7 +101,7 @@ public class KnobControlScript : MonoBehaviour
         Vector3 diff = selectedSprites[knobPosition].transform.position - knobSprite.transform.position;
         diff.Normalize();
         Vector3 rotateTo = new Vector3(0f, 0f, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 180);
-        knobSprite.transform.DORotate(rotateTo, 0.35f).SetEase(Ease.InOutBack);
+        knobRotate.DORotate(rotateTo, 0.35f).SetEase(Ease.InOutBack);
     }
 
     private void SelectImage(int knobPosition, bool toggle)
@@ -159,7 +163,7 @@ public class KnobControlScript : MonoBehaviour
 
         animationSequence.Complete(true);
         animationSequence = DOTween.Sequence();
-
+        animationSequence.Insert(0f, pointerImage.DOColor(Color.white, 0.5f));
         animationSequence.Insert(0f, moveLabels.DOFade(0f, 0.5f));
         animationSequence.Insert(0f, playerLabels.DOFade(1f, 0.5f));
         showPlayers = true;
@@ -182,16 +186,17 @@ public class KnobControlScript : MonoBehaviour
             else
             {
                 SelectImage(index, true);
+                sprite.color = PlayerColors[index];
+                textMesh.color = Color.white;
 
                 animationSequence.Insert(0f, sprite.GetComponent<RectTransform>().DOScale(encounterConstants.moveSelectedScale, 0.5f).SetEase(Ease.OutBack));
 
-                sprite.color = PlayerColors[index];
-                textMesh.color = Color.white;
+                animationSequence.Insert(0f, knobSprite.DOColor(PlayerColors[index], 0.5f));
 
                 Vector3 diff = sprite.transform.position - knobSprite.transform.position;
                 diff.Normalize();
                 Vector3 rotateTo = new Vector3(0f, 0f, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 180);
-                knobSprite.transform.DORotate(rotateTo, 0.35f).SetEase(Ease.InOutBack);
+                knobRotate.DORotate(rotateTo, 0.35f).SetEase(Ease.InOutBack);
             }
             index++;
         }
@@ -200,10 +205,6 @@ public class KnobControlScript : MonoBehaviour
     public void OnMoveSelector()
     {
         currentKnob = 0;
-
-        animationSequence.Complete(true);
-
-        animationSequence = DOTween.Sequence();
 
         animationSequence.Insert(0f, playerLabels.transform.DOScale(0.1f, 1f).SetEase(Ease.InOutBack));
         animationSequence.Insert(0f, playerLabels.DOFade(0f, 1f));
@@ -242,7 +243,6 @@ public class KnobControlScript : MonoBehaviour
                 {
                     sprite.color = encounterConstants.moveLockColor;
                     textMesh.color = encounterConstants.moveLockTextColor;
-
                     animationSequence.Insert(0f, sprite.GetComponent<RectTransform>().DOScale(encounterConstants.moveLockedScale, 0.5f).SetEase(Ease.OutBack));
                 }
             }
@@ -254,11 +254,12 @@ public class KnobControlScript : MonoBehaviour
 
                 sprite.color = MoveColors[index];
                 textMesh.color = Color.white;
+                animationSequence.Insert(0f, knobSprite.DOColor(MoveColors[index], 0.5f));
 
                 Vector3 diff = sprite.transform.position - knobSprite.transform.position;
                 diff.Normalize();
                 Vector3 rotateTo = new Vector3(0f, 0f, (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 180);
-                knobSprite.transform.DORotate(rotateTo, 0.35f).SetEase(Ease.InOutBack);
+                knobRotate.DORotate(rotateTo, 0.35f).SetEase(Ease.InOutBack);
             }
             index++;
         }
@@ -266,11 +267,17 @@ public class KnobControlScript : MonoBehaviour
         animationSequence.Play();
     }
 
-    internal void OnPlayerSelected(PlayerMove[] moves)
+    internal void OnPlayerSelected(PlayerMove[] moves, int currentPlayer)
     {
+        animationSequence.Complete(true);
+        animationSequence = DOTween.Sequence();
+
         int index = 0;
         // Iterate through and find moves
         knobCount = moves.Length;
+
+        animationSequence.Insert(0f, pointerImage.DOColor(PlayerColors[currentPlayer], 0.5f));
+        animationSequence.Insert(0f, knobRotate.DOScale(encounterConstants.knobSelectScale, 0.25f).SetEase(Ease.OutBack).SetLoops(2, LoopType.Yoyo));
 
         foreach (Image moveSprite in moveSprites)
         {
@@ -283,7 +290,7 @@ public class KnobControlScript : MonoBehaviour
                 {
                     moveSprite.GetComponentInChildren<TextMeshProUGUI>().color = encounterConstants.moveLockTextColor;
                     moveSprite.color = encounterConstants.moveLockColor;
-                    moveSprite.GetComponent<RectTransform>().DOScale(encounterConstants.moveLockScale, encounterConstants.moveLockScale);
+                    animationSequence.Insert(0f, moveSprite.GetComponent<RectTransform>().DOScale(encounterConstants.moveLockScale, encounterConstants.moveLockScale));
                 }
                 index++;
             } else
@@ -297,6 +304,9 @@ public class KnobControlScript : MonoBehaviour
     {
         animationSequence.Complete(true);
         animationSequence = DOTween.Sequence();
+
+        animationSequence.Insert(0f, pointerImage.DOColor(MoveColors[currentMove], 0.5f));
+        animationSequence.Insert(0f, knobRotate.DOScale(encounterConstants.knobSelectScale, 0.25f).SetEase(Ease.OutBack).SetLoops(2,LoopType.Yoyo));
 
         int index = 0;
         foreach(Image moveSprite in moveSprites)
