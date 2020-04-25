@@ -12,10 +12,13 @@ public class KnobControlScript : MonoBehaviour
     public CanvasGroup playerLabels;
     public CanvasGroup moveLabels;
 
-    public List<RectTransform> labelSprites;
-    public List<RectTransform> moveSprites;
+    public Sprite selectedImage;
+    public Sprite unselectedImage;
 
-    List<RectTransform> selectedSprites;
+    Image[] playerSprites;
+    Image[] moveSprites;
+
+    Image[] selectedSprites;
 
     int currentKnob = 0;
 
@@ -29,12 +32,34 @@ public class KnobControlScript : MonoBehaviour
 
     Sequence animationSequence;
 
+    int knobCount;
+
     private void Awake()
     {
         encounterConstants = FindObjectOfType<EncounterConstants>();
         noteGeneratorManager = FindObjectOfType<NoteGeneratorManager>();
+
         PlayerColors = encounterConstants.PlayerColors;
         MoveColors = encounterConstants.MoveColors;
+
+        int index = 0;
+        knobCount = PlayerColors.Length;
+
+        playerSprites = playerLabels.GetComponentsInChildren<Image>(true);
+        moveSprites = moveLabels.GetComponentsInChildren<Image>(true);
+
+        foreach (Image labelSprite in playerSprites)
+        {
+            if (index < PlayerColors.Length)
+            {
+                labelSprite.gameObject.SetActive(true);
+            } else
+            {
+                labelSprite.gameObject.SetActive(false);
+            }
+            index++;
+        }
+
     }
 
     // Start is called before the first frame update
@@ -43,7 +68,7 @@ public class KnobControlScript : MonoBehaviour
         moveLabels.DOFade(0f, 0.5f);
         playerLabels.DOFade(1f, 0.5f);
         showPlayers = true;
-        selectedSprites = labelSprites;
+        selectedSprites = playerSprites;
     }
 
     // Update is called once per frame
@@ -54,14 +79,16 @@ public class KnobControlScript : MonoBehaviour
 
     void AnimationToSelect(int knobPosition)
     {
+        SelectImage(knobPosition, true);
+
         Sequence selectSequence = DOTween.Sequence();
 
         Color imageColor = showPlayers ? PlayerColors[knobPosition] : noteGeneratorManager.IsMoveUnlocked(knobPosition) ? MoveColors[knobPosition] : encounterConstants.moveLockTextColor;
         Color textColor = showPlayers ? Color.white : noteGeneratorManager.IsMoveUnlocked(knobPosition) ? Color.white : encounterConstants.moveLockColor;
 
-        selectSequence.Insert(0f, selectedSprites[knobPosition].DOScale(encounterConstants.moveSelectedScale, 0.5f).SetEase(Ease.OutBack));
+        selectSequence.Insert(0f, selectedSprites[knobPosition].GetComponent<RectTransform>().DOScale(encounterConstants.moveSelectedScale, 0.5f).SetEase(Ease.OutBack));
         selectSequence.Insert(0f,
-            selectedSprites[knobPosition].GetComponent<Image>().
+            selectedSprites[knobPosition].
             DOColor(imageColor, 0.5f));
         selectSequence.Insert(0f,
             selectedSprites[knobPosition].GetComponentInChildren<TextMeshProUGUI>().
@@ -73,29 +100,41 @@ public class KnobControlScript : MonoBehaviour
         knobSprite.transform.DORotate(rotateTo, 0.35f).SetEase(Ease.InOutBack);
     }
 
+    private void SelectImage(int knobPosition, bool toggle)
+    {
+        if(toggle)
+        {
+            // Set Image and move canvas position
+            selectedSprites[knobPosition].transform.SetAsLastSibling();
+            selectedSprites[knobPosition].sprite = selectedImage;
+        }
+        else
+        {
+            selectedSprites[knobPosition].sprite = unselectedImage;
+        }
+    }
+
     void AnimationToDeselect(int knobPosition)
     {
+        SelectImage(knobPosition, false);
+
         Sequence selectSequence = DOTween.Sequence();
         Color imageColor = showPlayers ? Color.white : noteGeneratorManager.IsMoveUnlocked(knobPosition) ? Color.white : encounterConstants.moveLockColor;
         Color textColor = showPlayers ? PlayerColors[knobPosition] : noteGeneratorManager.IsMoveUnlocked(knobPosition) ? MoveColors[knobPosition] : encounterConstants.moveLockTextColor;
 
         float scaleValue = showPlayers ? encounterConstants.knobDeselectScale : noteGeneratorManager.IsMoveUnlocked(knobPosition) ? encounterConstants.moveLockScale : encounterConstants.knobDeselectScale;
 
-        selectSequence.Insert(0f, selectedSprites[knobPosition].DOScale(scaleValue, 0.5f).SetEase(Ease.OutBack));
+        selectSequence.Insert(0f, selectedSprites[knobPosition].GetComponent<RectTransform>().DOScale(scaleValue, 0.5f).SetEase(Ease.OutBack));
 
-        selectSequence.Insert(0f,
-            selectedSprites[knobPosition].GetComponent<Image>().
-            DOColor(imageColor, 0.5f));
-        selectSequence.Insert(0f,
-            selectedSprites[knobPosition].GetComponentInChildren<TextMeshProUGUI>().
-            DOColor(textColor, 0.5f));
+        selectSequence.Insert(0f, selectedSprites[knobPosition]. DOColor(imageColor, 0.5f));
+        selectSequence.Insert(0f, selectedSprites[knobPosition].GetComponentInChildren<TextMeshProUGUI>().DOColor(textColor, 0.5f));
     }
 
     public void NextSelection()
     {
         AnimationToDeselect(currentKnob);
         currentKnob++;
-        if (currentKnob >= selectedSprites.Count)
+        if (currentKnob >= knobCount)
         {
             currentKnob = 0;
         }
@@ -108,7 +147,7 @@ public class KnobControlScript : MonoBehaviour
         currentKnob--;
         if (currentKnob < 0f)
         {
-            currentKnob = selectedSprites.Count - 1;
+            currentKnob = knobCount - 1;
         }
         AnimationToSelect(currentKnob);
     }
@@ -124,10 +163,10 @@ public class KnobControlScript : MonoBehaviour
         animationSequence.Insert(0f, moveLabels.DOFade(0f, 0.5f));
         animationSequence.Insert(0f, playerLabels.DOFade(1f, 0.5f));
         showPlayers = true;
-        selectedSprites = labelSprites;
-
+        selectedSprites = playerSprites;
+        knobCount = PlayerColors.Length;
         int index = 0;
-        foreach(RectTransform sprite in labelSprites)
+        foreach(Image sprite in selectedSprites)
         {
             TextMeshProUGUI textMesh = sprite.GetComponentInChildren<TextMeshProUGUI>();
             // Fade in Canvas
@@ -135,15 +174,18 @@ public class KnobControlScript : MonoBehaviour
 
             if(index != 0)
             {
-                animationSequence.Insert(0f, sprite.DOScale(encounterConstants.knobDeselectScale, 0.5f).SetEase(Ease.OutBack));
-                sprite.GetComponent<Image>().color = Color.white;
+                SelectImage(index, false);
+                animationSequence.Insert(0f, sprite.GetComponent<RectTransform>().DOScale(encounterConstants.knobDeselectScale, 0.5f).SetEase(Ease.OutBack));
+                sprite.color = Color.white;
                 textMesh.color = PlayerColors[index];
             }
             else
             {
-                animationSequence.Insert(0f, sprite.DOScale(encounterConstants.moveSelectedScale, 0.5f).SetEase(Ease.OutBack));
+                SelectImage(index, true);
 
-                sprite.GetComponent<Image>().color = PlayerColors[index];
+                animationSequence.Insert(0f, sprite.GetComponent<RectTransform>().DOScale(encounterConstants.moveSelectedScale, 0.5f).SetEase(Ease.OutBack));
+
+                sprite.color = PlayerColors[index];
                 textMesh.color = Color.white;
 
                 Vector3 diff = sprite.transform.position - knobSprite.transform.position;
@@ -169,9 +211,9 @@ public class KnobControlScript : MonoBehaviour
         animationSequence.Insert(0f, moveLabels.DOFade(1f, 0.5f));
 
         int index = 0;
-        foreach (RectTransform labelSprite in labelSprites)
+        foreach (Image labelSprite in playerSprites)
         {
-            animationSequence.Insert(0.5f + (index * 0.25f), labelSprite.DOScale(2f, 0.5f).SetEase(Ease.InOutBack));
+            animationSequence.Insert(0.5f + (index * 0.25f), labelSprite.GetComponent<RectTransform>().DOScale(2f, 0.5f).SetEase(Ease.InOutBack));
             animationSequence.Insert(0.5f + (index * 0.25f), labelSprite.transform.GetComponent<CanvasGroup>().DOFade(0f, 0.5f));
             index++;
         }
@@ -180,7 +222,7 @@ public class KnobControlScript : MonoBehaviour
         selectedSprites = moveSprites;
 
         index = 0;
-        foreach (RectTransform sprite in moveSprites)
+        foreach (Image sprite in moveSprites)
         {
             TextMeshProUGUI textMesh = sprite.GetComponentInChildren<TextMeshProUGUI>();
 
@@ -188,26 +230,29 @@ public class KnobControlScript : MonoBehaviour
 
             if (index != 0)
             {
-                if(noteGeneratorManager.IsMoveUnlocked(index))
+                SelectImage(index, false);
+                if (noteGeneratorManager.IsMoveUnlocked(index))
                 {
-                    sprite.GetComponent<Image>().color = Color.white;
+                    sprite.color = Color.white;
                     textMesh.color = MoveColors[index];
 
-                    animationSequence.Insert(0f, sprite.DOScale(encounterConstants.knobDeselectScale, 0.5f).SetEase(Ease.OutBack));
+                    animationSequence.Insert(0f, sprite.GetComponent<RectTransform>().DOScale(encounterConstants.knobDeselectScale, 0.5f).SetEase(Ease.OutBack));
 
                 } else
                 {
-                    sprite.GetComponent<Image>().color = encounterConstants.moveLockColor;
+                    sprite.color = encounterConstants.moveLockColor;
                     textMesh.color = encounterConstants.moveLockTextColor;
 
-                    animationSequence.Insert(0f, sprite.DOScale(encounterConstants.moveLockedScale, 0.5f).SetEase(Ease.OutBack));
+                    animationSequence.Insert(0f, sprite.GetComponent<RectTransform>().DOScale(encounterConstants.moveLockedScale, 0.5f).SetEase(Ease.OutBack));
                 }
             }
             else
             {
-                animationSequence.Insert(0f, sprite.DOScale(encounterConstants.moveSelectedScale, 0.5f).SetEase(Ease.OutBack));
+                SelectImage(index, true);
 
-                sprite.GetComponent<Image>().color = MoveColors[index];
+                animationSequence.Insert(0f, sprite.GetComponent<RectTransform>().DOScale(encounterConstants.moveSelectedScale, 0.5f).SetEase(Ease.OutBack));
+
+                sprite.color = MoveColors[index];
                 textMesh.color = Color.white;
 
                 Vector3 diff = sprite.transform.position - knobSprite.transform.position;
@@ -225,17 +270,26 @@ public class KnobControlScript : MonoBehaviour
     {
         int index = 0;
         // Iterate through and find moves
+        knobCount = moves.Length;
 
-        foreach (PlayerMove move in moves)
+        foreach (Image moveSprite in moveSprites)
         {
-            moveSprites[index].GetComponentInChildren<TextMeshProUGUI>().text = move.name;
-            if(!move.IsUnlocked())
+            if (index < moves.Length)
             {
-                moveSprites[index].GetComponentInChildren<TextMeshProUGUI>().color = encounterConstants.moveLockTextColor;
-                moveSprites[index].GetComponent<Image>().color = encounterConstants.moveLockColor;
-                moveSprites[index].DOScale(encounterConstants.moveLockScale, encounterConstants.moveLockScale);
+                moveSprite.gameObject.SetActive(true);
+
+                moveSprite.GetComponentInChildren<TextMeshProUGUI>().text = moves[index].name;
+                if (!moves[index].IsUnlocked())
+                {
+                    moveSprite.GetComponentInChildren<TextMeshProUGUI>().color = encounterConstants.moveLockTextColor;
+                    moveSprite.color = encounterConstants.moveLockColor;
+                    moveSprite.GetComponent<RectTransform>().DOScale(encounterConstants.moveLockScale, encounterConstants.moveLockScale);
+                }
+                index++;
+            } else
+            {
+                moveSprite.gameObject.SetActive(false);
             }
-            index++;
         };
     }
 
@@ -245,11 +299,11 @@ public class KnobControlScript : MonoBehaviour
         animationSequence = DOTween.Sequence();
 
         int index = 0;
-        foreach(RectTransform moveSprite in moveSprites)
+        foreach(Image moveSprite in moveSprites)
         {
             if (index != currentMove)
             {
-                animationSequence.Insert(index * 0.25f, moveSprite.DOScale(0f, 0.5f).SetEase(Ease.InOutBack));
+                animationSequence.Insert(index * 0.25f, moveSprite.GetComponent<RectTransform>().DOScale(0f, 0.5f).SetEase(Ease.InOutBack));
                 animationSequence.Insert(index * 0.25f, moveSprite.transform.GetComponent<CanvasGroup>().DOFade(0f, 0.5f));
             }
             index++;
@@ -266,8 +320,8 @@ public class KnobControlScript : MonoBehaviour
 
         animationSequence = DOTween.Sequence();
 
-        animationSequence.Insert(0f, moveSprites[currentMove].GetComponent<Image>().DOColor(encounterConstants.moveLockedColour, 0.5f).SetLoops(2, LoopType.Yoyo));
-        animationSequence.Insert(0f, moveSprites[currentMove].DOScale(encounterConstants.moveLockedScale, 0.5f).SetEase(Ease.OutBack).SetLoops(2, LoopType.Yoyo));
+        animationSequence.Insert(0f, selectedSprites[currentMove].DOColor(encounterConstants.moveLockedColour, 0.5f).SetLoops(2, LoopType.Yoyo));
+        animationSequence.Insert(0f, selectedSprites[currentMove].GetComponent<RectTransform>().DOScale(encounterConstants.moveLockedScale, 0.5f).SetEase(Ease.OutBack).SetLoops(2, LoopType.Yoyo));
 
         animationSequence.Play();
     }

@@ -90,6 +90,10 @@ public class NoteGeneratorManager : MonoBehaviour
     Sequence descriptionSequence;
 
     public PlayerMove[][] playerMoves;
+
+    bool canCallCrazyStand = true;
+    bool musicPlaying;
+
     private void Awake()
     {
         selfPlayableDirector = GetComponent<PlayableDirector>();
@@ -120,7 +124,7 @@ public class NoteGeneratorManager : MonoBehaviour
         hypeMeterUI.DecrementHypeValue(encounterConstants.hypeWrongPunishment);
         gameManager.TurnScoreDecrement(encounterConstants.scoreWrongPunishment);
         audioManager.PlayMusicEffect(MusicEffects.PlayerWrong, currentPlayer);
-        audioManager.PlaySoundEffect(SoundEffects.WrongPress);
+        //audioManager.PlaySoundEffect(SoundEffects.WrongPress);
     }
 
     public void NoteMissed()
@@ -128,7 +132,7 @@ public class NoteGeneratorManager : MonoBehaviour
         hypeMeterUI.DecrementHypeValue(encounterConstants.hypeMissPunishment);
         gameManager.TurnScoreDecrement(encounterConstants.scoreMissPunishment);
         audioManager.PlayMusicEffect(MusicEffects.PlayerMiss, currentPlayer);
-        audioManager.PlaySoundEffect(SoundEffects.SetFailure);
+        //audioManager.PlaySoundEffect(SoundEffects.SetFailure);
     }
 
     public NotesGameStates GetCurrentState()
@@ -145,6 +149,7 @@ public class NoteGeneratorManager : MonoBehaviour
             currentPlayer = 0;
         }
 
+        audioManager.PlayMusicEffect(MusicEffects.PlayerSelect, currentPlayer);
         playerEntities.TransitionToPlayer(currentPlayer);
         FadeColorUI(encounterConstants.PlayerColors[currentPlayer], null, false);
         knobControl.NextSelection();
@@ -159,6 +164,7 @@ public class NoteGeneratorManager : MonoBehaviour
             currentPlayer = playerEntities.stageEntities.Count - 1;
         }
 
+        audioManager.PlayMusicEffect(MusicEffects.PlayerSelect, currentPlayer);
         playerEntities.TransitionToPlayer(currentPlayer);
         FadeColorUI(encounterConstants.PlayerColors[currentPlayer], null, false);
         knobControl.LastSelection();
@@ -358,7 +364,7 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.EnemyIntro:
                 {
-                    switchAllowed = newState == NotesGameStates.Enemy;
+                    switchAllowed = newState == NotesGameStates.Enemy || newState == NotesGameStates.Intro;
                 }
                 break;
             case NotesGameStates.Enemy:
@@ -401,7 +407,6 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.Start:
                 {
-                    Debug.Log("In Start ");
                     currSet = 0;
 
                     OnStartGame(() => {
@@ -413,8 +418,6 @@ public class NoteGeneratorManager : MonoBehaviour
             case NotesGameStates.Intro:
                 {
                     // Call function to fade UI and call next state
-                    Debug.Log("In Intro Enter " + currSet);
-
                     gameManager.MoveCameraToPlayer();
 
                     OnIntro(() => {
@@ -426,8 +429,6 @@ public class NoteGeneratorManager : MonoBehaviour
             case NotesGameStates.MoveSelect:
                 {
                     // Call function to fade UI and call next state
-                    Debug.Log("In MoveSelect " + currentPlayer);
-
                     gameManager.MoveCameraToFocus(playerEntities.stageEntities[currentPlayer]);
 
                     OnMoveSelect(() => {
@@ -438,8 +439,8 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.Playing:
                 {
-                    Debug.Log("In Playing " + currentMove);
                     songFinishRecieved = false;
+                    musicPlaying = false;
 
                     OnPlay(() =>
                     {
@@ -457,18 +458,23 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.EnemyIntro:
                 {
-                    Debug.Log("In Enemy Enter Intro");
                     gameManager.MoveCameraToEnemy();
 
                     OnEnemyIntro(() => {
-                        SwitchState(NotesGameStates.Enemy);
+                        if (gameManager.movesActive[MoveEffects.Stomp])
+                        {
+                            gameManager.AnimateEffectAction(MoveEffects.Stomp);
+                            MakeEnemyMissTurn();
+                        } else
+                        {
+                            SwitchState(NotesGameStates.Enemy);
+                        }
                     });
                 }
                 break;
             case NotesGameStates.Enemy:
                 {
                     songFinishRecieved = false;
-                    Debug.Log("In Enemy Enter");
                     //isTurnVisible = true;
                     ////TransitionStageElements();
                     SelectEnemySongAndPlay(() =>
@@ -528,6 +534,13 @@ public class NoteGeneratorManager : MonoBehaviour
         }
     }
 
+    void MakeEnemyMissTurn()
+    {
+        // TODO: Animate enemy miss turn
+
+        EnemySongComplete();
+    }
+
     void CannotSelectMove()
     {
         audioManager.PlaySoundEffect(SoundEffects.SetFailure);
@@ -545,7 +558,7 @@ public class NoteGeneratorManager : MonoBehaviour
         // Enable Attack Effect
         if (playerMoves[currentPlayer][currentMove].effect != MoveEffects.None)
         {
-            gameManager.EnableAttackEffect(playerMoves[currentPlayer][currentMove].effect);
+            gameManager.StartMoveEffect(playerMoves[currentPlayer][currentMove].effect);
         }
 
         knobControl.OnMoveSelected(currentMove);
@@ -561,13 +574,12 @@ public class NoteGeneratorManager : MonoBehaviour
         selfPlayableDirector.Play();
 
         yield return new WaitForSeconds(encounterConstants.MusicPlayDelay);
+        musicPlaying = true;
         audioManager.StartMusic(currSet);
     }
 
     private void SelectSongAndPlay(AnimationCallback animCallback)
-    {
-        Debug.Log("Select Song and Play");
-        
+    {        
         StartCoroutine(PlaySong());
         playSongCallback = animCallback;
     }
@@ -583,14 +595,12 @@ public class NoteGeneratorManager : MonoBehaviour
 
     private void SelectEnemySongAndPlay(AnimationCallback animCallback)
     {
-        Debug.Log("Select Enemy Song and Play");
         StartCoroutine(PlayEnemySong());
         playSongCallback = animCallback;
     }
 
     public void OnPlaySongComplete()
     {
-        Debug.Log("ON PLAY SONG COMPLETE");
         playSongCallback?.Invoke();
 
         playSongCallback = null;
@@ -623,6 +633,9 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.Playing:
                 {
+                    gameManager.StopMoveEffect(MoveEffects.CrazyStand);
+                    //gameManager.StopMoveEffect(MoveEffects.Rocky);
+                    //gameManager.StopMoveEffect(MoveEffects.Solo);
                 }
                 break;
             case NotesGameStates.EnemyIntro:
@@ -631,6 +644,8 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.Enemy:
                 {
+                    gameManager.StopMoveEffect(MoveEffects.Rhythm);
+                    gameManager.StopMoveEffect(MoveEffects.Stomp);
                 }
                 break;
             case NotesGameStates.EndSet:
@@ -639,6 +654,12 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
         }
     }
+
+    IEnumerator ResetCallCrazyStand() {
+        yield return new WaitForSeconds(encounterConstants.CrazyStandNoteDelay);
+        canCallCrazyStand = true;
+    }
+
     void OnProcessState(NotesGameStates stateProcess)
     {
         switch (stateProcess)
@@ -661,6 +682,18 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.Playing:
                 {
+                    // Crazy Stand Code
+                    if(gameManager.movesActive[MoveEffects.CrazyStand])
+                    {
+                        if(musicPlaying && canCallCrazyStand)
+                        {
+                            gameManager.AnimateEffectAction(MoveEffects.CrazyStand);
+                            StartCoroutine(ResetCallCrazyStand());
+                            CallNoteGenerator(UnityEngine.Random.Range(0, 3));
+                            canCallCrazyStand = false;
+                        }
+                    }
+
                     // Switch state to enemy intro after song is finished and all notes are collected
                     if(songFinishRecieved && unusedNotePool.childCount == encounterConstants.notePoolSize)
                     {
@@ -699,13 +732,11 @@ public class NoteGeneratorManager : MonoBehaviour
         currSet++;
         if (currSet >= encounterConstants.setLength)
         {
-            Debug.Log("Switching to end");
             SwitchState(NotesGameStates.EndSet);
         }
         else
         {
             ClearUI(null);
-            Debug.Log("Switching to intro");
             SwitchState(NotesGameStates.Intro);
         }
     }
@@ -767,8 +798,10 @@ public class NoteGeneratorManager : MonoBehaviour
 
     public void CollectEnemyNote(NoteScript noteToStore)
     {
+        bool hasMissed = false; // Set to true for move effect
+
         // Calculate random accuracy
-        float accuracyRating = UnityEngine.Random.Range(10 * (1 - encounterConstants.enemyDifficulty), 60f - (20 * encounterConstants.enemyDifficulty));
+        float accuracyRating = UnityEngine.Random.Range(10 * (1 - encounterConstants.enemyDifficulty), 120f - (20 * encounterConstants.enemyDifficulty));
 
         AccuracyRating currRating = AccuracyRating.OK;
         if (accuracyRating < encounterConstants.accuracyPerfect)
@@ -778,6 +811,12 @@ public class NoteGeneratorManager : MonoBehaviour
         else if (accuracyRating < encounterConstants.accuracyGood)
         {
             currRating = AccuracyRating.Good;
+        } else
+        {
+            if(accuracyRating > encounterConstants.enemyMissThreshold)
+            {
+                hasMissed = true;
+            }
         }
 
         Color gradeColor = encounterConstants.missedNoteColor;
@@ -808,10 +847,23 @@ public class NoteGeneratorManager : MonoBehaviour
         }
 
         // Add handicap based on difficulty
-        float handicapScore = scoreDecrement - (scoreDecrement * (0.2f * (1f - encounterConstants.enemyDifficulty)));
-        gameManager.EnemyScoreDecrement((int)handicapScore);
+        if(!hasMissed)
+        {
+            float handicapScore = scoreDecrement - (scoreDecrement * (0.2f * (1f - encounterConstants.enemyDifficulty)));
 
-        noteToStore.PlaySuccessAnimation(gradeColor, noteSprite);
+            if (gameManager.movesActive[MoveEffects.Rhythm])
+            {
+                gameManager.AnimateEffectAction(MoveEffects.Rhythm);
+                handicapScore *= encounterConstants.rhythmMultiplier;
+            }
+
+            noteToStore.PlaySuccessAnimation(gradeColor, noteSprite);
+            gameManager.EnemyScoreDecrement((int)handicapScore);
+        }
+        else
+        {
+            noteToStore.PlayFailureAnimation();
+        }
     }
 
     public void CollectPlayerNote(NoteScript noteToStore)
@@ -854,9 +906,16 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
         }
 
+        float score = (scoreMultiplier * playerMoves[currentPlayer][currentMove].score);
+
+        if (gameManager.movesActive[MoveEffects.Amplifier])
+        {
+            gameManager.AnimateEffectAction(MoveEffects.Amplifier);
+            score *= encounterConstants.amplifierMultiplier;
+        }
 
         hypeMeterUI.IncrementHypeValue((int)playerMoves[currentPlayer][currentMove].hypeRate);
-        gameManager.TurnScoreIncrement((int)(scoreMultiplier * playerMoves[currentPlayer][currentMove].score));
+        gameManager.TurnScoreIncrement((int)score);
 
         audioManager.PlayMusicEffect(MusicEffects.PlayerCorrect, currentPlayer);
         noteToStore.PlaySuccessAnimation(gradeColor, noteSprite);
@@ -878,6 +937,7 @@ public class NoteGeneratorManager : MonoBehaviour
 
     void OnPlayEnd(AnimationCallback animCallback)
     {
+        musicPlaying = false;
         animCallback();
     }
 
@@ -1026,12 +1086,15 @@ public class NoteGeneratorManager : MonoBehaviour
 
     public bool IsMoveUnlocked(int moveID)
     {
-        return playerMoves[currentPlayer][moveID].IsUnlocked();
+        if(playerMoves[currentPlayer].Length > moveID)
+        {
+            return playerMoves[currentPlayer][moveID].IsUnlocked();
+        }
+        return false;
     }
 
     public void ClearUI(AnimationCallback animCallback)
     {
-        Debug.Log("Set Complete Called");
         Sequence uiFadeOutSequence = DOTween.Sequence();
 
         isTurnVisible = false;

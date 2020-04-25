@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 //// Attack Status
@@ -29,6 +30,8 @@ public class EncounterGameManager : MonoBehaviour
     [SerializeField]
     GameplayPanelManager gamePanelManager;
     [SerializeField]
+    ActiveMovesPanel activeMovesObject;
+    [SerializeField]
     Camera mainCamera;
 
     [SerializeField]
@@ -40,6 +43,11 @@ public class EncounterGameManager : MonoBehaviour
 
     public int currentScore;
 
+    public Sprite AmplifierSprite;
+    public Sprite CrazyStandSprite;
+    public Sprite RythmSprite;
+    public Sprite StompSprite;
+
     public Dictionary<MoveEffects, bool> movesActive = new Dictionary<MoveEffects, bool>();
 
     int turnScore;
@@ -49,36 +57,18 @@ public class EncounterGameManager : MonoBehaviour
 
     AudioManager audioManager;
 
-    float crowdMoveProbability;
-    float crowdYPosition;
-    Vector3 cameraEnemyRot;
-    Vector3 cameraEnemyPos;
-    Vector3 cameraOverviewRot;
-    Vector3 cameraOverviewPos;
-    Vector3 cameraFocusOffset;
-    Vector3 cameraFocusPos;
-    Vector3 cameraTurnRot;
-    Vector3 cameraTurnPos;
-
     public delegate void AnimationCallback();
     // Start is called before the first frame update
 
+    Image[] activeImages;
+    Sequence animateMoveEffects;
+    EncounterConstants encounterConstants;
     private void Awake()
     {
         audioManager = FindObjectOfType<AudioManager>();
 
         // Take values from encounter constants
-        EncounterConstants encounterConstants = FindObjectOfType<EncounterConstants>();
-        crowdMoveProbability = encounterConstants.crowdMoveProbability;
-        cameraEnemyRot = encounterConstants.cameraEnemyRot;
-        cameraEnemyPos = encounterConstants.cameraEnemyPos;
-        cameraOverviewRot = encounterConstants.cameraOverviewRot;
-        cameraOverviewPos = encounterConstants.cameraOverviewPos;
-        cameraFocusOffset = encounterConstants.cameraFocusOffset;
-        cameraFocusPos = encounterConstants.cameraFocusPos;
-        cameraTurnRot = encounterConstants.cameraTurnRot;
-        cameraTurnPos = encounterConstants.cameraTurnPos;
-        crowdYPosition = encounterConstants.crowdYPosition;
+        encounterConstants = FindObjectOfType<EncounterConstants>();
 
         movesActive.Clear();
         // Add Attack statuses
@@ -110,10 +100,40 @@ public class EncounterGameManager : MonoBehaviour
                 movesActive.Add(move.effect, false);
             }
         }
+
+
+        activeImages = activeMovesObject.GetComponentsInChildren<Image>(true);
+        foreach (Image activeImage in activeImages)
+        {
+            activeImage.gameObject.SetActive(false);
+        }
     }
 
     void Start()
     {
+        int index = 0;
+        foreach (MoveEffects moveKey in movesActive.Keys)
+        {
+            switch (moveKey)
+            {
+                case MoveEffects.Amplifier:
+                    activeImages[index].sprite = AmplifierSprite;
+                    break;
+                case MoveEffects.CrazyStand:
+                    activeImages[index].sprite = CrazyStandSprite;
+                    break;
+                case MoveEffects.Rhythm:
+                    activeImages[index].sprite = RythmSprite;
+                    break;
+                case MoveEffects.Stomp:
+                    activeImages[index].sprite = StompSprite;
+                    break;
+            }
+            activeImages[index].gameObject.name = moveKey.ToString();
+            activeImages[index].gameObject.SetActive(true);
+            index++;
+        }
+
         FadeOutOverlayUI();
         crowdLight.DOIntensity(0.0f, 0.2f);
         audioManager.PlayCrowdEffect(CrowdEffects.CrowdIdle);
@@ -128,7 +148,7 @@ public class EncounterGameManager : MonoBehaviour
             switch(currentState)
             {
                 case GameplayState.StartGame:
-                    audioManager.PlaySoundEffect(SoundEffects.MenuNext);                    
+                    audioManager.PlaySoundEffect(SoundEffects.MenuNext);
                     SwitchState(GameplayState.StartGameUI);
                     break;
                 case GameplayState.StartGameUI:
@@ -142,7 +162,6 @@ public class EncounterGameManager : MonoBehaviour
             }
         }
 
-        //Debug.Log(currentState);
         OnProcessState(currentState);
     }
 
@@ -175,6 +194,9 @@ public class EncounterGameManager : MonoBehaviour
                 break;
             case GameplayState.TurnPlayOut:
                 {
+                    StopMoveEffect(MoveEffects.Amplifier);
+                    //gameManager.StopMoveEffect(MoveEffects.PickUps);
+
                     switchAllowed = newState == GameplayState.EndGameUI || newState == GameplayState.TurnIntro;
                 }
                 break;
@@ -361,9 +383,9 @@ public class EncounterGameManager : MonoBehaviour
         {
             float xValue = 10f * (float)-currentScore / 600f;
 
-            if(Random.Range(0f, 1f) < crowdMoveProbability) // 
+            if(Random.Range(0f, 1f) < encounterConstants.crowdMoveProbability) // 
             {
-                Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * Random.Range(1, 3f)), crowdYPosition, Random.Range(10f, -10f));
+                Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * Random.Range(1, 3f)), encounterConstants.crowdYPosition, Random.Range(10f, -10f));
 
                 moveSequence.Insert(delay, person.DOLocalMove(newPos, 1.5f).SetEase(Ease.InOutQuad));
                 delay += 0.5f;
@@ -378,27 +400,27 @@ public class EncounterGameManager : MonoBehaviour
 
     public void MoveCameraToPlayer()
     {
-        mainCamera.transform.DOMove(cameraTurnPos, 0.75f).SetEase(Ease.OutBack);
-        mainCamera.transform.DORotate(cameraTurnRot, 1f).SetEase(Ease.OutSine);
+        mainCamera.transform.DOMove(encounterConstants.cameraTurnPos, 0.75f).SetEase(Ease.OutBack);
+        mainCamera.transform.DORotate(encounterConstants.cameraTurnRot, 1f).SetEase(Ease.OutSine);
     }
 
     public void MoveCameraToFocus(Transform bandMemberTransform)
     {
-        mainCamera.transform.DOMove(cameraFocusPos, 1f).SetEase(Ease.OutBack).OnComplete(() => {
-            mainCamera.transform.DOLookAt(bandMemberTransform.position + cameraFocusOffset, 1f).SetEase(Ease.OutBack);
+        mainCamera.transform.DOMove(encounterConstants.cameraFocusPos, 1f).SetEase(Ease.OutBack).OnComplete(() => {
+            mainCamera.transform.DOLookAt(bandMemberTransform.position + encounterConstants.cameraFocusOffset, 1f).SetEase(Ease.OutBack);
         });
     }
 
     public void MoveCameraToOverview()
     {
-        mainCamera.transform.DOMove(cameraOverviewPos, 0.75f).SetEase(Ease.OutBack);
-        mainCamera.transform.DORotate(cameraOverviewRot, 1f).SetEase(Ease.OutSine);
+        mainCamera.transform.DOMove(encounterConstants.cameraOverviewPos, 0.75f).SetEase(Ease.OutBack);
+        mainCamera.transform.DORotate(encounterConstants.cameraOverviewRot, 1f).SetEase(Ease.OutSine);
     }
 
     public void MoveCameraToEnemy()
     {
-        mainCamera.transform.DOMove(cameraEnemyPos, 0.75f).SetEase(Ease.OutBack);
-        mainCamera.transform.DORotate(cameraEnemyRot, 1f).SetEase(Ease.OutSine);
+        mainCamera.transform.DOMove(encounterConstants.cameraEnemyPos, 0.75f).SetEase(Ease.OutBack);
+        mainCamera.transform.DORotate(encounterConstants.cameraEnemyRot, 1f).SetEase(Ease.OutSine);
     }
 
     void StartNoteGame()
@@ -449,19 +471,47 @@ public class EncounterGameManager : MonoBehaviour
         gamePanelManager.ShowEnemyUI();
     }
 
-    public void EnableAttackEffect(MoveEffects attack)
+    public void StartMoveEffect(MoveEffects attack)
     {
         if (!movesActive[attack])
         {
             movesActive[attack] = true;
+
+            Image moveImage = activeMovesObject.transform.Find(attack.ToString()).GetComponent<Image>();
+
+            moveImage.transform.DOScale(0f, 0f);
+            moveImage.DOFade(1.0f, encounterConstants.moveEffectDuration);
+            moveImage.transform.DOScale(1.0f, encounterConstants.moveEffectDuration).SetEase(Ease.InOutBack);
         }
     }
 
-    public void StopAttackEffect(MoveEffects attack)
+    public void AnimateEffectAction(MoveEffects attack)
     {
-        if(movesActive[attack])
+        Debug.Log("Animate Effect Action " + attack);
+        if (movesActive[attack])
+        {
+            Image moveImage = activeMovesObject.transform.Find(attack.ToString()).GetComponent<Image>();
+            animateMoveEffects.Complete();
+
+            animateMoveEffects = DOTween.Sequence();
+            moveImage.transform.localScale = Vector3.one;
+            moveImage.color = Color.white;
+
+            animateMoveEffects.Insert(0f, moveImage.transform.DOScale(1.2f, encounterConstants.moveAnimateDuration).SetLoops(2, LoopType.Yoyo).SetEase(Ease.InOutBack));
+            animateMoveEffects.Insert(0f, moveImage.DOColor(encounterConstants.effectAnimateColor, encounterConstants.moveAnimateDuration).SetLoops(2, LoopType.Yoyo));
+        }
+    }
+
+    public void StopMoveEffect(MoveEffects attack)
+    {
+        if (movesActive[attack])
         {
             movesActive[attack] = false;
+
+            Image moveImage = activeMovesObject.transform.Find(attack.ToString()).GetComponent<Image>();
+
+            moveImage.DOFade(0.0f, encounterConstants.moveEffectDuration);
+            moveImage.transform.DOScale(0.0f, encounterConstants.moveEffectDuration).SetEase(Ease.InOutBack);
         }
     }
 }

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1585922693422317021}
   - component: {fileID: 1585922693422316994}
-  - component: {fileID: 6539794831237340233}
+  - component: {fileID: 5689996492357137671}
   m_Layer: 0
   m_Name: EncounterGameManager
   m_TagString: Untagged
@@ -49,12 +49,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noteManager: {fileID: 0}
   gamePanelManager: {fileID: 0}
+  activeMovesObject: {fileID: 0}
   mainCamera: {fileID: 0}
   crowdLight: {fileID: 0}
   crowdEntities: {fileID: 2144341777011369306}
   enemyEntities: {fileID: 4777297748878130187}
   currentScore: 0
---- !u!114 &6539794831237340233
+  AmplifierSprite: {fileID: 21300000, guid: 59916eedd60da4e45937dea51263d9ac, type: 3}
+  CrazyStandSprite: {fileID: 21300000, guid: d63a4caaa89f05342a78c052c4b26f75, type: 3}
+  RythmSprite: {fileID: 21300000, guid: ec6839e9348b92247ba1ddbfdd0dee74, type: 3}
+  StompSprite: {fileID: 21300000, guid: cccceb62a5eb6e244a2ee82efb8d655a, type: 3}
+--- !u!114 &5689996492357137671
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,6 +107,7 @@ MonoBehaviour:
   hypeMissPunishment: 5
   maxScore: 700
   enemyDifficulty: 0
+  enemyMissThreshold: 80
   setLength: 4
   crowdYPosition: 1.9
   crowdMoveProbability: 0.5
@@ -114,91 +120,64 @@ MonoBehaviour:
   HypeValueStart: 25
   GuitarMoves:
   - name: Pitch
-    description: This is the description for pitch
+    description: Play an attack based verse.
     score: 1.5
     hypeRate: 2
     turnLock: 0
     effect: 0
     currentLock: 0
   - name: Amplifier
-    description: This is the description for amplifier
+    description: Play a verse that boosts Crowd Interest gain for the team for the
+      turn.
     score: 0.8
     hypeRate: 3
     turnLock: 2
     effect: 1
     currentLock: 0
-  - name: Solo
-    description: This is the description for solo
-    score: 0.7
-    hypeRate: 5
-    turnLock: 3
-    effect: 2
-    currentLock: 0
   BassMoves:
   - name: Root
-    description: This is the description for root
+    description: Play an attack based verse.
     score: 1.5
     hypeRate: 2
     turnLock: 0
     effect: 0
     currentLock: 0
-  - name: Pickups
-    description: This is the description for pickups
-    score: 0.7
-    hypeRate: 3
-    turnLock: 4
-    effect: 3
-    currentLock: 0
   - name: Rythm
-    description: This is the description for rythm
+    description: Play a verse that reduces opponent Crowd Interest gain for 2 turns.
     score: 0.6
     hypeRate: 5
     turnLock: 4
-    effect: 4
+    effect: 2
     currentLock: 0
   KeytarMoves:
   - name: Jazzy
-    description: This is the description for jazzy
+    description: Play an attack based verse.
     score: 1.5
     hypeRate: 3
     turnLock: 0
     effect: 0
     currentLock: 0
-  - name: Rocky
-    description: This is the description for rocky
-    score: 2
-    hypeRate: 5
-    turnLock: 2
-    effect: 0
-    currentLock: 0
   - name: Crazy Stand
-    description: This is the description for stance
+    description: Play a devastating randomized verse of fast notes.
     score: 1
     hypeRate: 12
     turnLock: 4
-    effect: 7
+    effect: 4
     currentLock: 0
   DrumMoves:
   - name: MetalHead
-    description: This is the description for metalhead
+    description: Play an attack based verse.
     score: 1.5
     hypeRate: 2
     turnLock: 0
     effect: 0
     currentLock: 0
   - name: Stomp
-    description: This is the description for stomp
+    description: Play a verse that skips the next opponent's turn.
     score: 0.8
     hypeRate: 3
     turnLock: 3
-    effect: 5
-    currentLock: 0
-  - name: Morale
-    description: This is the description for morale
-    score: 1
-    hypeRate: 3
-    turnLock: 1
-    effect: 6
+    effect: 3
     currentLock: 0
   startStageCamPos: {x: -3, y: 6, z: 0}
   startStageCamRot: {x: 30, y: 90, z: 0}
@@ -212,10 +191,6 @@ MonoBehaviour:
   cameraOverviewRot: {x: 45, y: 0, z: 0}
   KnobPlayPos: {x: 700, y: 35, z: 0}
   KnobStartPos: {x: 600, y: -250, z: 0}
-  startLightIntensity: 18
-  endLightIntensity: 0
-  startLightRot: {x: 135, y: 90, z: 90}
-  notePoolSize: 30
   SelectorDelay: 0.15
   repBarWidth: 1000
   CannotHypeScale: 0.8
@@ -238,6 +213,20 @@ MonoBehaviour:
   moveLockColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   moveLockTextColor: {r: 0, g: 0, b: 0, a: 1}
   descriptionTransition: 1.5
+  MusicCompressorMute: -60
+  MusicCompressorNormal: 0
+  MusicMissDelay: 0.4
+  MusicDistortWrong: 0.8
+  MusicDistrotNormal: 0
+  MusicWrongDelay: 0.1
+  SelectedMusicVol: 3
+  UnselectedMusicVol: -5
+  MusicSelectDelay: 0.3
+  startLightIntensity: 18
+  endLightIntensity: 0
+  startLightRot: {x: 135, y: 90, z: 90}
+  notePoolSize: 30
+  moveEffectFadeDuration: 0.5
 --- !u!1 &1613359358541547869
 GameObject:
   m_ObjectHideFlags: 0

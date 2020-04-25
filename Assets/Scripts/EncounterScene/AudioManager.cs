@@ -25,6 +25,10 @@ public class AudioManager : MonoBehaviour
 
     public List<AudioSource> playerAudios;
 
+    public AudioMixer audioMixer;
+
+    public Sequence[] musicSequence = new Sequence[4];
+
     // Music maps definition
     [System.Serializable]
     public class AudioSet
@@ -115,16 +119,64 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayMusicEffect(MusicEffects musicEffectID, int trackID)
+    public void PlayMusicEffect(MusicEffects musicEffectID, int playerID)
     {
+        string channelID = "Music" + (playerID + 1);
+
+        //string distortParam = "Music" + (playerID + 1) + "Pitch";
+        // Create MAke up gain parameter
         switch (musicEffectID)
         {
             case MusicEffects.PlayerCorrect:
                 // Expose parameter and call mixer DOSetFloat
                 break;
             case MusicEffects.PlayerMiss:
+                string missParam = channelID + "Com";
+
+                musicSequence[playerID].Complete();
+                musicSequence[playerID] = DOTween.Sequence();
+
+                musicSequence[playerID].Insert(0f,
+                    audioMixer.DOSetFloat(missParam, encounterConstants.MusicCompressorMute, encounterConstants.MusicMissDelay/2));
+                musicSequence[playerID].Insert(encounterConstants.MusicMissDelay,
+                    audioMixer.DOSetFloat(missParam, encounterConstants.MusicCompressorNormal, encounterConstants.MusicMissDelay));
                 break;
             case MusicEffects.PlayerWrong:
+                string wrongParam = channelID + "Distort";
+
+                musicSequence[playerID].Complete();
+                musicSequence[playerID] = DOTween.Sequence();
+
+                musicSequence[playerID].Insert(0f,
+                    audioMixer.DOSetFloat(wrongParam, encounterConstants.MusicDistortWrong, encounterConstants.MusicWrongDelay));
+                musicSequence[playerID].Insert(encounterConstants.MusicWrongDelay,
+                    audioMixer.DOSetFloat(wrongParam, encounterConstants.MusicDistrotNormal, encounterConstants.MusicWrongDelay));
+                break;
+            case MusicEffects.PlayerSelect:
+                for (int index = 0; index < 4; index++)
+                {
+                    string channelParam = "Music" + (index+1) + "Vol";
+
+                    if (musicSequence[index] != null)
+                    {
+                        musicSequence[index].Complete();
+                    }
+                    musicSequence[index] = DOTween.Sequence();
+
+
+                    if (index == playerID)
+                    {
+                        //audioMixer.SetFloat(volumeParam, encounterConstants.SelectedMusicVol);
+                        // Increase Selected to selected Vol
+                        musicSequence[index].Insert(0f, audioMixer.DOSetFloat(channelParam, encounterConstants.SelectedMusicVol, encounterConstants.MusicSelectDelay));
+                    }
+                    else
+                    {
+                        //audioMixer.SetFloat(volumeParam, encounterConstants.UnselectedMusicVol);
+                        // Reduce Selected to selected Vol
+                        musicSequence[index].Insert(0f, audioMixer.DOSetFloat(channelParam, encounterConstants.UnselectedMusicVol, encounterConstants.MusicSelectDelay));
+                    }
+                }
                 break;
         }
     }
