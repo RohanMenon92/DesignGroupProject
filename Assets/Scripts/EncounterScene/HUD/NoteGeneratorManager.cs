@@ -197,6 +197,8 @@ public class NoteGeneratorManager : MonoBehaviour
 
         PlayerMove move = playerMoves[currentPlayer][currentMove];
 
+        Color moveColor = move.moveColor;
+
         descriptionSequence.Insert(0f, moveLock.DOFade(0f, encounterConstants.descriptionTransition / 3));
         descriptionSequence.Insert(0f, moveEffect.DOFade(0f, encounterConstants.descriptionTransition / 3));
         descriptionSequence.Insert(0f, lockCounter.DOFade(0f, encounterConstants.descriptionTransition / 3));
@@ -222,13 +224,11 @@ public class NoteGeneratorManager : MonoBehaviour
                 moveDescription.color = encounterConstants.moveLockTextColor;
                 lockCounter.text = playerMoves[currentPlayer][currentMove].currentLock + " turns";
 
-                moveLock.color = encounterConstants.MoveColors[currentMove];
-                lockCounter.color = encounterConstants.MoveColors[currentMove];
+                moveLock.color = moveColor;
+                lockCounter.color = moveColor;
             }
         }));
 
-
-        Color moveColor = encounterConstants.MoveColors[currentMove];
 
         if (!isUnlocked) {
             moveColor = encounterConstants.moveLockColor;
@@ -255,7 +255,7 @@ public class NoteGeneratorManager : MonoBehaviour
             }
 
             descriptionSequence.Insert(encounterConstants.descriptionTransition / 2,
-                moveEffect.DOColor(encounterConstants.MoveColors[currentMove], encounterConstants.descriptionTransition / 2));
+                moveEffect.DOColor(moveColor, encounterConstants.descriptionTransition / 2));
         }
         else
         {
@@ -777,12 +777,12 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.EnemyIntro:
                 {
+                    gameManager.StopMoveEffect(MoveEffects.Stomp);
                 }
                 break;
             case NotesGameStates.Enemy:
                 {
                     gameManager.StopMoveEffect(MoveEffects.Rhythm);
-                    gameManager.StopMoveEffect(MoveEffects.Stomp);
                 }
                 break;
             case NotesGameStates.EndSet:
@@ -796,6 +796,8 @@ public class NoteGeneratorManager : MonoBehaviour
     {
         FadeOutBoardBG(() =>
         {
+            this.GetComponent<CanvasGroup>().DOFade(0f, 1.0f);
+
             hypeMeterUI.AnimateHypeComplete(() => {
                 SwitchState(NotesGameStates.Intro);
             });
@@ -1140,7 +1142,7 @@ public class NoteGeneratorManager : MonoBehaviour
         Sequence uiFadeInSequence = DOTween.Sequence();
 
         uiFadeInSequence.Insert(0f, moveCanvas.DOFade(1f, 0.5f));
-        uiFadeInSequence.Insert(0.25f, moveCanvas.GetComponent<Image>().DOColor(encounterConstants.MoveColors[currentMove], 0.5f));
+        uiFadeInSequence.Insert(0.25f, moveCanvas.GetComponent<Image>().DOColor(playerMoves[currentPlayer][currentMove].moveColor, 0.5f));
 
         // ROHAN DO FADE UI HERE
         UpdateMoveDescription();
@@ -1189,10 +1191,9 @@ public class NoteGeneratorManager : MonoBehaviour
         });
     }
 
-    public void FadeOutBoardBG(AnimationCallback animationCallback)
+    public void FadeOutBoardBG(AnimationCallback animCallback)
     {
         Sequence uiFadeOutSequence = DOTween.Sequence();
-
 
         foreach (NoteGeneratorScript noteGen in noteGenerators)
         {
@@ -1204,9 +1205,9 @@ public class NoteGeneratorManager : MonoBehaviour
             uiFadeOutSequence.Insert(0f, selector.transform.DOScale(0.0f, 0.35f));
             uiFadeOutSequence.Insert(0f, selector.GetComponent<Image>().DOColor(new Color(1f, 1f, 1f, 0f), 0.5f));
         }
-        uiFadeOutSequence.Insert(0.2f, this.GetComponent<Image>().DOFade(0f, 0.5f)).OnComplete(() =>
+        uiFadeOutSequence.Insert(0f, this.GetComponent<Image>().DOFade(0f, 0.5f)).OnComplete(() =>
         {
-            animationCallback?.Invoke();
+            animCallback?.Invoke();
         });
     }
 

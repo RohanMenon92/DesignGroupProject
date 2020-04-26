@@ -42,7 +42,6 @@ public class KnobControlScript : MonoBehaviour
         noteGeneratorManager = FindObjectOfType<NoteGeneratorManager>();
 
         PlayerColors = encounterConstants.PlayerColors;
-        MoveColors = encounterConstants.MoveColors;
 
         int index = 0;
         knobCount = PlayerColors.Length;
@@ -274,13 +273,23 @@ public class KnobControlScript : MonoBehaviour
 
     internal void OnPlayerSelected(PlayerMove[] moves, int currentPlayer)
     {
+        // Create new colours
+        MoveColors = new Color[moves.Length];
+
         int index = 0;
+        foreach(PlayerMove move in moves)
+        {
+            MoveColors[index] = move.moveColor;
+            index++;
+        }
+
         // Iterate through and find moves
         knobCount = moves.Length;
 
         animationSequence.Insert(0f, pointerImage.DOColor(PlayerColors[currentPlayer], 0.5f));
         animationSequence.Insert(0f, knobRotate.DOScale(encounterConstants.knobSelectScale, 0.25f).SetEase(Ease.OutBack).SetLoops(2, LoopType.Yoyo));
 
+        index = 0;
         foreach (Image moveSprite in moveSprites)
         {
             if (index < moves.Length)

@@ -13,8 +13,9 @@ public class PlayerMove
     public int turnLock;
     public MoveEffects effect;
     public int currentLock;
+    public Color moveColor;
 
-    public PlayerMove(string nameI, string descriptionI, float scoreI, float hypeRateI, int turnLockI, MoveEffects effectI)
+    public PlayerMove(string nameI, string descriptionI, float scoreI, float hypeRateI, int turnLockI, MoveEffects effectI, Color colorI)
     {
         name = nameI;
         description = descriptionI;
@@ -23,6 +24,7 @@ public class PlayerMove
         turnLock = turnLockI;
         effect = effectI;
         currentLock = 0;
+        moveColor = colorI;
     }
 
     public void LockMove()
@@ -124,10 +126,10 @@ public class EncounterConstants: MonoBehaviour
     [Header("Player Colours")]
     public Color[] PlayerColors =
     {
-        Color.red,
-        Color.blue,
-        Color.magenta,
-        Color.yellow
+        new Color(255, 0, 2, 255),
+        new Color(0, 65, 255, 255),
+        new Color(255, 4, 217, 255),
+        new Color(53, 229, 88, 255)
     };
     public Color[] FretColors =
     {
@@ -136,28 +138,28 @@ public class EncounterConstants: MonoBehaviour
         Color.red,
         Color.green
     };
-    public Color[] MoveColors =
-    {
-        Color.cyan,
-        Color.magenta,
-        Color.red
-    };
+    //public Color[] MoveColors =
+    //{
+    //    Color.cyan,
+    //    Color.magenta,
+    //    Color.red
+    //};
 
     public Color missedNoteColor = Color.red;
     public Color initialNoteColor = Color.white;
 
     public Color[] PlayerGradeColors =
     {
-        Color.white,
-        Color.cyan,
-        Color.blue
+        new Color(226, 182, 42),
+        new Color(0, 110, 255),
+        new Color(35, 238, 88)
     };
 
     public Color[] EnemyGradeColors =
     {
-        Color.magenta,
-        Color.red,
-        Color.yellow
+        new Color(212, 0, 255),
+        new Color(255, 26, 0),
+        new Color(253, 255, 4)
     };
 
     [Header("Score Values")]
@@ -198,29 +200,29 @@ public class EncounterConstants: MonoBehaviour
     [Header("Move Lists")]
     public PlayerMove[] GuitarMoves = new PlayerMove[]
     {
-        new PlayerMove("Pitch", "Play an attack based verse.", 1.5f,2,0, MoveEffects.None),
-        new PlayerMove("Amplifier", "Play a verse that boosts Crowd Interest gain for the team for the turn.", 0.8f,3,2, MoveEffects.Amplifier),
+        new PlayerMove("Pitch", "Play an attack based verse.", 1.5f,2,0, MoveEffects.None, new Color(255, 95, 0)),
+        new PlayerMove("Amplifier", "Play a verse that boosts Crowd Interest gain for the team for the turn.", 0.8f,3,2, MoveEffects.Amplifier, new Color(217, 0, 91)),
         //new PlayerMove("Solo", "Play a stronger attack verse. Plays faster than usual.", 0.7f,5,3, MoveEffects.Solo)
     };
 
     public PlayerMove[] BassMoves = new PlayerMove[]
     {
-        new PlayerMove("Root", "Play an attack based verse.", 1.5f,2,0, MoveEffects.None),
+        new PlayerMove("Root", "Play an attack based verse.", 1.5f,2,0, MoveEffects.None, new Color(87, 0, 255)),
         //new PlayerMove("Pickups", "Play a verse that boosts the team's accuracy for 1 turn.", 0.7f,3,4, MoveEffects.Pickups),
-        new PlayerMove("Rythm", "Play a verse that reduces opponent Crowd Interest gain for 2 turns.", 0.6f,5,4, MoveEffects.Rhythm)
+        new PlayerMove("Rythm", "Play a verse that reduces opponent Crowd Interest gain for 2 turns.", 0.6f,5,4, MoveEffects.Rhythm, new Color(0, 255, 236))
     };
 
     public PlayerMove[] KeytarMoves = new PlayerMove[]
     {
-        new PlayerMove("Jazzy", "Play an attack based verse.", 1.5f,3,0, MoveEffects.None),
+        new PlayerMove("Jazzy", "Play an attack based verse.", 1.5f,3,0, MoveEffects.None, new Color(255, 4, 84)),
         //new PlayerMove("Rocky", "Play a stronger attack based verse.", 2,5,2, MoveEffects.None),
-        new PlayerMove("Crazy Stand", "Play a devastating randomized verse of fast notes.", 1,12,4, MoveEffects.CrazyStand)
+        new PlayerMove("Crazy Stand", "Play a devastating randomized verse of fast notes.", 1,12,4, MoveEffects.CrazyStand, new Color(150, 21, 255))
     };
 
     public PlayerMove[] DrumMoves = new PlayerMove[]
     {
-        new PlayerMove("MetalHead", "Play an attack based verse.", 1.5f,2,0, MoveEffects.None),
-        new PlayerMove("Stomp", "Play a verse that skips the next opponent's turn.", 0.8f,3,3, MoveEffects.Stomp),
+        new PlayerMove("MetalHead", "Play an attack based verse.", 1.5f,2,0, MoveEffects.None, new Color(145, 244, 56)),
+        new PlayerMove("Stomp", "Play a verse that skips the next opponent's turn.", 0.8f,3,3, MoveEffects.Stomp, new Color(24, 153, 18)),
         //new PlayerMove("Morale", "Play a verse that negates all crowd interest gain for both teams for 1 turn.", 1f,3,1, MoveEffects.Morale)
     };
     public float amplifierMultiplier = 1.5f;
@@ -245,7 +247,7 @@ public class EncounterConstants: MonoBehaviour
 
     [Header("UI Values")]
     public Color HypeLight = Color.white;
-    public Vector3 KnobPlayPos = new Vector3(600f, 55f, 0f);
+    public Vector3 KnobPlayPos = new Vector3(500f, 50f, 0f);
     public Vector3 KnobStartPos = new Vector3(600f, -250f, 0f);
     public float SelectorDelay = 0.15f;
 
