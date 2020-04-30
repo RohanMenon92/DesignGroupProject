@@ -2,6 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// UI CClass Definitions
+[System.Serializable]
+public class UIDescripton
+{
+    public string descriptionText;
+    public string acceptText;
+    public string cancelText;
+    public string selectText;
+    public string specialText;
+
+    public UIDescripton(string descriptionTextI, string acceptTextI, string cancelTextI, string selectTextI, string specialTextI = "")
+    {
+        descriptionText = descriptionTextI;
+        acceptText = acceptTextI;
+        cancelText = cancelTextI;
+        selectText = selectTextI;
+        specialText = specialTextI;
+    }
+
+}
 // Move Definitions
 [System.Serializable]
 public class PlayerMove
@@ -58,7 +78,8 @@ public enum SoundEffects
     SetFailure,
     Good,
     Bing,
-    WrongPress
+    WrongPress,
+    MenuSelect
 }
 public enum CrowdEffects
 {
@@ -184,6 +205,7 @@ public class EncounterConstants: MonoBehaviour
 
     [Header("Game Values")]
     public int setLength = 4;
+    public int totalSets = 3;
     public float crowdYPosition = 1.9f;
     public float crowdMoveProbability = 0.5f;
 
@@ -196,6 +218,22 @@ public class EncounterConstants: MonoBehaviour
     public float CrowdSoundTransition = 2f;
     public int HypeValueMax = 100;
     public int HypeValueStart = 25;
+
+    [Header("UI Lists")]
+    public List<UIDescripton> UITextSets = new List<UIDescripton> {
+        new UIDescripton("Lets get ready to RUMBLE!!", "Accept!", "", ""),
+        new UIDescripton("Lets go!", "Select Instrument", "", ""),
+        new UIDescripton("Select an Instrument", "Ready", "", "Select Band Member"),
+        new UIDescripton("Select a Move", "Ready", "Select Instrument", "Select Move"),
+        new UIDescripton("Lets go!", "", "", ""),
+        new UIDescripton("It's their turn now", "", "", ""),
+        new UIDescripton("The crowds really into our music.", "", "", ""),
+        new UIDescripton("The crowds likes their music better.", "", "", ""),
+        new UIDescripton("LETS GET HYPED!", "Skip HYPE", "", "Select Band Member", "Start HYPE Move"),
+        new UIDescripton("YEAH! We've won!", "Yeah!", "Lets Do better", "", ""),
+        new UIDescripton("Oh no! They've won!", "Lets try again!", "", "", ""),
+    };
+
 
     [Header("Move Lists")]
     public PlayerMove[] GuitarMoves = new PlayerMove[]
@@ -230,6 +268,8 @@ public class EncounterConstants: MonoBehaviour
     public float CrazyStandNoteDelay = 2.0f;
 
     [Header("Camera Position And Rotation Variables")]
+    public Vector3 startcamera = new Vector3(2, -0.5f, 6);
+
     public Vector3 startStageCamPos = new Vector3(-3.0f, 6.0f, 0.0f);
     public Vector3 startStageCamRot = new Vector3(30f, 90f, 0.0f);
 
@@ -247,11 +287,13 @@ public class EncounterConstants: MonoBehaviour
 
     [Header("UI Values")]
     public Color HypeLight = Color.white;
-    public Vector3 KnobPlayPos = new Vector3(500f, 50f, 0f);
+    public float KnobPlayScale = 1.5f;
+    public Vector3 KnobPlayPos = new Vector3(650f, 75f, 0f);
     public Vector3 KnobStartPos = new Vector3(600f, -250f, 0f);
     public float SelectorDelay = 0.15f;
 
     public float knobSelectScale = 1.25f;
+    public float knobDeselectScale = 0.8f;
 
     public float repBarWidth = 1000;
     public float CannotHypeScale = 0.8f;
@@ -271,7 +313,6 @@ public class EncounterConstants: MonoBehaviour
 
     public float moveLockedScale = 0.6f;
     public float moveLockScale = 0.7f;
-    public float knobDeselectScale = 0.8f;
     public float moveSelectedScale = 1.2f;
     public Color moveLockedColour = Color.red;
     public Color moveLockColor = Color.gray;
@@ -282,7 +323,7 @@ public class EncounterConstants: MonoBehaviour
     public float moveEffectDuration = 0.5f;
     public Color effectAnimateColor = Color.blue;
     public float moveAnimateDuration = 0.2f;
-    public Vector2 descriptionOffset = new Vector2(-150, 10);
+    public Vector2 descriptionOffset = new Vector2(-150, 60);
 
     [Header("Audio Control Values")]
     public float MusicCompressorMute = -60f;
@@ -306,4 +347,20 @@ public class EncounterConstants: MonoBehaviour
 
     public int notePoolSize = 30;
     public Vector3 firstKnobRotation = new Vector3(0f, 0f, -27.575f);
+
+    [Header("UI")]
+    public float showCountDuration = 2f;
+    public float showCountBounce = 1.3f;
+
+    public string SetCountText = "Set Count: {0}/{1}";
+    public string SongCountText = "Song Count: {0}/{1}";
+
+    public float textFadeDuration = 1.0f;
+
+    public float startUIFadeDuration = 5.0f;
+    public float startGameUIFadeDuration = 3.0f;
+    public float introUIFadeDuration = 2.0f;
+    //public float IntroUIFadeDuration = 3.0f;
+
+
 }

@@ -441,6 +441,7 @@ MonoBehaviour:
   setDing: {fileID: 8300000, guid: 396e7044060a48941a9343148ab74273, type: 3}
   setBing: {fileID: 8300000, guid: b133e0f87bef9ef4984b4c11c0b5adf1, type: 3}
   wrongPress: {fileID: 8300000, guid: 7a4f90eff7979b944a1051be613fb4b6, type: 3}
+  menuSelect: {fileID: 8300000, guid: 5b0f8cd074e204c4ab4cce3068b4ae9d, type: 3}
   audioMenu: {fileID: 198883646110637960}
   audioNotes: {fileID: 198883645471621549}
   audioCrowdStart: {fileID: 198883645880643949}

@@ -51,7 +51,7 @@ MonoBehaviour:
   gamePanelManager: {fileID: 0}
   activeMovesObject: {fileID: 0}
   mainCamera: {fileID: 0}
-  crowdLight: {fileID: 0}
+  crowdLight: {fileID: 2405130580405201365}
   crowdEntities: {fileID: 2144341777011369306}
   enemyEntities: {fileID: 4777297748878130187}
   currentScore: 0
@@ -59,6 +59,7 @@ MonoBehaviour:
   CrazyStandSprite: {fileID: 21300000, guid: d63a4caaa89f05342a78c052c4b26f75, type: 3}
   RythmSprite: {fileID: 21300000, guid: ec6839e9348b92247ba1ddbfdd0dee74, type: 3}
   StompSprite: {fileID: 21300000, guid: cccceb62a5eb6e244a2ee82efb8d655a, type: 3}
+  currSet: 0
 --- !u!114 &5689996492357137671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,6 +106,7 @@ MonoBehaviour:
   enemyDifficulty: 0
   enemyMissThreshold: 90
   setLength: 4
+  totalSets: 3
   crowdYPosition: 1.9
   crowdMoveProbability: 0.5
   NoteSpeed: 10
@@ -114,6 +116,62 @@ MonoBehaviour:
   CrowdSoundTransition: 2
   HypeValueMax: 100
   HypeValueStart: 25
+  UITextSets:
+  - descriptionText: Lets get ready to RUMBLE!!
+    acceptText: Accept!
+    cancelText: 
+    selectText: 
+    specialText: 
+  - descriptionText: Lets go!
+    acceptText: Select Instrument
+    cancelText: 
+    selectText: 
+    specialText: 
+  - descriptionText: Select an Instrument
+    acceptText: Ready
+    cancelText: 
+    selectText: Select Band Member
+    specialText: 
+  - descriptionText: Select a Move
+    acceptText: Ready
+    cancelText: Select Instrument
+    selectText: Select Move
+    specialText: 
+  - descriptionText: Lets go!
+    acceptText: 
+    cancelText: 
+    selectText: 
+    specialText: 
+  - descriptionText: It's their turn now
+    acceptText: 
+    cancelText: 
+    selectText: 
+    specialText: 
+  - descriptionText: The crowds really into our music.
+    acceptText: 
+    cancelText: 
+    selectText: 
+    specialText: 
+  - descriptionText: The crowds likes their music better.
+    acceptText: 
+    cancelText: 
+    selectText: 
+    specialText: 
+  - descriptionText: LETS GET HYPED!
+    acceptText: Skip HYPE
+    cancelText: 
+    selectText: Select Band Member
+    specialText: Start HYPE Move
+  - descriptionText: YEAH! We've won!
+    acceptText: Yeah!
+    cancelText: Lets Do better
+    selectText: 
+    specialText: 
+  - descriptionText: Oh no! They've won!
+    acceptText: Lets try again!
+    cancelText: 
+    selectText: 
+    specialText: 
   GuitarMoves:
   - name: Pitch
     description: Play an attack based verse.
@@ -161,7 +219,7 @@ MonoBehaviour:
   - name: Crazy Stand
     description: Play a devastating randomized verse of fast notes.
     score: 1
-    hypeRate: 12
+    hypeRate: 7
     turnLock: 4
     effect: 4
     currentLock: 0
@@ -186,6 +244,7 @@ MonoBehaviour:
   amplifierMultiplier: 1.5
   rhythmMultiplier: 0.8
   CrazyStandNoteDelay: 2
+  startcamera: {x: 2, y: -0.5, z: 6}
   startStageCamPos: {x: -3, y: 6, z: 0}
   startStageCamRot: {x: 30, y: 90, z: 0}
   cameraTurnPos: {x: 2.5, y: 20, z: 0}
@@ -197,10 +256,12 @@ MonoBehaviour:
   cameraOverviewPos: {x: 0, y: 25, z: -30}
   cameraOverviewRot: {x: 45, y: 0, z: 0}
   HypeLight: {r: 1, g: 1, b: 1, a: 1}
-  KnobPlayPos: {x: 500, y: 50, z: 0}
+  KnobPlayScale: 1.5
+  KnobPlayPos: {x: 650, y: 75, z: 0}
   KnobStartPos: {x: 600, y: -250, z: 0}
   SelectorDelay: 0.15
   knobSelectScale: 1.25
+  knobDeselectScale: 0.8
   repBarWidth: 1000
   CannotHypeScale: 0.8
   BaseHypeScale: 1
@@ -216,7 +277,6 @@ MonoBehaviour:
   IsHypeColor: {r: 0, g: 1, b: 0, a: 1}
   moveLockedScale: 0.6
   moveLockScale: 0.7
-  knobDeselectScale: 0.8
   moveSelectedScale: 1.2
   moveLockedColour: {r: 1, g: 0, b: 0, a: 1}
   moveLockColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -226,7 +286,7 @@ MonoBehaviour:
   moveEffectDuration: 0.5
   effectAnimateColor: {r: 0, g: 0, b: 1, a: 1}
   moveAnimateDuration: 0.2
-  descriptionOffset: {x: -150, y: 10}
+  descriptionOffset: {x: -150, y: 60}
   MusicCompressorMute: -60
   MusicCompressorNormal: 0
   MusicMissDelay: 0.4
@@ -241,6 +301,14 @@ MonoBehaviour:
   startLightRot: {x: 135, y: 90, z: 90}
   notePoolSize: 30
   firstKnobRotation: {x: 0, y: 0, z: -27.575}
+  showCountDuration: 2
+  showCountBounce: 1.5
+  SetCountText: 'Set Count: {0}/{1}'
+  SongCountText: 'Song Count: {0}/{1}'
+  textFadeDuration: 1
+  startUIFadeDuration: 5
+  startGameUIFadeDuration: 3
+  introUIFadeDuration: 2
 --- !u!1 &1613359358541547869
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,7 +441,7 @@ MonoBehaviour:
   useVolumetric: 1
   featuresFoldout: 1
   showAdditionalSettings: 0
-  displayLightIntensity: 3
+  displayLightIntensity: 5
   displayAreaLightEmissiveMesh: 0
   areaLightCookie: {fileID: 0}
   areaLightShadowCone: 120

@@ -21,6 +21,7 @@ public class HypeMeterUI : MonoBehaviour
     EncounterConstants encounterConstants;
     NoteGeneratorManager noteGeneratorManager;
     // Start is called before the first frame update
+    AudioManager audioManager;
     void Start()
     {
         encounterConstants = FindObjectOfType<EncounterConstants>();
@@ -28,6 +29,7 @@ public class HypeMeterUI : MonoBehaviour
         hypeValue = encounterConstants.HypeValueStart;
         hypeValueMax = encounterConstants.HypeValueMax;
 
+        audioManager = FindObjectOfType<AudioManager>();
         hypeBar.transform.DOScaleY(hypeValue / hypeValueMax, 0);
         hypeBar.DOFade(0.5f, 0);
     }
@@ -51,7 +53,7 @@ public class HypeMeterUI : MonoBehaviour
         }
 
 
-        if (hypeValue > hypeValueMax)
+        if (hypeValue > hypeValueMax && !canHype)
         {
             AnimateCanHype();
         } else
@@ -82,6 +84,13 @@ public class HypeMeterUI : MonoBehaviour
         }
 
         hypeChangeSequence = DOTween.Sequence();
+
+        if (canHype)
+        {
+            canHype = false;
+            hypeChangeSequence.Insert(0, hypeBar.DOColor(encounterConstants.CanHypeColor, encounterConstants.HypeIncrementDuration / 2));
+        }
+
         hypeChangeSequence.Insert(0, hypeBar.transform.DOScaleY(hypeValue/hypeValueMax, encounterConstants.HypeIncrementDuration).SetEase(Ease.InOutBack));
     }
 
@@ -98,6 +107,11 @@ public class HypeMeterUI : MonoBehaviour
 
     void AnimateCanHype()
     {
+        if(canHype)
+        {
+            return;
+        }
+
         canHype = true;
 
         if (hypeAnimateSequence != null)
@@ -107,8 +121,11 @@ public class HypeMeterUI : MonoBehaviour
         hypeAnimateSequence = DOTween.Sequence();
         hypeAnimateSequence.Insert(0, transform.DOScale(encounterConstants.CanHypeScale, encounterConstants.CanHypeDuration).SetEase(Ease.InOutBack));
 
-        hypeAnimateSequence.Insert(encounterConstants.CanHypeDuration / 2, hypeBar.DOColor(encounterConstants.CanHypeColor, encounterConstants.CanHypeDuration / 2).SetEase(Ease.InOutQuad));
+        hypeAnimateSequence.Insert(encounterConstants.CanHypeDuration / 2, hypeBar.DOColor(encounterConstants.CanHypeColor, encounterConstants.CanHypeDuration / 2));
         hypeAnimateSequence.Insert(encounterConstants.CanHypeDuration, hypeBar.DOFade(0.9f, encounterConstants.CanHypeDuration).SetEase(Ease.InOutBack));
+
+        // Play Audio Effect for can hype
+        audioManager.PlaySoundEffect(SoundEffects.SetComplete);
 
         hypeAnimateSequence.Play();
     }
@@ -136,6 +153,8 @@ public class HypeMeterUI : MonoBehaviour
         });
         // Animate Hype Mask getting larger
         // Emit particles
+
+        audioManager.PlaySoundEffect(SoundEffects.SetComplete);
     }
 
     public void AnimateHypeComplete(AnimationCallback animCallback)
@@ -155,6 +174,8 @@ public class HypeMeterUI : MonoBehaviour
         hypeAnimateSequence.Insert(encounterConstants.IsHypedDuration / 2, hypeBar.DOColor(encounterConstants.BaseHypeColor, encounterConstants.IsHypedDuration / 2).SetEase(Ease.InOutQuad));
 
         hypeAnimateSequence.Insert(encounterConstants.IsHypedDuration, hypeBar.DOFade(0.75f, encounterConstants.IsHypedDuration).SetEase(Ease.InOutBack));
+
+        FindObjectOfType<AudioManager>().PlaySoundEffect(SoundEffects.Bing);
 
         hypeAnimateSequence.OnComplete(() => {
             animCallback?.Invoke();

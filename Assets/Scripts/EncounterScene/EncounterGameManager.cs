@@ -1,7 +1,9 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -56,6 +58,7 @@ public class EncounterGameManager : MonoBehaviour
     GameplayState currentState = GameplayState.StartGame;
 
     AudioManager audioManager;
+    MainUIScript mainUI;
 
     public delegate void AnimationCallback();
     // Start is called before the first frame update
@@ -63,14 +66,19 @@ public class EncounterGameManager : MonoBehaviour
     Image[] activeImages;
     Sequence animateMoveEffects;
     EncounterConstants encounterConstants;
+
+    public int currSet = 0;
     private void Awake()
     {
+        mainUI = FindObjectOfType<MainUIScript>();
         audioManager = FindObjectOfType<AudioManager>();
 
         // Take values from encounter constants
         encounterConstants = FindObjectOfType<EncounterConstants>();
 
         movesActive.Clear();
+
+        mainCamera.transform.position = encounterConstants.startcamera;
         // Add Attack statuses
         foreach (PlayerMove move in encounterConstants.GuitarMoves)
         {
@@ -134,6 +142,7 @@ public class EncounterGameManager : MonoBehaviour
             index++;
         }
 
+        currSet = 0;
         FadeOutOverlayUI();
         crowdLight.DOIntensity(0.0f, 0.2f);
         audioManager.PlayCrowdEffect(CrowdEffects.CrowdIdle);
@@ -142,27 +151,31 @@ public class EncounterGameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        TakeInput();
         // This Update loop will be commented out when actual gameplay is written
-        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick button 8") || Input.GetKeyDown("joystick button 10"))
+
+        OnProcessState(currentState);
+    }
+
+    private void TakeInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick button 0"))
         {
-            switch(currentState)
+            switch (currentState)
             {
                 case GameplayState.StartGame:
-                    audioManager.PlaySoundEffect(SoundEffects.MenuNext);
-                    SwitchState(GameplayState.StartGameUI);
+                    audioManager.PlaySoundEffect(SoundEffects.Good);
+                    mainUI.StartUI(() =>
+                    {
+                        SwitchState(GameplayState.StartGameUI);
+                    });
                     break;
                 case GameplayState.StartGameUI:
                     audioManager.PlaySoundEffect(SoundEffects.MenuNext);
                     SwitchState(GameplayState.TurnIntro);
                     break;
-                case GameplayState.TurnPlayOut:
-                    audioManager.PlaySoundEffect(SoundEffects.MenuNext);
-                    SwitchState(GameplayState.TurnIntro);
-                    break;
             }
         }
-
-        OnProcessState(currentState);
     }
 
     void SwitchState(GameplayState newState)
@@ -194,9 +207,6 @@ public class EncounterGameManager : MonoBehaviour
                 break;
             case GameplayState.TurnPlayOut:
                 {
-                    StopMoveEffect(MoveEffects.Amplifier);
-                    //gameManager.StopMoveEffect(MoveEffects.PickUps);
-
                     switchAllowed = newState == GameplayState.EndGameUI || newState == GameplayState.TurnIntro;
                 }
                 break;
@@ -233,10 +243,13 @@ public class EncounterGameManager : MonoBehaviour
                 break;
             case GameplayState.StartGameUI:
                 {
-                    audioManager.PlayCrowdEffect(CrowdEffects.CrowdStart);
                     turnScore = 0;
                     currentScore = 0;
-                    FadeInOverlayUI();
+
+                    mainUI.StartGameUI(() => {
+                        audioManager.PlayCrowdEffect(CrowdEffects.CrowdStart);
+                        FadeInOverlayUI();
+                    });
                 }
                 break;
             case GameplayState.TurnIntro:
@@ -252,23 +265,35 @@ public class EncounterGameManager : MonoBehaviour
                 break;
             case GameplayState.TurnPlayOut:
                 {
-                    audioManager.PlayCrowdEffect(CrowdEffects.CrowdIdle);
-                    ChangeScore();
+                    StopMoveEffect(MoveEffects.Amplifier);
 
-                    crowdLight.DOIntensity(3.0f, 1.0f);
-                    
-                    MoveCameraToOverview();
-                    MoveCrowds();
+                    currSet++;
+                    audioManager.PlayCrowdEffect(CrowdEffects.CrowdIdle);
+                    UpdateScore();
+
+                    ShowGamePanelCount(currSet, noteManager.currSong, true, false);
+
+                    mainUI.TurnPlayoutUI(currentScore > 0, () =>
+                    {
+                        crowdLight.DOIntensity(3.0f, 1.0f);
+
+                        MoveCameraToOverview();
+                        MoveCrowds();
+                    });
                 }
                 break;
             case GameplayState.EndGameUI:
                 {
                     FadeOutOverlayUI();
+                    mainUI.EndGameUI(currentScore > 0, () =>
+                    {
+                        SwitchState(GameplayState.EndGame);
+                    });
                 }
                 break;
             case GameplayState.EndGame:
                 {
-
+                    SceneManager.LoadScene(0);
                 }
                 break;
         }
@@ -352,7 +377,7 @@ public class EncounterGameManager : MonoBehaviour
         }
     }
 
-    void ChangeScore()
+    void UpdateScore()
     {
         currentScore += turnScore - enemyScore;
         turnScore = 0;
@@ -383,9 +408,9 @@ public class EncounterGameManager : MonoBehaviour
         {
             float xValue = 10f * (float)-currentScore / 600f;
 
-            if(Random.Range(0f, 1f) < encounterConstants.crowdMoveProbability) // 
+            if(UnityEngine.Random.Range(0f, 1f) < encounterConstants.crowdMoveProbability) // 
             {
-                Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * Random.Range(1, 3f)), encounterConstants.crowdYPosition, Random.Range(10f, -10f));
+                Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * UnityEngine.Random.Range(1, 3f)), encounterConstants.crowdYPosition, UnityEngine.Random.Range(10f, -10f));
 
                 moveSequence.Insert(delay, person.DOLocalMove(newPos, 1.5f).SetEase(Ease.InOutQuad));
                 delay += 0.5f;
@@ -394,7 +419,14 @@ public class EncounterGameManager : MonoBehaviour
 
         moveSequence.OnComplete(() => {
             crowdLight.DOIntensity(0.0f, 1f);
-            SwitchState(GameplayState.TurnIntro);
+
+            if(currSet <= encounterConstants.totalSets)
+            {
+                SwitchState(GameplayState.TurnIntro);
+            } else
+            {
+                SwitchState(GameplayState.EndGameUI);
+            }
         });
     }
 
@@ -473,6 +505,7 @@ public class EncounterGameManager : MonoBehaviour
 
     public void StartMoveEffect(MoveEffects attack)
     {
+        audioManager.PlaySoundEffect(SoundEffects.MenuSelect);
         if (!movesActive[attack])
         {
             movesActive[attack] = true;
@@ -487,7 +520,7 @@ public class EncounterGameManager : MonoBehaviour
 
     public void AnimateEffectAction(MoveEffects attack)
     {
-        Debug.Log("Animate Effect Action " + attack);
+        audioManager.PlaySoundEffect(SoundEffects.WrongPress);
         if (movesActive[attack])
         {
             Image moveImage = activeMovesObject.transform.Find(attack.ToString()).GetComponent<Image>();
@@ -506,6 +539,7 @@ public class EncounterGameManager : MonoBehaviour
     {
         if (movesActive[attack])
         {
+            audioManager.PlaySoundEffect(SoundEffects.SetFailure);
             movesActive[attack] = false;
 
             Image moveImage = activeMovesObject.transform.Find(attack.ToString()).GetComponent<Image>();
@@ -513,5 +547,10 @@ public class EncounterGameManager : MonoBehaviour
             moveImage.DOFade(0.0f, encounterConstants.moveEffectDuration);
             moveImage.transform.DOScale(0.0f, encounterConstants.moveEffectDuration).SetEase(Ease.InOutBack);
         }
+    }
+
+    internal void ShowGamePanelCount(int currSet, int currSong, bool updateSet, bool updateSong)
+    {
+        gamePanelManager.ShowSongSet(currSet, currSong, updateSet, updateSong);
     }
 }

@@ -16,6 +16,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip setDing;
     public AudioClip setBing;
     public AudioClip wrongPress;
+    public AudioClip menuSelect;
 
     public AudioSource audioMenu;
     public AudioSource audioNotes;
@@ -87,6 +88,9 @@ public class AudioManager : MonoBehaviour
                 break;
             case SoundEffects.WrongPress:
                 audioNotes.PlayOneShot(wrongPress);
+                break;
+            case SoundEffects.MenuSelect:
+                audioNotes.PlayOneShot(menuSelect);
                 break;
         }
     }

@@ -57,6 +57,8 @@ public class NoteGeneratorManager : MonoBehaviour
 
     public Transform reputationPointerTransform;
 
+    public int currSong = 0;
+
     PlayableDirector selfPlayableDirector;
 
     // Start is called before the first frame update
@@ -68,7 +70,6 @@ public class NoteGeneratorManager : MonoBehaviour
     int currentPlayer = 0;
     int currentMove = 0;
 
-    int currSet = 0;
 
     bool isTurnVisible;
 
@@ -98,13 +99,15 @@ public class NoteGeneratorManager : MonoBehaviour
     bool musicPlaying;
 
     int hypedCount = 0;
+
+    MainUIScript mainUI;
     private void Awake()
     {
         selfPlayableDirector = GetComponent<PlayableDirector>();
         gameManager = FindObjectOfType<EncounterGameManager>();
         audioManager = FindObjectOfType<AudioManager>();
         hypeMeterUI = FindObjectOfType<HypeMeterUI>();
-
+        mainUI = FindObjectOfType<MainUIScript>();
         // Take values from encounter constants
         encounterConstants = FindObjectOfType<EncounterConstants>();
 
@@ -197,8 +200,6 @@ public class NoteGeneratorManager : MonoBehaviour
 
         PlayerMove move = playerMoves[currentPlayer][currentMove];
 
-        Color moveColor = move.moveColor;
-
         descriptionSequence.Insert(0f, moveLock.DOFade(0f, encounterConstants.descriptionTransition / 3));
         descriptionSequence.Insert(0f, moveEffect.DOFade(0f, encounterConstants.descriptionTransition / 3));
         descriptionSequence.Insert(0f, lockCounter.DOFade(0f, encounterConstants.descriptionTransition / 3));
@@ -215,92 +216,97 @@ public class NoteGeneratorManager : MonoBehaviour
             moveDescription.text = descString;
             moveTitle.text = playerMoves[currentPlayer][currentMove].name;
 
+            moveDescription.ForceMeshUpdate();
+            moveTitle.ForceMeshUpdate();
+
+            Color moveColor = move.moveColor;
+
             if (isUnlocked)
             {
                 moveTitle.color = encounterConstants.PlayerColors[currentPlayer];
                 moveDescription.color = encounterConstants.moveUnlockedTextColour;
             } else
             {
+                moveColor = encounterConstants.moveLockColor;
+                descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveLock.DOFade(1f, 1f));
+                descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, lockCounter.DOFade(1f, 1f));
+
+
                 moveDescription.color = encounterConstants.moveLockTextColor;
                 lockCounter.text = playerMoves[currentPlayer][currentMove].currentLock + " turns";
+                lockCounter.ForceMeshUpdate();
 
                 moveLock.color = moveColor;
                 lockCounter.color = moveColor;
             }
-        }));
-
-
-        if (!isUnlocked) {
-            moveColor = encounterConstants.moveLockColor;
-            descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveLock.DOFade(1f, 1f));
-            descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, lockCounter.DOFade(1f, 1f));
-        }
-
-        if (move.effect != MoveEffects.None)
-        {
-            switch (move.effect)
+            if (move.effect != MoveEffects.None)
             {
-                case MoveEffects.Amplifier:
-                    moveEffect.sprite = gameManager.AmplifierSprite;
-                    break;
-                case MoveEffects.CrazyStand:
-                    moveEffect.sprite = gameManager.CrazyStandSprite;
-                    break;
-                case MoveEffects.Rhythm:
-                    moveEffect.sprite = gameManager.RythmSprite;
-                    break;
-                case MoveEffects.Stomp:
-                    moveEffect.sprite = gameManager.StompSprite;
-                    break;
+                switch (move.effect)
+                {
+                    case MoveEffects.Amplifier:
+                        moveEffect.sprite = gameManager.AmplifierSprite;
+                        break;
+                    case MoveEffects.CrazyStand:
+                        moveEffect.sprite = gameManager.CrazyStandSprite;
+                        break;
+                    case MoveEffects.Rhythm:
+                        moveEffect.sprite = gameManager.RythmSprite;
+                        break;
+                    case MoveEffects.Stomp:
+                        moveEffect.sprite = gameManager.StompSprite;
+                        break;
+                }
+
+                descriptionSequence.Insert(encounterConstants.descriptionTransition / 2,
+                    moveEffect.DOColor(moveColor, encounterConstants.descriptionTransition / 2));
+            }
+            else
+            {
+                descriptionSequence.Insert(encounterConstants.descriptionTransition / 2,
+                    moveEffect.DOFade(0f, encounterConstants.descriptionTransition / 2).OnComplete(() => {
+                        moveEffect.sprite = null;
+                    }));
             }
 
+            descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveCanvas.GetComponent<Image>().DOColor(moveColor, encounterConstants.descriptionTransition / 2));
+
+            Vector2 descPos = knobControl.moveLabels.GetComponentsInChildren<Image>(true)[3].GetComponent<RectTransform>().anchoredPosition + encounterConstants.descriptionOffset;
+
             descriptionSequence.Insert(encounterConstants.descriptionTransition / 2,
-                moveEffect.DOColor(moveColor, encounterConstants.descriptionTransition / 2));
-        }
-        else
-        {
-            descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, 
-                moveEffect.DOFade(0f, encounterConstants.descriptionTransition / 2).OnComplete(() => {
-                    moveEffect.sprite = null;
-                }));
-        }
+                moveCanvas.GetComponent<RectTransform>().DOAnchorPos(descPos, encounterConstants.descriptionTransition / 2));
 
-        descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveCanvas.GetComponent<Image>().DOColor(moveColor, encounterConstants.descriptionTransition / 2));
-
-        Vector2 descPos = knobControl.moveLabels.GetComponentsInChildren<Image>(true)[3].GetComponent<RectTransform>().anchoredPosition + encounterConstants.descriptionOffset;
-
-        descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, 
-            moveCanvas.GetComponent<RectTransform>().DOAnchorPos(descPos, encounterConstants.descriptionTransition / 2));
-
-        descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveCanvas.DOFade(1f, encounterConstants.descriptionTransition / 2));
-        descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveTitle.DOFade(1f, encounterConstants.descriptionTransition / 2));
-        descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveDescription.DOFade(1f, encounterConstants.descriptionTransition / 2));
+            descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveCanvas.DOFade(1f, encounterConstants.descriptionTransition / 2));
+            descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveTitle.DOFade(1f, encounterConstants.descriptionTransition / 2));
+            descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveDescription.DOFade(1f, encounterConstants.descriptionTransition / 2));
+        }));
     }
 
     void NextMoveSelection()
     {
         audioManager.PlaySoundEffect(SoundEffects.MoveSelect);
+        
         currentMove++;
         if (currentMove >= playerMoves[currentPlayer].Length)
         {
             currentMove = 0;
         }
-
-        knobControl.NextSelection();
+        
         UpdateMoveDescription();
+        knobControl.NextSelection();
     }
 
     void LastMoveSelection()
     {
         audioManager.PlaySoundEffect(SoundEffects.MoveSelect);
+        
         currentMove--;
         if (currentMove < 0f)
         {
             currentMove = playerMoves[currentPlayer].Length - 1;
         }
 
-        knobControl.LastSelection();
         UpdateMoveDescription();
+        knobControl.LastSelection();
     }
 
     void TakeInput()
@@ -434,7 +440,7 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.EnemyIntro:
                 {
-                    switchAllowed = newState == NotesGameStates.Enemy || newState == NotesGameStates.Intro;
+                    switchAllowed = newState == NotesGameStates.Enemy || newState == NotesGameStates.Intro || newState == NotesGameStates.EndSet;
                 }
                 break;
             case NotesGameStates.Enemy:
@@ -477,8 +483,10 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.Start:
                 {
-                    currSet = 0;
+                    gameManager.ShowGamePanelCount(0, 0, false, false);
 
+                    currSong = 0;
+                    
                     OnStartGame(() => {
                         SwitchState(NotesGameStates.Intro);
                     });
@@ -487,23 +495,31 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.Intro:
                 {
-                    // Call function to fade UI and call next state
-                    gameManager.MoveCameraToPlayer();
+                    mainUI.IntroUI(hypeMeterUI.canHype, () =>
+                    {
+                        // Call function to fade UI and call next state
+                        gameManager.MoveCameraToPlayer();
 
-                    OnIntro(() => {
-                        isTurnVisible = true;
-                        // OnIntroComplete
+                        OnIntro(() =>
+                        {
+                            isTurnVisible = true;
+                            // OnIntroComplete
+                        });
                     });
                 }
                 break;
             case NotesGameStates.MoveSelect:
                 {
                     // Call function to fade UI and call next state
-                    gameManager.MoveCameraToFocus(playerEntities.stageEntities[currentPlayer]);
+                    mainUI.MoveSelectUI(() =>
+                    {
+                        gameManager.MoveCameraToFocus(playerEntities.stageEntities[currentPlayer]);
 
-                    OnMoveSelect(() => {
-                        gameManager.OnNotesStartComplete();
-                        // On Move Select Complete
+                        OnMoveSelect(() =>
+                        {
+                            gameManager.OnNotesStartComplete();
+                            // On Move Select Complete
+                        });
                     });
                 }
                 break;
@@ -512,34 +528,13 @@ public class NoteGeneratorManager : MonoBehaviour
                     songFinishRecieved = false;
                     musicPlaying = false;
 
-                    OnPlay(() =>
+                    mainUI.FadeTextDescription(() =>
                     {
-                        // Reset song finished
-                        SelectSongAndPlay(() =>
+                        OnPlay(() =>
                         {
-                            OnPlayEnd(() =>
+                            // Reset song finished
+                            SelectSongAndPlay(() =>
                             {
-                                songFinishRecieved = true;
-                            });
-                        });
-                        // TODO :: Play Song here
-                    });
-                }
-                break;
-            case NotesGameStates.Hyped:
-                {
-                    songFinishRecieved = false;
-                    musicPlaying = false;
-
-                    OnHyped(() =>
-                    {
-                        // Play Song 1
-                        SelectHypedSongAndPlay(() =>
-                        {
-                            // On Complete Play Song 2
-                            SelectHypedSongAndPlay(() =>
-                            {
-                                // Set Song Finished
                                 OnPlayEnd(() =>
                                 {
                                     songFinishRecieved = true;
@@ -549,32 +544,65 @@ public class NoteGeneratorManager : MonoBehaviour
                     });
                 }
                 break;
+            case NotesGameStates.Hyped:
+                {
+                    songFinishRecieved = false;
+                    musicPlaying = false;
+
+                    mainUI.FadeTextDescription(() =>
+                    {
+                        // Start Hyped Function
+                        OnHyped(() =>
+                        {
+                            // Play Song 1
+                            SelectHypedSongAndPlay(() =>
+                            {
+                                // On Complete Play Song 2
+                                SelectHypedSongAndPlay(() =>
+                                {
+                                    // Set Song Finished
+                                    OnPlayEnd(() =>
+                                    {
+                                        songFinishRecieved = true;
+                                    });
+                                });
+                            });
+                        });
+                    });
+                }
+                break;
             case NotesGameStates.EnemyIntro:
                 {
                     gameManager.MoveCameraToEnemy();
-
-                    OnEnemyIntro(() => {
-                        if (gameManager.movesActive[MoveEffects.Stomp])
-                        {
-                            gameManager.AnimateEffectAction(MoveEffects.Stomp);
-                            MakeEnemyMissTurn();
-                        } else
-                        {
-                            SwitchState(NotesGameStates.Enemy);
-                        }
+                    mainUI.EnemyIntroUI(() =>
+                    {
+                        OnEnemyIntro(() => {
+                            if (gameManager.movesActive[MoveEffects.Stomp])
+                            {
+                                gameManager.AnimateEffectAction(MoveEffects.Stomp);
+                                MakeEnemyMissTurn();
+                            }
+                            else
+                            {
+                                SwitchState(NotesGameStates.Enemy);
+                            }
+                        });
                     });
                 }
                 break;
             case NotesGameStates.Enemy:
                 {
-                    songFinishRecieved = false;
-                    //isTurnVisible = true;
-                    ////TransitionStageElements();
-                    SelectEnemySongAndPlay(() =>
+                    mainUI.FadeTextDescription(() =>
                     {
-                        OnPlayEnd(() =>
+                        songFinishRecieved = false;
+                        //isTurnVisible = true;
+                        ////TransitionStageElements();
+                        SelectEnemySongAndPlay(() =>
                         {
-                            songFinishRecieved = true;
+                            OnPlayEnd(() =>
+                            {
+                                songFinishRecieved = true;
+                            });
                         });
                     });
 
@@ -655,6 +683,7 @@ public class NoteGeneratorManager : MonoBehaviour
 
     void OnMoveCancel()
     {
+        audioManager.PlaySoundEffect(SoundEffects.MenuSelect);
         HideMoveDescription();
         SwitchState(NotesGameStates.Intro);
     }
@@ -711,7 +740,7 @@ public class NoteGeneratorManager : MonoBehaviour
 
     IEnumerator PlayEnemySong()
     {
-        int songToPlay = currSet % playableSongs.Count;
+        int songToPlay = currSong % playableSongs.Count;
         selfPlayableDirector.playableAsset = playableSongs[songToPlay];
         selfPlayableDirector.Play();
 
@@ -887,8 +916,10 @@ public class NoteGeneratorManager : MonoBehaviour
         // Should only be called once
         songFinishRecieved = false;
 
-        currSet++;
-        if (currSet >= encounterConstants.setLength)
+        currSong++;
+        gameManager.ShowGamePanelCount(gameManager.currSet, currSong, false, true);
+
+        if (currSong >= encounterConstants.setLength)
         {
             SwitchState(NotesGameStates.EndSet);
         }

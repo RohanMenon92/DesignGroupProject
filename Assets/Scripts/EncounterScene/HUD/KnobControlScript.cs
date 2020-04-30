@@ -297,6 +297,7 @@ public class KnobControlScript : MonoBehaviour
                 moveSprite.gameObject.SetActive(true);
 
                 moveSprite.GetComponentInChildren<TextMeshProUGUI>().text = moves[index].name;
+                moveSprite.GetComponentInChildren<TextMeshProUGUI>().ForceMeshUpdate();
                 if (!moves[index].IsUnlocked())
                 {
                     moveSprite.GetComponentInChildren<TextMeshProUGUI>().color = encounterConstants.moveLockTextColor;
@@ -327,7 +328,7 @@ public class KnobControlScript : MonoBehaviour
             index++;
         }
         animationSequence.Insert(0.75f, transform.DOLocalMove(encounterConstants.KnobPlayPos, 0.5f).SetEase(Ease.InOutBack));
-        animationSequence.Insert(0.75f, transform.DOScale(2f, 0.5f).SetEase(Ease.InOutBack));
+        animationSequence.Insert(0.75f, transform.DOScale(encounterConstants.KnobPlayScale, 0.5f).SetEase(Ease.InOutBack));
     }
 
     internal void OnMoveLocked(int currentMove)
