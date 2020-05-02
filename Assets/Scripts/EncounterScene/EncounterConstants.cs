@@ -79,7 +79,12 @@ public enum SoundEffects
     Good,
     Bing,
     WrongPress,
-    MenuSelect
+    MenuSelect,
+    Hyped,
+    Amplify,
+    CrazyStand,
+    Rhythm,
+    Stomp
 }
 public enum CrowdEffects
 {
@@ -209,7 +214,7 @@ public class EncounterConstants: MonoBehaviour
     public float crowdYPosition = 1.9f;
     public float crowdMoveProbability = 0.5f;
 
-    public float NoteSpeed = 10f;
+    public float NoteSpeed = 6f;
     public float MusicPlayDelay = 2f;
 
     public float CrowdStartDuration = 5f;
@@ -247,7 +252,7 @@ public class EncounterConstants: MonoBehaviour
     {
         new PlayerMove("Root", "Play an attack based verse.", 1.5f,2,0, MoveEffects.None, new Color(87, 0, 255)),
         //new PlayerMove("Pickups", "Play a verse that boosts the team's accuracy for 1 turn.", 0.7f,3,4, MoveEffects.Pickups),
-        new PlayerMove("Rythm", "Play a verse that reduces opponent Crowd Interest gain for 2 turns.", 0.6f,5,4, MoveEffects.Rhythm, new Color(0, 255, 236))
+        new PlayerMove("Rhythm", "Play a verse that reduces opponent Crowd Interest gain for 2 turns.", 0.6f,5,4, MoveEffects.Rhythm, new Color(0, 255, 236))
     };
 
     public PlayerMove[] KeytarMoves = new PlayerMove[]
@@ -340,10 +345,12 @@ public class EncounterConstants: MonoBehaviour
     public float MusicSelectDelay = 0.3f;
 
     [Header("Other Values and Enums")]
-    public float startLightIntensity = 18f;
+    public float startLightIntensity = 30f;
     //public float focusLightIntensity = 0f;
     public float endLightIntensity = 0f;
-    public Vector3 startLightRot = new Vector3(135f, 90f, 90f);
+    public Vector3 startLightRot = new Vector3(35f, 90f, 90f);
+    public float spotLightFocus = 45f;
+    public float spotLightGeneral = 90f;
 
     public int notePoolSize = 30;
     public Vector3 firstKnobRotation = new Vector3(0f, 0f, -27.575f);
@@ -360,6 +367,7 @@ public class EncounterConstants: MonoBehaviour
     public float startUIFadeDuration = 5.0f;
     public float startGameUIFadeDuration = 3.0f;
     public float introUIFadeDuration = 2.0f;
+
     //public float IntroUIFadeDuration = 3.0f;
 
 

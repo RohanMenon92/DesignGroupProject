@@ -247,6 +247,7 @@ public class EncounterGameManager : MonoBehaviour
                     currentScore = 0;
 
                     mainUI.StartGameUI(() => {
+                        noteManager.playerEntities.OnGameStart();
                         audioManager.PlayCrowdEffect(CrowdEffects.CrowdStart);
                         FadeInOverlayUI();
                     });
@@ -505,7 +506,22 @@ public class EncounterGameManager : MonoBehaviour
 
     public void StartMoveEffect(MoveEffects attack)
     {
-        audioManager.PlaySoundEffect(SoundEffects.MenuSelect);
+
+        switch (attack)
+        {
+            case MoveEffects.Amplifier:
+                audioManager.PlaySoundEffect(SoundEffects.Amplify);
+                break;
+            case MoveEffects.CrazyStand:
+                audioManager.PlaySoundEffect(SoundEffects.CrazyStand);
+                break;
+            case MoveEffects.Rhythm:
+                audioManager.PlaySoundEffect(SoundEffects.Rhythm);
+                break;
+            case MoveEffects.Stomp:
+                audioManager.PlaySoundEffect(SoundEffects.Stomp);
+                break;
+        }
         if (!movesActive[attack])
         {
             movesActive[attack] = true;
@@ -520,7 +536,7 @@ public class EncounterGameManager : MonoBehaviour
 
     public void AnimateEffectAction(MoveEffects attack)
     {
-        audioManager.PlaySoundEffect(SoundEffects.WrongPress);
+        audioManager.PlaySoundEffect(SoundEffects.MenuSelect);
         if (movesActive[attack])
         {
             Image moveImage = activeMovesObject.transform.Find(attack.ToString()).GetComponent<Image>();

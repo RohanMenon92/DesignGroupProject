@@ -7,6 +7,7 @@ using System;
 
 public class AudioManager : MonoBehaviour
 {
+    [Header("Clips")]
     public AudioClip moveSelect;
     public AudioClip playerSelect;
     public AudioClip menuNext;
@@ -18,6 +19,13 @@ public class AudioManager : MonoBehaviour
     public AudioClip wrongPress;
     public AudioClip menuSelect;
 
+    public AudioClip amplify;
+    public AudioClip stomp;
+    public AudioClip crazyStand;
+    public AudioClip rhythm;
+    public AudioClip hyped;
+
+    [Header("Sources")]
     public AudioSource audioMenu;
     public AudioSource audioNotes;
     public AudioSource audioCrowdStart;
@@ -81,16 +89,31 @@ public class AudioManager : MonoBehaviour
                 audioMenu.PlayOneShot(perfect);
                 break;
             case SoundEffects.SetComplete:
-                audioNotes.PlayOneShot(setComplete);
+                audioMenu.PlayOneShot(setComplete);
                 break;
             case SoundEffects.SetFailure:
-                audioNotes.PlayOneShot(setFailure);
+                audioMenu.PlayOneShot(setFailure);
                 break;
             case SoundEffects.WrongPress:
-                audioNotes.PlayOneShot(wrongPress);
+                audioMenu.PlayOneShot(wrongPress);
                 break;
             case SoundEffects.MenuSelect:
-                audioNotes.PlayOneShot(menuSelect);
+                audioMenu.PlayOneShot(menuSelect);
+                break;
+            case SoundEffects.Hyped:
+                audioMenu.PlayOneShot(hyped);
+                break;
+            case SoundEffects.Amplify:
+                audioMenu.PlayOneShot(amplify);
+                break;
+            case SoundEffects.CrazyStand:
+                audioMenu.PlayOneShot(crazyStand);
+                break;
+            case SoundEffects.Rhythm:
+                audioMenu.PlayOneShot(rhythm);
+                break;
+            case SoundEffects.Stomp:
+                audioMenu.PlayOneShot(stomp);
                 break;
         }
     }

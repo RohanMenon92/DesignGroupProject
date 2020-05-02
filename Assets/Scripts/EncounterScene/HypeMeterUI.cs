@@ -125,7 +125,7 @@ public class HypeMeterUI : MonoBehaviour
         hypeAnimateSequence.Insert(encounterConstants.CanHypeDuration, hypeBar.DOFade(0.9f, encounterConstants.CanHypeDuration).SetEase(Ease.InOutBack));
 
         // Play Audio Effect for can hype
-        audioManager.PlaySoundEffect(SoundEffects.SetComplete);
+        audioManager.PlaySoundEffect(SoundEffects.Bing);
 
         hypeAnimateSequence.Play();
     }
@@ -154,7 +154,7 @@ public class HypeMeterUI : MonoBehaviour
         // Animate Hype Mask getting larger
         // Emit particles
 
-        audioManager.PlaySoundEffect(SoundEffects.SetComplete);
+        audioManager.PlaySoundEffect(SoundEffects.Hyped);
     }
 
     public void AnimateHypeComplete(AnimationCallback animCallback)

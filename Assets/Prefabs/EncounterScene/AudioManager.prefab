@@ -442,6 +442,11 @@ MonoBehaviour:
   setBing: {fileID: 8300000, guid: b133e0f87bef9ef4984b4c11c0b5adf1, type: 3}
   wrongPress: {fileID: 8300000, guid: 7a4f90eff7979b944a1051be613fb4b6, type: 3}
   menuSelect: {fileID: 8300000, guid: 5b0f8cd074e204c4ab4cce3068b4ae9d, type: 3}
+  amplify: {fileID: 8300000, guid: b9e57a46abf74364195045a30c5b380a, type: 3}
+  stomp: {fileID: 8300000, guid: 856c8d30f52d2f542a140a122c7f47fb, type: 3}
+  crazyStand: {fileID: 8300000, guid: 3a163dc71d4dcd54ca594cacf58a0634, type: 3}
+  rhythm: {fileID: 8300000, guid: 352e36ab89a12134c93233e4ba3c3755, type: 3}
+  hyped: {fileID: 8300000, guid: bf78cc2b3878ea748bb77cba66edc137, type: 3}
   audioMenu: {fileID: 198883646110637960}
   audioNotes: {fileID: 198883645471621549}
   audioCrowdStart: {fileID: 198883645880643949}

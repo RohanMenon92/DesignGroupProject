@@ -105,11 +105,11 @@ MonoBehaviour:
   maxScore: 700
   enemyDifficulty: 0
   enemyMissThreshold: 90
-  setLength: 4
+  setLength: 2
   totalSets: 3
   crowdYPosition: 1.9
   crowdMoveProbability: 0.5
-  NoteSpeed: 10
+  NoteSpeed: 6
   MusicPlayDelay: 2
   CrowdStartDuration: 5
   CrowdStartDelay: 3
@@ -199,7 +199,7 @@ MonoBehaviour:
     effect: 0
     currentLock: 0
     moveColor: {r: 0.34117648, g: 0, b: 1, a: 1}
-  - name: Rythm
+  - name: Rhythm
     description: Play a verse that reduces opponent Crowd Interest gain for 2 turns.
     score: 0.6
     hypeRate: 5
@@ -296,9 +296,11 @@ MonoBehaviour:
   SelectedMusicVol: 3
   UnselectedMusicVol: -5
   MusicSelectDelay: 0.3
-  startLightIntensity: 18
+  startLightIntensity: 30
   endLightIntensity: 0
-  startLightRot: {x: 135, y: 90, z: 90}
+  startLightRot: {x: 35, y: 90, z: 90}
+  spotLightFocus: 45
+  spotLightGeneral: 90
   notePoolSize: 30
   firstKnobRotation: {x: 0, y: 0, z: -27.575}
   showCountDuration: 2

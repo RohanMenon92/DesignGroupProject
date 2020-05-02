@@ -23,10 +23,9 @@ public class PlayerEntitiesScript : MonoBehaviour
     {
         maxTurn = stageEntities.Count;
         stageLight.intensity = 0;
+        stageLight.spotAngle = 0;
         cameraTransform.DOLocalMove(encounterConstants.startStageCamPos, 1f).SetEase(Ease.InOutBack);
         cameraTransform.DORotate(encounterConstants.startStageCamRot, 1f).SetEase(Ease.InOutBack);
-        stageLight.transform.DORotate(encounterConstants.startLightRot, 1f);
-        stageLight.DOIntensity(encounterConstants.endLightIntensity, 1f);
     }
 
     // Update is called once per frame
@@ -34,9 +33,16 @@ public class PlayerEntitiesScript : MonoBehaviour
     {
     }
 
+    public void OnGameStart()
+    {
+        ChangeLightSpotAngle(encounterConstants.spotLightGeneral);
+        stageLight.transform.DORotate(encounterConstants.startLightRot, 1f);
+        stageLight.DOIntensity(encounterConstants.startLightIntensity, 1f);
+    }
+
     public void OnHyped()
     {
-        ChangeLightSpotAngle(90f);
+        ChangeLightSpotAngle(encounterConstants.spotLightGeneral);
         stageLight.DOColor(encounterConstants.HypeLight, 0.5f);
         stageLight.transform.DORotate(encounterConstants.startLightRot, 0.5f);
         stageLight.DOIntensity(encounterConstants.startLightIntensity, 1f);
@@ -47,7 +53,8 @@ public class PlayerEntitiesScript : MonoBehaviour
 
     public void ResetBandEndTurn()
     {
-        ChangeLightSpotAngle(90f);
+        ChangeLightSpotAngle(0f);
+
         stageLight.DOIntensity(encounterConstants.endLightIntensity, 1f);
         stageLight.transform.DORotate(encounterConstants.startLightRot, 1f);
         stageLight.color = Color.white;
@@ -58,7 +65,7 @@ public class PlayerEntitiesScript : MonoBehaviour
 
     public void TransitionToPlayer(int currentTurn)
     {
-        ChangeLightSpotAngle(30f);
+        ChangeLightSpotAngle(encounterConstants.spotLightFocus);
         Color spotLightColor = encounterConstants.PlayerColors[currentTurn];
 
         Sequence transitionSequence = DOTween.Sequence();
@@ -75,7 +82,7 @@ public class PlayerEntitiesScript : MonoBehaviour
 
     public void ChangeLightSpotAngle(float value)
     {
-        DOTween.To(() => stageLight.spotAngle, x => stageLight.spotAngle = x, value, 1f);
+        DOTween.To(() => stageLight.spotAngle, x => stageLight.spotAngle = x, value, 1f).SetEase(Ease.InOutBack);
     }
 
     public void StartTurn()

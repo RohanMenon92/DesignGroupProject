@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class NoteGeneratorManager : MonoBehaviour
 {
     [SerializeField]
-    PlayerEntitiesScript playerEntities;
+    public PlayerEntitiesScript playerEntities;
 
     [SerializeField]
     List<TimelineAsset> playableSongs;
@@ -44,7 +44,7 @@ public class NoteGeneratorManager : MonoBehaviour
     TextMeshProUGUI lockCounter;
 
     [SerializeField]
-    Image moveEffect;
+    Image moveImage;
 
     [SerializeField]
     Image moveLock;
@@ -54,6 +54,8 @@ public class NoteGeneratorManager : MonoBehaviour
 
     [SerializeField]
     bool stateMachineDebug = false;
+
+    public Image overlayImage;
 
     public Transform reputationPointerTransform;
 
@@ -201,7 +203,7 @@ public class NoteGeneratorManager : MonoBehaviour
         PlayerMove move = playerMoves[currentPlayer][currentMove];
 
         descriptionSequence.Insert(0f, moveLock.DOFade(0f, encounterConstants.descriptionTransition / 3));
-        descriptionSequence.Insert(0f, moveEffect.DOFade(0f, encounterConstants.descriptionTransition / 3));
+        descriptionSequence.Insert(0f, moveImage.DOFade(0f, encounterConstants.descriptionTransition / 3));
         descriptionSequence.Insert(0f, lockCounter.DOFade(0f, encounterConstants.descriptionTransition / 3));
         descriptionSequence.Insert(0f, moveTitle.DOFade(0f, encounterConstants.descriptionTransition / 3));
         descriptionSequence.Insert(0f, moveDescription.DOFade(0f, encounterConstants.descriptionTransition / 3));
@@ -244,27 +246,28 @@ public class NoteGeneratorManager : MonoBehaviour
                 switch (move.effect)
                 {
                     case MoveEffects.Amplifier:
-                        moveEffect.sprite = gameManager.AmplifierSprite;
+                        moveImage.sprite = gameManager.AmplifierSprite;
                         break;
                     case MoveEffects.CrazyStand:
-                        moveEffect.sprite = gameManager.CrazyStandSprite;
+                        moveImage.sprite = gameManager.CrazyStandSprite;
                         break;
                     case MoveEffects.Rhythm:
-                        moveEffect.sprite = gameManager.RythmSprite;
+                        moveImage.sprite = gameManager.RythmSprite;
                         break;
                     case MoveEffects.Stomp:
-                        moveEffect.sprite = gameManager.StompSprite;
+                        moveImage.sprite = gameManager.StompSprite;
                         break;
                 }
 
                 descriptionSequence.Insert(encounterConstants.descriptionTransition / 2,
-                    moveEffect.DOColor(moveColor, encounterConstants.descriptionTransition / 2));
+                    moveImage.DOColor(Color.white, encounterConstants.descriptionTransition / 2));
+                    //moveImage.DOColor(moveColor, encounterConstants.descriptionTransition / 2));
             }
             else
             {
                 descriptionSequence.Insert(encounterConstants.descriptionTransition / 2,
-                    moveEffect.DOFade(0f, encounterConstants.descriptionTransition / 2).OnComplete(() => {
-                        moveEffect.sprite = null;
+                    moveImage.DOFade(0f, encounterConstants.descriptionTransition / 2).OnComplete(() => {
+                        moveImage.sprite = null;
                     }));
             }
 
@@ -483,7 +486,7 @@ public class NoteGeneratorManager : MonoBehaviour
                 break;
             case NotesGameStates.Start:
                 {
-                    gameManager.ShowGamePanelCount(0, 0, false, false);
+                    gameManager.ShowGamePanelCount(gameManager.currSet, currSong, false, false);
 
                     currSong = 0;
                     
@@ -1236,7 +1239,7 @@ public class NoteGeneratorManager : MonoBehaviour
             uiFadeOutSequence.Insert(0f, selector.transform.DOScale(0.0f, 0.35f));
             uiFadeOutSequence.Insert(0f, selector.GetComponent<Image>().DOColor(new Color(1f, 1f, 1f, 0f), 0.5f));
         }
-        uiFadeOutSequence.Insert(0f, this.GetComponent<Image>().DOFade(0f, 0.5f)).OnComplete(() =>
+        uiFadeOutSequence.Insert(0f, overlayImage.DOFade(0f, 0.5f)).OnComplete(() =>
         {
             animCallback?.Invoke();
         });
@@ -1246,7 +1249,7 @@ public class NoteGeneratorManager : MonoBehaviour
     {
         Sequence uiColorSequence = DOTween.Sequence();
         
-        uiColorSequence.Insert(0f, this.GetComponent<Image>().DOColor(uiColor, 0.5f));
+        uiColorSequence.Insert(0f, overlayImage.DOColor(uiColor, 0.5f));
 
         float delay = 0.0f;
         foreach (NoteGeneratorScript noteGen in noteGenerators)
