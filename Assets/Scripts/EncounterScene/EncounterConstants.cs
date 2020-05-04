@@ -215,7 +215,7 @@ public class EncounterConstants: MonoBehaviour
     public float crowdMoveProbability = 0.5f;
 
     public float NoteSpeed = 6f;
-    public float MusicPlayDelay = 2f;
+    public float MusicPlayDelay = 3f;
 
     public float CrowdStartDuration = 5f;
     public float CrowdStartDelay = 3f;
@@ -273,16 +273,21 @@ public class EncounterConstants: MonoBehaviour
     public float CrazyStandNoteDelay = 2.0f;
 
     [Header("Camera Position And Rotation Variables")]
-    public Vector3 startcamera = new Vector3(2, -0.5f, 6);
+    public Vector3 beginCamera = new Vector3(-1.5f, 8f, -15f);
+    public Vector3 beginRot = new Vector3(30f, -45f, -0f);
 
-    public Vector3 startStageCamPos = new Vector3(-3.0f, 6.0f, 0.0f);
-    public Vector3 startStageCamRot = new Vector3(30f, 90f, 0.0f);
+    public Vector3 startCameraPos = new Vector3(3, 3, 0f);
+    public Vector3 startCameraRot = new Vector3(15, -90f, 0);
 
-    public Vector3 cameraTurnPos = new Vector3(2.5f, 20f, 0f);
-    public Vector3 cameraTurnRot = new Vector3(45f, -90f, 0f);
+    public Vector3 stageCamStartPos = new Vector3(-12.0f, 4.5f, 7.0f);
+    public Vector3 stageCamStartRot = new Vector3(30f, 90f, 0.0f);
+    public float stageCameraOffsetY = 5f;
 
-    public Vector3 cameraFocusPos = new Vector3(-9.5f, 6f, 0f);
-    public Vector3 cameraFocusOffset = new Vector3(0f, -3f, 0f);
+    public Vector3 cameraSelectPos = new Vector3(-13f, 8f, 5.5f);
+    public Vector3 cameraSelectRot = new Vector3(30f, -90f, 0f);
+
+    public Vector3 cameraFocusPos = new Vector3(-13f, 6f, 0f);
+    public Vector3 cameraFocusOffset = new Vector3(0f, -6f, 10f);
 
     public Vector3 cameraEnemyPos = new Vector3(6f, 8.2f, 0f);
     public Vector3 cameraEnemyRot = new Vector3(30f, 90f, 0f);
@@ -367,6 +372,8 @@ public class EncounterConstants: MonoBehaviour
     public float startUIFadeDuration = 5.0f;
     public float startGameUIFadeDuration = 3.0f;
     public float introUIFadeDuration = 2.0f;
+    public float crowdMoveDelay = 0.75f;
+    public float crowdMoveDuration = 1.25f;
 
     //public float IntroUIFadeDuration = 3.0f;
 

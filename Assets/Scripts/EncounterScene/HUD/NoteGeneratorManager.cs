@@ -271,7 +271,7 @@ public class NoteGeneratorManager : MonoBehaviour
                     }));
             }
 
-            descriptionSequence.Insert(encounterConstants.descriptionTransition / 2, moveCanvas.GetComponent<Image>().DOColor(moveColor, encounterConstants.descriptionTransition / 2));
+            moveCanvas.GetComponent<Image>().color = moveColor;
 
             Vector2 descPos = knobControl.moveLabels.GetComponentsInChildren<Image>(true)[3].GetComponent<RectTransform>().anchoredPosition + encounterConstants.descriptionOffset;
 
@@ -1054,7 +1054,6 @@ public class NoteGeneratorManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Check miss " + accuracyRating);
             noteToStore.isCollected = true;
             noteToStore.PlayFailureAnimation();
         }

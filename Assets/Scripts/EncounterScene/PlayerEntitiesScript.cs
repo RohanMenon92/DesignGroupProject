@@ -24,8 +24,8 @@ public class PlayerEntitiesScript : MonoBehaviour
         maxTurn = stageEntities.Count;
         stageLight.intensity = 0;
         stageLight.spotAngle = 0;
-        cameraTransform.DOLocalMove(encounterConstants.startStageCamPos, 1f).SetEase(Ease.InOutBack);
-        cameraTransform.DORotate(encounterConstants.startStageCamRot, 1f).SetEase(Ease.InOutBack);
+        cameraTransform.DOLocalMove(encounterConstants.stageCamStartPos, 1f).SetEase(Ease.InOutBack);
+        cameraTransform.DORotate(encounterConstants.stageCamStartRot, 1f).SetEase(Ease.InOutBack);
     }
 
     // Update is called once per frame
@@ -47,8 +47,8 @@ public class PlayerEntitiesScript : MonoBehaviour
         stageLight.transform.DORotate(encounterConstants.startLightRot, 0.5f);
         stageLight.DOIntensity(encounterConstants.startLightIntensity, 1f);
 
-        cameraTransform.DOLocalMove(encounterConstants.startStageCamPos, 1f).SetEase(Ease.InBack);
-        cameraTransform.DORotate(encounterConstants.startStageCamRot, 1f).SetEase(Ease.InOutBack);
+        cameraTransform.DOLocalMove(encounterConstants.stageCamStartPos, 1f).SetEase(Ease.InBack);
+        cameraTransform.DORotate(encounterConstants.stageCamStartRot, 1f).SetEase(Ease.InOutBack);
     }
 
     public void ResetBandEndTurn()
@@ -59,8 +59,8 @@ public class PlayerEntitiesScript : MonoBehaviour
         stageLight.transform.DORotate(encounterConstants.startLightRot, 1f);
         stageLight.color = Color.white;
 
-        cameraTransform.DOLocalMove(encounterConstants.startStageCamPos, 1f).SetEase(Ease.InBack);
-        cameraTransform.DORotate(encounterConstants.startStageCamRot, 1f).SetEase(Ease.InOutBack);
+        cameraTransform.DOLocalMove(encounterConstants.stageCamStartPos, 1f).SetEase(Ease.InBack);
+        cameraTransform.DORotate(encounterConstants.stageCamStartRot, 1f).SetEase(Ease.InOutBack);
     }
 
     public void TransitionToPlayer(int currentTurn)
@@ -76,7 +76,7 @@ public class PlayerEntitiesScript : MonoBehaviour
         Vector3 normalizedOrientation = -stageEntities[currentTurn].localPosition.normalized * 3;
 
         transitionSequence.Insert(0f, cameraTransform.DOMove(stageEntities[currentTurn].position +
-            new Vector3(normalizedOrientation.x, 3, normalizedOrientation.z), 1f).SetEase(Ease.OutBack));
+            new Vector3(normalizedOrientation.x, encounterConstants.stageCameraOffsetY, normalizedOrientation.z), 1f).SetEase(Ease.OutBack));
         transitionSequence.Insert(1f, cameraTransform.DOLookAt(stageEntities[currentTurn].position, 0.4f).SetEase(Ease.OutBack));
     }
 

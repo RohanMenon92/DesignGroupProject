@@ -78,7 +78,7 @@ public class EncounterGameManager : MonoBehaviour
 
         movesActive.Clear();
 
-        mainCamera.transform.position = encounterConstants.startcamera;
+        mainCamera.transform.position = encounterConstants.beginCamera;
         // Add Attack statuses
         foreach (PlayerMove move in encounterConstants.GuitarMoves)
         {
@@ -144,7 +144,7 @@ public class EncounterGameManager : MonoBehaviour
 
         currSet = 0;
         FadeOutOverlayUI();
-        crowdLight.DOIntensity(0.0f, 0.2f);
+        crowdLight.DOIntensity(0.0f, 0.0f);
         audioManager.PlayCrowdEffect(CrowdEffects.CrowdIdle);
     }
 
@@ -247,6 +247,9 @@ public class EncounterGameManager : MonoBehaviour
                     currentScore = 0;
 
                     mainUI.StartGameUI(() => {
+                        MoveCameraToStart();
+                        crowdLight.DOIntensity(1.0f, 2.0f);
+
                         noteManager.playerEntities.OnGameStart();
                         audioManager.PlayCrowdEffect(CrowdEffects.CrowdStart);
                         FadeInOverlayUI();
@@ -413,8 +416,8 @@ public class EncounterGameManager : MonoBehaviour
             {
                 Vector3 newPos = new Vector3(xValue + ((xValue > 0 ? 1 : -1) * UnityEngine.Random.Range(1, 3f)), encounterConstants.crowdYPosition, UnityEngine.Random.Range(10f, -10f));
 
-                moveSequence.Insert(delay, person.DOLocalMove(newPos, 1.5f).SetEase(Ease.InOutQuad));
-                delay += 0.5f;
+                moveSequence.Insert(delay, person.DOLocalMove(newPos, encounterConstants.crowdMoveDuration).SetEase(Ease.InOutQuad));
+                delay += encounterConstants.crowdMoveDelay;
             }
         }
 
@@ -430,11 +433,17 @@ public class EncounterGameManager : MonoBehaviour
             }
         });
     }
+    public void MoveCameraToStart()
+    {
+        mainCamera.transform.DOMove(encounterConstants.startCameraPos, 2.0f).SetEase(Ease.OutBack);
+        mainCamera.transform.DORotate(encounterConstants.startCameraRot, 2.0f).SetEase(Ease.OutSine);
+    }
+
 
     public void MoveCameraToPlayer()
     {
-        mainCamera.transform.DOMove(encounterConstants.cameraTurnPos, 0.75f).SetEase(Ease.OutBack);
-        mainCamera.transform.DORotate(encounterConstants.cameraTurnRot, 1f).SetEase(Ease.OutSine);
+        mainCamera.transform.DOMove(encounterConstants.cameraSelectPos, 0.75f).SetEase(Ease.OutBack);
+        mainCamera.transform.DORotate(encounterConstants.cameraSelectRot, 1f).SetEase(Ease.OutSine);
     }
 
     public void MoveCameraToFocus(Transform bandMemberTransform)

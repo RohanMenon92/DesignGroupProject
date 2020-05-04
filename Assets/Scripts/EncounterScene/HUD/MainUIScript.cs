@@ -162,7 +162,6 @@ public class MainUIScript : MonoBehaviour
         uiSequence.Insert(encounterConstants.startGameUIFadeDuration / 2, bandBattleImage.DOFade(0f, encounterConstants.startGameUIFadeDuration / 2));
         uiSequence.Insert(encounterConstants.startGameUIFadeDuration / 2, bandBattleImage.GetComponent<Transform>().DOScale(1.5f, encounterConstants.startGameUIFadeDuration / 2).SetEase(Ease.InOutBack));
 
-
         uiSequence.Insert(encounterConstants.startGameUIFadeDuration / 4, band1Poster.DOFade(0f, encounterConstants.startGameUIFadeDuration / 4));
         uiSequence.Insert(encounterConstants.startGameUIFadeDuration / 4, band1Transform.DOScale(0.8f, encounterConstants.startGameUIFadeDuration / 3).SetEase(Ease.InOutBack));
 
@@ -242,13 +241,13 @@ public class MainUIScript : MonoBehaviour
         RectTransform band1Transform = band1Poster.GetComponent<RectTransform>();
         RectTransform band2Transform = band2Poster.GetComponent<RectTransform>();
 
-        band1Poster.gameObject.SetActive(false);
-        band2Poster.gameObject.SetActive(false);
-        bandBattleImage.gameObject.SetActive(false);
+        bandBattleImage.transform.localScale = Vector3.zero;
+        band1Transform.localScale = Vector3.zero;
+        band2Transform.localScale = Vector3.zero;
 
-        bandBattleImage.transform.localScale = Vector3.one;
-        band1Transform.localScale = Vector3.one;
-        band2Transform.localScale = Vector3.one;
+        band1Poster.gameObject.SetActive(true);
+        band2Poster.gameObject.SetActive(true);
+        bandBattleImage.gameObject.SetActive(true);
 
         uiSequence = DOTween.Sequence();
 
