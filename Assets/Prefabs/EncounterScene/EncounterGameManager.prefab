@@ -100,9 +100,9 @@ MonoBehaviour:
   scoreOKMultiplier: 5
   scoreWrongPunishment: 5
   scoreMissPunishment: 30
-  hypeWrongPunishment: 1
-  hypeMissPunishment: 5
-  maxScore: 700
+  hypeWrongPunishment: 0
+  hypeMissPunishment: 1
+  maxScore: 2000
   enemyDifficulty: 0
   enemyMissThreshold: 90
   setLength: 2
@@ -110,7 +110,7 @@ MonoBehaviour:
   crowdYPosition: 1.9
   crowdMoveProbability: 0.5
   NoteSpeed: 6
-  MusicPlayDelay: 2
+  MusicPlayDelay: 3
   CrowdStartDuration: 5
   CrowdStartDelay: 3
   CrowdSoundTransition: 2
@@ -176,7 +176,7 @@ MonoBehaviour:
   - name: Pitch
     description: Play an attack based verse.
     score: 1.5
-    hypeRate: 2
+    hypeRate: 0.6
     turnLock: 0
     effect: 0
     currentLock: 0
@@ -185,7 +185,7 @@ MonoBehaviour:
     description: Play a verse that boosts Crowd Interest gain for the team for the
       turn.
     score: 0.8
-    hypeRate: 3
+    hypeRate: 1
     turnLock: 2
     effect: 1
     currentLock: 0
@@ -194,7 +194,7 @@ MonoBehaviour:
   - name: Root
     description: Play an attack based verse.
     score: 1.5
-    hypeRate: 2
+    hypeRate: 0.6
     turnLock: 0
     effect: 0
     currentLock: 0
@@ -202,7 +202,7 @@ MonoBehaviour:
   - name: Rhythm
     description: Play a verse that reduces opponent Crowd Interest gain for 2 turns.
     score: 0.6
-    hypeRate: 5
+    hypeRate: 1.67
     turnLock: 4
     effect: 2
     currentLock: 0
@@ -211,7 +211,7 @@ MonoBehaviour:
   - name: Jazzy
     description: Play an attack based verse.
     score: 1.5
-    hypeRate: 3
+    hypeRate: 1
     turnLock: 0
     effect: 0
     currentLock: 0
@@ -219,7 +219,7 @@ MonoBehaviour:
   - name: Crazy Stand
     description: Play a devastating randomized verse of fast notes.
     score: 1
-    hypeRate: 7
+    hypeRate: 1.2
     turnLock: 4
     effect: 4
     currentLock: 0
@@ -228,7 +228,7 @@ MonoBehaviour:
   - name: MetalHead
     description: Play an attack based verse.
     score: 1.5
-    hypeRate: 2
+    hypeRate: 0.6
     turnLock: 0
     effect: 0
     currentLock: 0
@@ -236,7 +236,7 @@ MonoBehaviour:
   - name: Stomp
     description: Play a verse that skips the next opponent's turn.
     score: 0.8
-    hypeRate: 3
+    hypeRate: 1
     turnLock: 3
     effect: 3
     currentLock: 0
@@ -244,13 +244,17 @@ MonoBehaviour:
   amplifierMultiplier: 1.5
   rhythmMultiplier: 0.8
   CrazyStandNoteDelay: 2
-  startcamera: {x: 2, y: -0.5, z: 6}
-  startStageCamPos: {x: -3, y: 6, z: 0}
-  startStageCamRot: {x: 30, y: 90, z: 0}
-  cameraTurnPos: {x: 2.5, y: 20, z: 0}
-  cameraTurnRot: {x: 45, y: -90, z: 0}
-  cameraFocusPos: {x: -9.5, y: 6, z: 0}
-  cameraFocusOffset: {x: 0, y: -3, z: 0}
+  beginCamera: {x: -1.5, y: 8, z: -15}
+  beginRot: {x: 30, y: -45, z: -0}
+  startCameraPos: {x: 3, y: 3, z: 0}
+  startCameraRot: {x: 15, y: -90, z: 0}
+  stageCamStartPos: {x: -12, y: 4.5, z: 7}
+  stageCamStartRot: {x: 30, y: 90, z: 0}
+  stageCameraOffsetY: 5
+  cameraSelectPos: {x: -13, y: 8, z: 5.5}
+  cameraSelectRot: {x: 30, y: -90, z: 0}
+  cameraFocusPos: {x: -13, y: 6, z: 0}
+  cameraFocusOffset: {x: 0, y: -6, z: 10}
   cameraEnemyPos: {x: 6, y: 8.2, z: 0}
   cameraEnemyRot: {x: 30, y: 90, z: 0}
   cameraOverviewPos: {x: 0, y: 25, z: -30}
@@ -296,10 +300,10 @@ MonoBehaviour:
   SelectedMusicVol: 3
   UnselectedMusicVol: -5
   MusicSelectDelay: 0.3
-  startLightIntensity: 30
+  startLightIntensity: 100
   endLightIntensity: 0
-  startLightRot: {x: 35, y: 90, z: 90}
-  spotLightFocus: 45
+  startLightRot: {x: 145, y: 90, z: 90}
+  spotLightFocus: 30
   spotLightGeneral: 90
   notePoolSize: 30
   firstKnobRotation: {x: 0, y: 0, z: -27.575}
@@ -311,6 +315,8 @@ MonoBehaviour:
   startUIFadeDuration: 5
   startGameUIFadeDuration: 3
   introUIFadeDuration: 2
+  crowdMoveDelay: 0.75
+  crowdMoveDuration: 1.25
 --- !u!1 &1613359358541547869
 GameObject:
   m_ObjectHideFlags: 0
