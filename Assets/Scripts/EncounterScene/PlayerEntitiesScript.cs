@@ -37,7 +37,7 @@ public class PlayerEntitiesScript : MonoBehaviour
     {
         ChangeLightSpotAngle(encounterConstants.spotLightGeneral);
         stageLight.transform.DORotate(encounterConstants.startLightRot, 1f);
-        stageLight.DOIntensity(encounterConstants.startLightIntensity, 1f);
+        stageLight.DOIntensity(encounterConstants.startLightEntity, 1f);
     }
 
     public void OnHyped()
@@ -45,7 +45,7 @@ public class PlayerEntitiesScript : MonoBehaviour
         ChangeLightSpotAngle(encounterConstants.spotLightGeneral);
         stageLight.DOColor(encounterConstants.HypeLight, 0.5f);
         stageLight.transform.DORotate(encounterConstants.startLightRot, 0.5f);
-        stageLight.DOIntensity(encounterConstants.startLightIntensity, 1f);
+        stageLight.DOIntensity(encounterConstants.startLightEntity, 1f);
 
         cameraTransform.DOLocalMove(encounterConstants.stageCamStartPos, 1f).SetEase(Ease.InBack);
         cameraTransform.DORotate(encounterConstants.stageCamStartRot, 1f).SetEase(Ease.InOutBack);
@@ -55,7 +55,7 @@ public class PlayerEntitiesScript : MonoBehaviour
     {
         ChangeLightSpotAngle(0f);
 
-        stageLight.DOIntensity(encounterConstants.endLightIntensity, 1f);
+        stageLight.DOIntensity(encounterConstants.endLightEntity, 1f);
         stageLight.transform.DORotate(encounterConstants.startLightRot, 1f);
         stageLight.color = Color.white;
 
@@ -73,6 +73,7 @@ public class PlayerEntitiesScript : MonoBehaviour
         transitionSequence.Insert(0f, stageLight.DOColor(spotLightColor, 0.5f));
         transitionSequence.Insert(0f, stageLight.transform.DOLookAt(stageEntities[currentTurn].position, 1f).SetEase(Ease.InOutBack));
 
+        transitionSequence.Insert(0f, stageLight.DOIntensity(encounterConstants.focusLightEntity, 1f));
         Vector3 normalizedOrientation = -stageEntities[currentTurn].localPosition.normalized * 3;
 
         transitionSequence.Insert(0f, cameraTransform.DOMove(stageEntities[currentTurn].position +
@@ -87,6 +88,6 @@ public class PlayerEntitiesScript : MonoBehaviour
 
     public void StartTurn()
     {
-        stageLight.DOIntensity(encounterConstants.startLightIntensity, 0.5f);
+        stageLight.DOIntensity(encounterConstants.startLightEntity, 0.5f);
     }
 }

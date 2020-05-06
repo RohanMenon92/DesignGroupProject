@@ -133,8 +133,6 @@ public enum GameplayState
     StartGameUI,
     TurnIntro,
     TurnPlay,
-    //EnemyIntro,
-    //EnemyPlay,
     TurnPlayOut,
     EndGameUI,
     EndGame
@@ -350,9 +348,9 @@ public class EncounterConstants: MonoBehaviour
     public float MusicSelectDelay = 0.3f;
 
     [Header("Other Values and Enums")]
-    public float startLightIntensity = 30f;
-    //public float focusLightIntensity = 0f;
-    public float endLightIntensity = 0f;
+    public float startLightEntity = 200f;
+    public float focusLightEntity = 300f;
+    public float endLightEntity = 0f;
     public Vector3 startLightRot = new Vector3(35f, 90f, 90f);
     public float spotLightFocus = 45f;
     public float spotLightGeneral = 90f;
@@ -374,6 +372,9 @@ public class EncounterConstants: MonoBehaviour
     public float introUIFadeDuration = 2.0f;
     public float crowdMoveDelay = 0.75f;
     public float crowdMoveDuration = 1.25f;
+
+    public float CrowdLightStart = 50f;
+    internal float crowdLightTurnPlay = 150f;
 
     //public float IntroUIFadeDuration = 3.0f;
 

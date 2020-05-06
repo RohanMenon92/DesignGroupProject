@@ -144,10 +144,21 @@ public class EncounterGameManager : MonoBehaviour
 
         currSet = 0;
         FadeOutOverlayUI();
-        crowdLight.DOIntensity(0.0f, 0.0f);
-        audioManager.PlayCrowdEffect(CrowdEffects.CrowdIdle);
+
+        BeginGame();
     }
 
+    void BeginGame()
+    {
+        crowdLight.DOIntensity(0.0f, 0.0f);
+        audioManager.PlayCrowdEffect(CrowdEffects.CrowdIdle);
+        audioManager.PlaySoundEffect(SoundEffects.Good);
+        mainUI.StartUI(() =>
+        {
+            SwitchState(GameplayState.StartGameUI);
+        });
+
+    }
     // Update is called once per frame
     void Update()
     {
@@ -163,13 +174,6 @@ public class EncounterGameManager : MonoBehaviour
         {
             switch (currentState)
             {
-                case GameplayState.StartGame:
-                    audioManager.PlaySoundEffect(SoundEffects.Good);
-                    mainUI.StartUI(() =>
-                    {
-                        SwitchState(GameplayState.StartGameUI);
-                    });
-                    break;
                 case GameplayState.StartGameUI:
                     audioManager.PlaySoundEffect(SoundEffects.MenuNext);
                     SwitchState(GameplayState.TurnIntro);
@@ -248,7 +252,7 @@ public class EncounterGameManager : MonoBehaviour
 
                     mainUI.StartGameUI(() => {
                         MoveCameraToStart();
-                        crowdLight.DOIntensity(1.0f, 2.0f);
+                        crowdLight.DOIntensity(encounterConstants.CrowdLightStart, 2.0f);
 
                         noteManager.playerEntities.OnGameStart();
                         audioManager.PlayCrowdEffect(CrowdEffects.CrowdStart);
@@ -279,7 +283,7 @@ public class EncounterGameManager : MonoBehaviour
 
                     mainUI.TurnPlayoutUI(currentScore > 0, () =>
                     {
-                        crowdLight.DOIntensity(3.0f, 1.0f);
+                        crowdLight.DOIntensity(encounterConstants.crowdLightTurnPlay, 1.0f);
 
                         MoveCameraToOverview();
                         MoveCrowds();

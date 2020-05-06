@@ -300,8 +300,9 @@ MonoBehaviour:
   SelectedMusicVol: 3
   UnselectedMusicVol: -5
   MusicSelectDelay: 0.3
-  startLightIntensity: 100
-  endLightIntensity: 0
+  startLightEntity: 200
+  focusLightEntity: 300
+  endLightEntity: 0
   startLightRot: {x: 145, y: 90, z: 90}
   spotLightFocus: 30
   spotLightGeneral: 90
@@ -317,6 +318,7 @@ MonoBehaviour:
   introUIFadeDuration: 2
   crowdMoveDelay: 0.75
   crowdMoveDuration: 1.25
+  CrowdLightStart: 50
 --- !u!1 &1613359358541547869
 GameObject:
   m_ObjectHideFlags: 0
