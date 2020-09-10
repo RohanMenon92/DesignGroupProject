@@ -38,8 +38,10 @@ The crowd moves after every song set is completed, based on the gathered crowd i
 ## Screenshots
 ![ExplorationScene](https://github.com/RohanMenon92/DesignGroupProject/blob/master/Screenshots/ExplorationScene.PNG)
 ![MoveSelect](https://github.com/RohanMenon92/DesignGroupProject/blob/master/Screenshots/MoveSelect.PNG)
-![MoveList](https://github.com/RohanMenon92/DesignGroupProject/blob/master/Screenshots/MoveLists.PNG)
 ![Player Gameplay](https://github.com/RohanMenon92/DesignGroupProject/blob/master/Screenshots/PlayerGameplay.PNG)
 ![Enemy Gameplay](https://github.com/RohanMenon92/DesignGroupProject/blob/master/Screenshots/EnemyPlay.PNG)
+
+## Design Tools
 ![NoteGeneratorManager](https://github.com/RohanMenon92/DesignGroupProject/blob/master/Screenshots/NoteGeneratorManager.PNG)
 ![Encounter Constants](https://github.com/RohanMenon92/DesignGroupProject/blob/master/Screenshots/EncounterConstants.PNG)
+![MoveList](https://github.com/RohanMenon92/DesignGroupProject/blob/master/Screenshots/MoveLists.PNG)
